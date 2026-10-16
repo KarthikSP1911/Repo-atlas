@@ -29,5 +29,5 @@
 
 ## Human steps still pending
 
-- [H7] Find where NitroCloud sets environment variables and set `EXPORT_SECRET` (needed before Phase 6 is deployed).
+- [H7] User cannot see an Environment, Variables, Secrets or Settings page in the NitroCloud dashboard. Not blocking until Phase 6. Next step: user sends a screenshot of the MCP page; fallback is `nitrostack-cli pack --include-env` with a deploy-only `.env` that holds `EXPORT_SECRET` and `RUNTIME_MODE` (never `GITHUB_TOKEN`).
 - [H4] `GITHUB_TOKEN` must live in `.env`, not `.env.example` (see D12).
