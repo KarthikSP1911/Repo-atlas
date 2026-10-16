@@ -1,8 +1,8 @@
 # RepoAtlas progress
 
-**Current phase:** 2 (Snapshot schema and sample data), complete, waiting for `continue`
+**Current phase:** 3 (Graph engine), in progress: engine and script done and tested; blocked on [H4] (token in `.env`) and [H6] (approve demo repos) to run the real precompute
 **Decision:** RUNTIME_MODE=snapshot (D11, `docs/SPIKE.md`)
-**Next:** Phase 3 (graph engine, offline precompute script, demo repos). Needs [H4] (`GITHUB_TOKEN` in `.env`) and [H6] (approve demo repos).
+**Next:** after H4 and H6: run `npm run precompute -- <3 repos>`, commit the snapshots, write `docs/API_BUDGET.md`, finish Phase 3 (acceptance: each snapshot loads via StoreService, counts sane, call counts logged).
 
 ## Done
 
@@ -27,6 +27,12 @@
 - `env_probe` removed from code; `ping_repoatlas` reports `exportSecretConfigured`.
 - vitest added. 43 unit tests pass (load, validate, summary, LRU, refs, ids, resource). `npm run typecheck` and `npm run build` pass. Checked on the real server over `/mcp`: DI, template read, helpful error.
 - Not redeployed yet: the live server still runs the Phase 1 zip (with `env_probe`).
+
+### Phase 3: Graph engine (in progress)
+- Services `ingest`, `parse`, `link`, `graph`, `build` and `issues.schema` in `src/services/` (D15); `npm run precompute -- owner/repo ...` in `scripts/precompute-snapshots.ts`.
+- 133 vitest tests pass, including an end-to-end build of a real local git repo cloned by `file://`. `npm run typecheck` and `npm run build` pass; the server's import graph does not reach the offline engine.
+- Dogfooded without GitHub data on pallets/click (280 KB) and sindresorhus/ky (274 KB). Fixed six quality problems that run exposed (exports field, devDependency stack, test-file centrality, example entry points, PageRank sink bias, config stems).
+- Not yet exercised against the real GitHub GraphQL API (only a scripted fake): needs the token.
 
 ## Open questions
 
