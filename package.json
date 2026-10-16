@@ -1,0 +1,31 @@
+{
+  "name": "repoatlas",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "RepoAtlas: MCP server that turns a GitHub repo into a graph for guided onboarding and first-issue matching",
+  "scripts": {
+    "dev": "nitrostack-cli dev",
+    "build": "nitrostack-cli build",
+    "start": "npm run build && nitrostack-cli start",
+    "start:prod": "nitrostack-cli start",
+    "upgrade": "nitrostack-cli upgrade",
+    "install:all": "nitrostack-cli install",
+    "widget": "npm --prefix src/widgets"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "@nitrostack/core": "^1",
+    "zod": "^3.25.0",
+    "@modelcontextprotocol/ext-apps": "^1.0.0"
+  },
+  "devDependencies": {
+    "@nitrostack/cli": "^1",
+    "@types/node": "^22.10.0",
+    "typescript": "^5.3.3"
+  },
+  "author": "Karthik",
+  "nitrostack": {
+    "skillsVersion": "1.0.0"
+  }
+}
