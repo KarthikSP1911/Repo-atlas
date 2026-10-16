@@ -1,6 +1,6 @@
 # RepoAtlas progress
 
-**Current phase:** 3 (Graph engine), in progress: engine and script done and tested; blocked on [H6] (approve demo repos) to run the real precompute
+**Current phase:** working through Phases 4 to 7 without stopping (user instruction, 2026-10-17); Phase 3 is done
 **Decision:** RUNTIME_MODE=snapshot (D11, `docs/SPIKE.md`)
 **Next:** after H4 and H6: run `npm run precompute -- <3 repos>`, commit the snapshots, write `docs/API_BUDGET.md`, finish Phase 3 (acceptance: each snapshot loads via StoreService, counts sane, call counts logged).
 
