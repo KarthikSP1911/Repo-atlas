@@ -4,6 +4,7 @@ import { TourModule } from './modules/tour/tour.module.js';
 import { ContributeModule } from './modules/contribute/contribute.module.js';
 import { ActionsModule } from './modules/actions/actions.module.js';
 import { SystemHealthCheck } from './health/system.health.js';
+import { SnapshotsHealthCheck } from './health/snapshots.health.js';
 
 /**
  * Root Application Module
@@ -34,6 +35,7 @@ import { SystemHealthCheck } from './health/system.health.js';
   providers: [
     // Health Checks
     SystemHealthCheck,
+    SnapshotsHealthCheck,
   ]
 })
 export class AppModule {}

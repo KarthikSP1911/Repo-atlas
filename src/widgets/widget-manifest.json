@@ -1,5 +1,169 @@
 {
   "version": "1.0.0",
-  "widgets": [],
+  "widgets": [
+    {
+      "uri": "/graph-view",
+      "name": "Graph view",
+      "description": "Draws the small import graph (at most 25 files) around the current tour stop or explained file, with the stop highlighted. Renders only what tour_next and explain_file return.",
+      "examples": [
+        {
+          "name": "Explain a file",
+          "description": "explain_file result for a service file and its import neighbours",
+          "data": {
+            "path": "src/services/order.service.ts",
+            "subgraph": {
+              "nodes": [
+                {
+                  "id": "src/services/order.service.ts",
+                  "label": "order.service.ts",
+                  "path": "src/services/order.service.ts",
+                  "kind": "file",
+                  "centrality": 0.5,
+                  "highlight": true,
+                  "role": "service"
+                },
+                {
+                  "id": "src/routes/orders.ts",
+                  "label": "orders.ts",
+                  "path": "src/routes/orders.ts",
+                  "kind": "file",
+                  "centrality": 0.2,
+                  "highlight": false,
+                  "role": "route"
+                },
+                {
+                  "id": "src/db/client.ts",
+                  "label": "client.ts",
+                  "path": "src/db/client.ts",
+                  "kind": "file",
+                  "centrality": 0.6,
+                  "highlight": false,
+                  "role": "model"
+                },
+                {
+                  "id": "src/utils/logger.ts",
+                  "label": "logger.ts",
+                  "path": "src/utils/logger.ts",
+                  "kind": "file",
+                  "centrality": 1,
+                  "highlight": false,
+                  "role": "util"
+                }
+              ],
+              "edges": [
+                {
+                  "from": "src/routes/orders.ts",
+                  "to": "src/services/order.service.ts",
+                  "kind": "imports"
+                },
+                {
+                  "from": "src/services/order.service.ts",
+                  "to": "src/db/client.ts",
+                  "kind": "imports"
+                },
+                {
+                  "from": "src/services/order.service.ts",
+                  "to": "src/utils/logger.ts",
+                  "kind": "imports"
+                }
+              ],
+              "highlight": [
+                "src/services/order.service.ts"
+              ]
+            },
+            "limits": {
+              "snapshotId": "demo__sample-shop@5a3f0c1",
+              "asOf": "2026-10-16T12:00:00Z",
+              "tier": 2,
+              "truncated": false
+            }
+          }
+        },
+        {
+          "name": "Tour stop",
+          "description": "tour_next stage 4 (core modules)",
+          "data": {
+            "stage": 4,
+            "name": "Core modules",
+            "progress": "4 of 8",
+            "checkQuestion": {
+              "question": "Which module do most others depend on?"
+            },
+            "subgraph": {
+              "nodes": [
+                {
+                  "id": "src/services/order.service.ts",
+                  "label": "order.service.ts",
+                  "path": "src/services/order.service.ts",
+                  "kind": "file",
+                  "centrality": 0.5,
+                  "highlight": true,
+                  "role": "service"
+                },
+                {
+                  "id": "src/routes/orders.ts",
+                  "label": "orders.ts",
+                  "path": "src/routes/orders.ts",
+                  "kind": "file",
+                  "centrality": 0.2,
+                  "highlight": false,
+                  "role": "route"
+                },
+                {
+                  "id": "src/db/client.ts",
+                  "label": "client.ts",
+                  "path": "src/db/client.ts",
+                  "kind": "file",
+                  "centrality": 0.6,
+                  "highlight": false,
+                  "role": "model"
+                },
+                {
+                  "id": "src/utils/logger.ts",
+                  "label": "logger.ts",
+                  "path": "src/utils/logger.ts",
+                  "kind": "file",
+                  "centrality": 1,
+                  "highlight": false,
+                  "role": "util"
+                }
+              ],
+              "edges": [
+                {
+                  "from": "src/routes/orders.ts",
+                  "to": "src/services/order.service.ts",
+                  "kind": "imports"
+                },
+                {
+                  "from": "src/services/order.service.ts",
+                  "to": "src/db/client.ts",
+                  "kind": "imports"
+                },
+                {
+                  "from": "src/services/order.service.ts",
+                  "to": "src/utils/logger.ts",
+                  "kind": "imports"
+                }
+              ],
+              "highlight": [
+                "src/utils/logger.ts"
+              ]
+            },
+            "limits": {
+              "snapshotId": "demo__sample-shop@5a3f0c1",
+              "asOf": "2026-10-16T12:00:00Z",
+              "tier": 2,
+              "truncated": false
+            }
+          }
+        }
+      ],
+      "tags": [
+        "graph",
+        "imports",
+        "tour"
+      ]
+    }
+  ],
   "generatedAt": "2026-10-17T00:00:00.000Z"
 }

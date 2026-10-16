@@ -1,4 +1,6 @@
-import { ToolDecorator as Tool, z, ExecutionContext, Injectable } from '@nitrostack/core';
+import { ToolDecorator as Tool, z, ExecutionContext, Injectable, Widget } from '@nitrostack/core';
+import { Policies } from '../../policies.js';
+import { POLICIES } from '../../config/weights.js';
 import { StoreService } from '../../services/store.service.js';
 import { RoleSchema, SNAPSHOT_ID_DESCRIPTION, UNTRUSTED_NOTE, loadIndex, withLimits, type Role } from '../../services/tool.util.js';
 import { TourInputSchema, tourStop } from '../../services/tour.service.js';
@@ -102,6 +104,8 @@ export class TourTools {
       },
     },
   })
+  @Widget('graph-view')
+  @Policies({ cacheTtl: POLICIES.cacheSeconds.tour })
   async tourNext(input: TourNextInput, ctx: ExecutionContext) {
     const parsed = TourInputSchema.safeParse(input);
     if (!parsed.success) {

@@ -1,4 +1,6 @@
 import { ToolDecorator as Tool, z, ExecutionContext, Injectable } from '@nitrostack/core';
+import { Policies } from '../../policies.js';
+import { POLICIES } from '../../config/weights.js';
 import { StoreService } from '../../services/store.service.js';
 import { MIN_SECRET_LENGTH, draftHash, previewOf, renderArchitecture, signToken, verifyToken, TOKEN_TTL_MS } from '../../services/export.service.js';
 import { SNAPSHOT_ID_DESCRIPTION, UNTRUSTED_NOTE, loadIndex, withLimits } from '../../services/tool.util.js';
@@ -43,6 +45,7 @@ export class ActionsTools {
       },
     },
   })
+  @Policies({ perMinute: POLICIES.exportCallsPerMinute })
   async exportGuide(input: { snapshotId: string; confirmToken?: string }, ctx: ExecutionContext) {
     const secret = this.secret();
     const idx = await loadIndex(this.store, input.snapshotId);

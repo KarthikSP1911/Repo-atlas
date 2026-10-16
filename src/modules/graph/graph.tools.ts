@@ -1,4 +1,6 @@
 import { ToolDecorator as Tool, z, ExecutionContext, Injectable } from '@nitrostack/core';
+import { Policies } from '../../policies.js';
+import { POLICIES } from '../../config/weights.js';
 import { StoreService, SnapshotError } from '../../services/store.service.js';
 import { indexFor } from '../../services/graph.query.js';
 import { overviewOf, readyResult, unavailableResult } from '../../services/overview.service.js';
@@ -60,6 +62,7 @@ export class GraphTools {
       },
     },
   })
+  @Policies({ cacheTtl: POLICIES.cacheSeconds.graph })
   async buildGraph(input: { repo: string }, ctx: ExecutionContext) {
     const infos = await this.store.list();
     try {
@@ -95,6 +98,7 @@ export class GraphTools {
       },
     },
   })
+  @Policies({ cacheTtl: POLICIES.cacheSeconds.overview })
   async projectOverview(input: { snapshotId: string }, ctx: ExecutionContext) {
     const idx = await loadIndex(this.store, input.snapshotId);
     ctx.logger.info('project_overview', { id: idx.id });

@@ -1,5 +1,7 @@
 import { ToolDecorator as Tool, z, ExecutionContext, Injectable } from '@nitrostack/core';
 import { CANDIDATES } from '../../config/weights.js';
+import { Policies } from '../../policies.js';
+import { POLICIES } from '../../config/weights.js';
 import { StoreService, SnapshotError } from '../../services/store.service.js';
 import { findCandidates, newRefreshState, refreshIssues, type RefreshOutcome } from '../../services/candidates.service.js';
 import { buildProfile, githubAccessFromEnv, type GithubAccess } from '../../services/profile.service.js';
@@ -41,6 +43,7 @@ export class ContributeTools {
       },
     },
   })
+  @Policies()
   async profileContributor(input: { languages: string[]; level: 'beginner' | 'intermediate' | 'advanced'; familiarAreas?: string[]; username?: string }, ctx: ExecutionContext) {
     const r = await buildProfile(input, this.access());
     ctx.logger.info('profile_contributor', { languages: r.profile.languages.length, githubCalls: r.githubCalls });
@@ -84,6 +87,7 @@ export class ContributeTools {
       },
     },
   })
+  @Policies({ cacheTtl: POLICIES.cacheSeconds.candidates })
   async findCandidateIssues(input: { snapshotId: string; profile?: Profile; limit?: number; refresh?: boolean }, ctx: ExecutionContext) {
     const idx = await loadIndex(this.store, input.snapshotId);
     let file;

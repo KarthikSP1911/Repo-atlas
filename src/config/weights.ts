@@ -48,6 +48,22 @@ export const CANDIDATES = {
   refreshCallsPerHour: 12,
 } as const;
 
+/**
+ * Runtime policies (Phase 6): generous on purpose. They only stop a runaway agent loop on the free
+ * tier. Callers that send no session id share one "anonymous" bucket, so the limits must be high
+ * enough for several people at once (cached answers are cheap).
+ */
+export const POLICIES = {
+  /** Calls per minute per caller (session) for every read tool. */
+  readCallsPerMinute: 120,
+  /** export_guide is stricter. */
+  exportCallsPerMinute: 20,
+  /** Tool calls one caller (session) may make per hour before being asked to wait. */
+  sessionCallBudgetPerHour: Number(process.env.SESSION_CALL_BUDGET) > 0 ? Number(process.env.SESSION_CALL_BUDGET) : 1500,
+  /** Result cache lifetimes in seconds. Snapshots are immutable per commit, so reads can be cached for a while. */
+  cacheSeconds: { graph: 300, overview: 600, analysis: 300, tour: 300, candidates: 60, localize: 300 },
+} as const;
+
 /** score_first_change: product of factors, each floored so one weak signal lowers but never zeroes the score. */
 export const FIRST_CHANGE = {
   factorFloor: 0.1,

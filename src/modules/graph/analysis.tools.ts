@@ -1,4 +1,6 @@
-import { ToolDecorator as Tool, z, ExecutionContext, Injectable } from '@nitrostack/core';
+import { ToolDecorator as Tool, z, ExecutionContext, Injectable, Widget } from '@nitrostack/core';
+import { Policies } from '../../policies.js';
+import { POLICIES } from '../../config/weights.js';
 import { StoreService } from '../../services/store.service.js';
 import { RoleSchema, SNAPSHOT_ID_DESCRIPTION, UNTRUSTED_NOTE, buildSubgraph, fileNotFound, loadIndex, withLimits, type Role } from '../../services/tool.util.js';
 import { DEFAULT_LIMIT, rankKeyFiles } from '../../services/rank.service.js';
@@ -38,6 +40,20 @@ export class AnalysisTools {
             ],
           },
         ],
+        subgraph: {
+          nodes: [
+            { id: 'src/services/order.service.ts', label: 'order.service.ts', path: 'src/services/order.service.ts', kind: 'file', centrality: 0.5, highlight: true, role: 'service' },
+            { id: 'src/routes/orders.ts', label: 'orders.ts', path: 'src/routes/orders.ts', kind: 'file', centrality: 0.2, highlight: false, role: 'route' },
+            { id: 'src/db/client.ts', label: 'client.ts', path: 'src/db/client.ts', kind: 'file', centrality: 0.6, highlight: false, role: 'model' },
+            { id: 'src/utils/logger.ts', label: 'logger.ts', path: 'src/utils/logger.ts', kind: 'file', centrality: 1, highlight: false, role: 'util' },
+          ],
+          edges: [
+            { from: 'src/routes/orders.ts', to: 'src/services/order.service.ts', kind: 'imports' },
+            { from: 'src/services/order.service.ts', to: 'src/db/client.ts', kind: 'imports' },
+            { from: 'src/services/order.service.ts', to: 'src/utils/logger.ts', kind: 'imports' },
+          ],
+          highlight: ['src/services/order.service.ts'],
+        },
         note: UNTRUSTED_NOTE,
         limits: {
           snapshotId: 'demo__sample-shop@5a3f0c1',
@@ -52,6 +68,7 @@ export class AnalysisTools {
       },
     },
   })
+  @Policies({ cacheTtl: POLICIES.cacheSeconds.overview })
   async findEntryPoints(input: { snapshotId: string }, ctx: ExecutionContext) {
     ctx.logger.info('find_entry_points called');
     const idx = await loadIndex(this.store, input.snapshotId);
@@ -110,6 +127,7 @@ export class AnalysisTools {
       },
     },
   })
+  @Policies({ cacheTtl: POLICIES.cacheSeconds.overview })
   async keyFiles(input: { snapshotId: string; role: Role; limit?: number }, ctx: ExecutionContext) {
     ctx.logger.info('key_files called');
     const idx = await loadIndex(this.store, input.snapshotId);
@@ -161,6 +179,7 @@ export class AnalysisTools {
       },
     },
   })
+  @Policies({ cacheTtl: POLICIES.cacheSeconds.analysis })
   async traceFlow(input: { snapshotId: string; entry: string; depth?: number; maxFiles?: number }, ctx: ExecutionContext) {
     ctx.logger.info('trace_flow called');
     const idx = await loadIndex(this.store, input.snapshotId);
@@ -227,6 +246,8 @@ export class AnalysisTools {
       },
     },
   })
+  @Widget('graph-view')
+  @Policies({ cacheTtl: POLICIES.cacheSeconds.analysis })
   async explainFile(input: { snapshotId: string; path: string }, ctx: ExecutionContext) {
     ctx.logger.info('explain_file called');
     const idx = await loadIndex(this.store, input.snapshotId);

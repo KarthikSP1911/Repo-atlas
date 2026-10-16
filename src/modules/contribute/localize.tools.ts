@@ -1,4 +1,6 @@
 import { ToolDecorator as Tool, z, ExecutionContext, Injectable } from '@nitrostack/core';
+import { Policies } from '../../policies.js';
+import { POLICIES } from '../../config/weights.js';
 import { StoreService, SnapshotError } from '../../services/store.service.js';
 import { localizeIssue, resolveIssue } from '../../services/localize.service.js';
 import { scoreFirstChange } from '../../services/firstchange.service.js';
@@ -76,6 +78,7 @@ export class LocalizeTools {
       },
     },
   })
+  @Policies({ cacheTtl: POLICIES.cacheSeconds.localize })
   async localizeIssue(input: LocalizeInputT, ctx: ExecutionContext) {
     const idx = await loadIndex(this.store, input.snapshotId);
     const file = input.issueNumber !== undefined ? await issuesOf(this.store, input.snapshotId) : null;
@@ -140,6 +143,7 @@ export class LocalizeTools {
       },
     },
   })
+  @Policies({ cacheTtl: POLICIES.cacheSeconds.localize })
   async scoreFirstChange(input: ScoreInputT, ctx: ExecutionContext) {
     const idx = await loadIndex(this.store, input.snapshotId);
     const file = input.issueNumber !== undefined ? await issuesOf(this.store, input.snapshotId) : null;
