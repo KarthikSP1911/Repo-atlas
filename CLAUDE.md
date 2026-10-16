@@ -32,6 +32,13 @@ RepoAtlas is an MCP server on **NitroStack (TypeScript)**, deployed to **NitroCl
 
 NitroCloud runs Node 20.20.2 on linux/arm64, has **no git binary**, a **read-only `/app`** (only `/tmp`, ephemeral), a **500 MB** memory cap, and allows outbound HTTPS. So `RUNTIME_MODE=snapshot`: snapshots ship in the zip and are read from `process.cwd()/data/snapshots`; no clone, no runtime GitHub calls, no `GITHUB_TOKEN` on the server; runtime deps must be pure JS; `ts-morph`, `simple-git`, Octokit and `tsx` are devDependencies and `scripts/` stays outside `src/`.
 
+## Hard-won facts (see docs/DECISIONS.md D16)
+
+- **Never use `.positive()` / `.negative()` in a tool `inputSchema`.** Use `.min(1)`. It makes every request to the server fail in NitroStack's modern protocol era; `tests/schema-compat.test.ts` guards it. After adding or changing any tool, start the real server and call it over `/mcp`: unit tests cannot see framework registration failures.
+- A file named `layout.ts` inside `src/widgets/app/` is Next.js's special layout file; name helper modules differently.
+- A constructor parameter on an `@Injectable` tool class is injected by NitroStack DI; use a plain field for test hooks.
+- Windows shell: multi-heredoc commands with Python escapes mangle backslash sequences; write files with the Write/Edit tools.
+
 ## How to work
 
 - Work phase by phase (0 to 9). At the end of each phase: `npm run build`, `npx tsc --noEmit`, tests, commit with a clear message, update `PROGRESS.md`, print a short summary, then **STOP and wait for the user to say `continue`**.
@@ -57,6 +64,9 @@ npm run build      # widgets + TypeScript to dist/
 npx tsc --noEmit   # typecheck (src only)
 npm run typecheck  # src and tests
 npm test           # vitest (tests/ folder)
+npm run check-snapshots   # every shipped snapshot loads (gate before deploy)
+npm run precompute -- owner/repo   # offline, needs git and GITHUB_TOKEN
+npm run eval       # key-file overlap, localization backtest, hand-check sheets
 npm start          # build then start (production, dual transport, /mcp)
 nitrostack-cli generate types   # regenerate widget types from tool schemas
 nitrostack-cli pack             # zip for NitroCloud (excludes node_modules, dist, .env)

@@ -1,0 +1,71 @@
+{
+  "generatedAt": "2026-10-16T20:23:18.286Z",
+  "repos": {
+    "go-git/go-git": {
+      "docsUsed": [
+        "CONTRIBUTING.md",
+        "README.md",
+        "_examples/README.md",
+        "rfcs/README.md",
+        "_examples/storage/README.md"
+      ],
+      "filesListedByMaintainers": 4,
+      "listedFilesThatAreCandidates": 2,
+      "foldersListed": 0,
+      "mustReadSize": 41,
+      "candidateFiles": 405,
+      "scoredOk": false,
+      "overlapMustRead": null,
+      "overlapMustOrReadNext": null,
+      "expectedByChanceMustRead": 0.10123456790123457,
+      "foldersWithAMustReadFile": null,
+      "listedFilesMissedByMustRead": [
+        "_examples/log/main.go"
+      ]
+    },
+    "lukeautry/tsoa": {
+      "docsUsed": [
+        "README.MD",
+        "docs/CONTRIBUTING.md",
+        "packages/cli/README.MD",
+        "packages/runtime/README.MD",
+        "packages/tsoa/README.MD"
+      ],
+      "filesListedByMaintainers": 0,
+      "listedFilesThatAreCandidates": 0,
+      "foldersListed": 0,
+      "mustReadSize": 9,
+      "candidateFiles": 90,
+      "scoredOk": false,
+      "overlapMustRead": null,
+      "overlapMustOrReadNext": null,
+      "expectedByChanceMustRead": 0.1,
+      "foldersWithAMustReadFile": null,
+      "listedFilesMissedByMustRead": []
+    },
+    "pwndbg/pwndbg": {
+      "docsUsed": [
+        "README.md",
+        ".github/CONTRIBUTING.md",
+        "themes/README.md",
+        "profiling/benchmark_cache/README.md",
+        "profiling/benchmark_vis_heap_chunks/README.md",
+        "scripts/_docs/README.md"
+      ],
+      "filesListedByMaintainers": 3,
+      "listedFilesThatAreCandidates": 2,
+      "foldersListed": 0,
+      "mustReadSize": 36,
+      "candidateFiles": 360,
+      "scoredOk": false,
+      "overlapMustRead": null,
+      "overlapMustOrReadNext": null,
+      "expectedByChanceMustRead": 0.1,
+      "foldersWithAMustReadFile": null,
+      "listedFilesMissedByMustRead": [
+        "scripts/generate-docs.sh",
+        "scripts/verify-docs.sh"
+      ]
+    }
+  }
+}

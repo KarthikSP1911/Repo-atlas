@@ -1,8 +1,8 @@
 # RepoAtlas progress
 
-**Current phase:** working through Phases 4 to 7 without stopping (user instruction, 2026-10-17); Phase 3 is done
+**Current phase:** 7 (Evaluation and docs) complete. Phases 0 to 7 are done; the user asked for them to run without stopping. Waiting on the human steps below before Phases 8 and 9.
 **Decision:** RUNTIME_MODE=snapshot (D11, `docs/SPIKE.md`)
-**Next:** after H4 and H6: run `npm run precompute -- <3 repos>`, commit the snapshots, write `docs/API_BUDGET.md`, finish Phase 3 (acceptance: each snapshot loads via StoreService, counts sane, call counts logged).
+**Next:** Phase 8 (production deploy and verification): redeploy the zip, set env vars, run the live smoke test, cross-network and connector tests. Then Phase 9 (submission pack).
 
 ## Done
 
@@ -35,6 +35,22 @@
 - Real GraphQL smoke test on pallets/click (scratchpad output, not committed): 5 calls, cost 9 points, 4,991 remaining; snapshot and issues file pass their schemas; token absent from outputs. It exposed fuzzy label search (fixed). [H4] confirmed done.
 - Research agent's demo-repo shortlist is in chat awaiting [H6]: tsoa (TS), pwndbg (Python), go-git (Go, tier 1).
 
+### Phase 3: Graph engine (done)
+- Engine services, `npm run precompute`, three demo snapshots (tsoa, pwndbg, go-git; 17 GraphQL calls), `docs/API_BUDGET.md`. Email scrubbing, language and example-entry fixes came from the first real runs (D15).
+
+### Phase 4: Part A tools (done)
+- build_graph, project_overview, find_entry_points, key_files, trace_flow, explain_file, tour_next, guide_me prompt, resource. `GraphIndex` and shared helpers. Tested per tool, then over a live `/mcp` server (D16).
+
+### Phase 5: Part B tools (done)
+- profile_contributor, find_candidate_issues, localize_issue (MiniSearch BM25 + history + graph + recency), score_first_change. Weights in `src/config/weights.ts`.
+
+### Phase 6: Action, widget, policies (done, widget not yet seen in Studio)
+- export_guide (preview + HMAC token; refusal tested), graph-view widget on tour_next and explain_file, @Policies (cache, rate limit, budget), SnapshotsHealthCheck. `tests/schema-compat.test.ts` gates a framework failure mode (D16).
+
+### Phase 7: Evaluation and docs (done)
+- `npm run eval`: backtest hit@5 69% on 49 PRs, key-file overlap not scorable, hand-check sheets in `docs/eval/`. `docs/EVAL.md`, `README.md`, D17. Weights not changed (tuning did not generalize).
+- 369 tests pass; `npm run typecheck` and `npm run build` pass.
+
 ## Open questions
 
 - Where does the NitroCloud dashboard set environment variables? (needed for `EXPORT_SECRET`; [H7])
@@ -42,7 +58,9 @@
 - A GitHub token was pasted into `.env.example` (D12). Move it to `.env`; consider rotating it.
 - Should the blueprint and guidebook stay git-ignored (D3)?
 
-## Human steps still pending
+## Human steps still pending (collected at the end of Phase 7)
 
-- [H7] done (user-confirmed): `EXPORT_SECRET` and `RUNTIME_MODE=snapshot` set in the NitroCloud dashboard under MCP > Deployments. Not yet verified on the live server: whether they apply without a redeploy, and whether they persist across deployments. Verify on the first redeploy (Phase 2 adds `exportSecretConfigured` and `runtimeMode` to `ping_repoatlas`, booleans only).
-- [H6] Approve the 3 demo repos (proposed: lukeautry/tsoa, pwndbg/pwndbg, go-git/go-git).
+- Redeploy the zip to NitroCloud (the live server still runs the Phase 1 spike zip) and confirm env vars apply (`ping_repoatlas.exportSecretConfigured`).
+- Test the 12 tools and the `graph-view` widget in NitroStudio.
+- Fill in the three hand-check sheets in `docs/eval/`.
+- Phase 8 and 9 items (cross-network test, Claude or ChatGPT connector, demo video, LinkedIn post, portal).

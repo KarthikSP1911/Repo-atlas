@@ -1,0 +1,167 @@
+{
+  "generatedAt": "2026-10-16T20:22:28.361Z",
+  "perRepoTarget": 20,
+  "notes": [
+    "go-git/go-git: 100 merged PRs in the snapshot, 13 eligible (exact issue link, 1 to 8 changed non-test files still in the repo; newest 70 kept).",
+    "go-git/go-git: fetched 13 PR details in 1 GitHub call(s), cost 1.",
+    "go-git/go-git: 13 PRs have usable issue text; evaluating 13 (0 first-timer, 12 contributor, 0 other, 1 maintainer).",
+    "lukeautry/tsoa: 100 merged PRs in the snapshot, 41 eligible (exact issue link, 1 to 8 changed non-test files still in the repo; newest 70 kept).",
+    "lukeautry/tsoa: fetched 41 PR details in 2 GitHub call(s), cost 2.",
+    "lukeautry/tsoa: 41 PRs have usable issue text; evaluating 20 (0 first-timer, 20 contributor, 0 other, 0 maintainer).",
+    "pwndbg/pwndbg: 100 merged PRs in the snapshot, 16 eligible (exact issue link, 1 to 8 changed non-test files still in the repo; newest 70 kept).",
+    "pwndbg/pwndbg: fetched 16 PR details in 1 GitHub call(s), cost 1.",
+    "pwndbg/pwndbg: 16 PRs have usable issue text; evaluating 16 (0 first-timer, 5 contributor, 0 other, 11 maintainer)."
+  ],
+  "byVariant": {
+    "default weights": {
+      "weights": {
+        "a": 0.45,
+        "b": 0.3,
+        "c": 0.15,
+        "d": 0.1
+      },
+      "hit5": 0.6938775510204082,
+      "recall5": 0.49363459669582116,
+      "mrr": 0.5983417576422249,
+      "n": 49
+    },
+    "text match only": {
+      "weights": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "d": 0
+      },
+      "hit5": 0.6326530612244898,
+      "recall5": 0.44917395529640425,
+      "mrr": 0.520962258911637,
+      "n": 49
+    },
+    "history similarity only": {
+      "weights": {
+        "a": 0,
+        "b": 1,
+        "c": 0,
+        "d": 0
+      },
+      "hit5": 0.5306122448979592,
+      "recall5": 0.3318756073858115,
+      "mrr": 0.33345394806894957,
+      "n": 49
+    },
+    "text + history (no graph, no recency)": {
+      "weights": {
+        "a": 0.6,
+        "b": 0.4,
+        "c": 0,
+        "d": 0
+      },
+      "hit5": 0.7346938775510204,
+      "recall5": 0.4827016520894072,
+      "mrr": 0.5771081284116014,
+      "n": 49
+    },
+    "recency only": {
+      "weights": {
+        "a": 0,
+        "b": 0,
+        "c": 0,
+        "d": 1
+      },
+      "hit5": 0.2857142857142857,
+      "recall5": 0.1840621963070943,
+      "mrr": 0.16129113791797378,
+      "n": 49
+    },
+    "baseline: top 5 by fan-in": {
+      "hit5": 0.24489795918367346,
+      "recall5": 0.152089407191448,
+      "mrr": 0.14633333565781984,
+      "n": 49
+    },
+    "baseline: random 5 files": {
+      "hit5": 0.06400341304842427,
+      "n": 49
+    }
+  },
+  "byRepo": {
+    "go-git/go-git": {
+      "hit5": 0.46153846153846156,
+      "recall5": 0.31025641025641026,
+      "mrr": 0.43944937258190275,
+      "n": 13,
+      "tier1": true,
+      "randomHit5": 0.027177229931487232
+    },
+    "lukeautry/tsoa": {
+      "hit5": 0.75,
+      "recall5": 0.5892857142857142,
+      "mrr": 0.5958796296296296,
+      "n": 20,
+      "tier1": false,
+      "randomHit5": 0.12193957512632436
+    },
+    "pwndbg/pwndbg": {
+      "hit5": 0.8125,
+      "recall5": 0.5230654761904762,
+      "mrr": 0.7305194805194806,
+      "n": 16,
+      "tier1": false,
+      "randomHit5": 0.021504484233560474
+    }
+  },
+  "byClass": {
+    "contributor": {
+      "hit5": 0.6486486486486487,
+      "recall5": 0.4951093951093951,
+      "mrr": 0.5710928225988466,
+      "n": 37
+    },
+    "maintainer": {
+      "hit5": 0.8333333333333334,
+      "recall5": 0.48908730158730157,
+      "mrr": 0.6823593073593074,
+      "n": 12
+    }
+  },
+  "tuning": {
+    "default": {
+      "weights": {
+        "a": 0.45,
+        "b": 0.3,
+        "c": 0.15,
+        "d": 0.1
+      },
+      "hit5": 0.6938775510204082,
+      "mrr": 0.5983417576422249
+    },
+    "foldEvenTuned": {
+      "a": 0.5,
+      "b": 0.25,
+      "c": 0,
+      "d": 0.25
+    },
+    "foldOddTuned": {
+      "a": 0.55,
+      "b": 0,
+      "c": 0.05,
+      "d": 0.4
+    },
+    "crossValidated": {
+      "hit5": 0.6938775510204082,
+      "mrr": 0.5712476442033971,
+      "n": 49
+    },
+    "bestInSample": {
+      "weights": {
+        "a": 0.55,
+        "b": 0.15000000000000002,
+        "c": 0.05,
+        "d": 0.25
+      },
+      "hit5": 0.7755102040816326,
+      "mrr": 0.6011268369332342
+    }
+  },
+  "total": 49
+}
