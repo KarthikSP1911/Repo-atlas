@@ -29,5 +29,5 @@
 
 ## Human steps still pending
 
-- [H7] User cannot see an Environment, Variables, Secrets or Settings page in the NitroCloud dashboard. Not blocking until Phase 6. Next step: user sends a screenshot of the MCP page; fallback is `nitrostack-cli pack --include-env` with a deploy-only `.env` that holds `EXPORT_SECRET` and `RUNTIME_MODE` (never `GITHUB_TOKEN`).
+- [H7] done (user-confirmed): `EXPORT_SECRET` and `RUNTIME_MODE=snapshot` set in the NitroCloud dashboard under MCP > Deployments. Not yet verified on the live server: whether they apply without a redeploy, and whether they persist across deployments. Verify on the first redeploy (Phase 2 adds `exportSecretConfigured` and `runtimeMode` to `ping_repoatlas`, booleans only).
 - [H4] `GITHUB_TOKEN` must live in `.env`, not `.env.example` (see D12).

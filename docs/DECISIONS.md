@@ -63,3 +63,7 @@ Consequences:
 ## D12. Secrets belong in `.env`, never `.env.example` (Phase 1)
 
 A real GitHub token was found pasted into the tracked `.env.example` (working tree only, never staged or committed; checked with `git log -S`). Do not stage `.env.example` while it holds a value. The token should move to `.env` (git-ignored) and `.env.example` go back to blank values. Commits since then stage files by path.
+
+## D13. NitroCloud env vars live under MCP > Deployments (Phase 1)
+
+Found by the user: the dashboard sets environment variables under **MCP > Deployments** (the MCP Settings page has only Name, Slug and Delete; Delete's help text confirms variables are tied to the MCP). `EXPORT_SECRET` and `RUNTIME_MODE=snapshot` were set there. The `pack --include-env` fallback is no longer needed. Open: whether a change applies without a redeploy and whether values carry over to later deployments; check by calling `ping_repoatlas` after the next deploy (it reports `exportSecretConfigured` and `runtimeMode`, never the secret).
