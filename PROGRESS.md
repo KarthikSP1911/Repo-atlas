@@ -1,6 +1,6 @@
 # RepoAtlas progress
 
-**Current phase:** 3 (Graph engine), in progress: engine and script done and tested; blocked on [H4] (token in `.env`) and [H6] (approve demo repos) to run the real precompute
+**Current phase:** 3 (Graph engine), in progress: engine and script done and tested; blocked on [H6] (approve demo repos) to run the real precompute
 **Decision:** RUNTIME_MODE=snapshot (D11, `docs/SPIKE.md`)
 **Next:** after H4 and H6: run `npm run precompute -- <3 repos>`, commit the snapshots, write `docs/API_BUDGET.md`, finish Phase 3 (acceptance: each snapshot loads via StoreService, counts sane, call counts logged).
 
@@ -32,7 +32,8 @@
 - Services `ingest`, `parse`, `link`, `graph`, `build` and `issues.schema` in `src/services/` (D15); `npm run precompute -- owner/repo ...` in `scripts/precompute-snapshots.ts`.
 - 133 vitest tests pass, including an end-to-end build of a real local git repo cloned by `file://`. `npm run typecheck` and `npm run build` pass; the server's import graph does not reach the offline engine.
 - Dogfooded without GitHub data on pallets/click (280 KB) and sindresorhus/ky (274 KB). Fixed six quality problems that run exposed (exports field, devDependency stack, test-file centrality, example entry points, PageRank sink bias, config stems).
-- Not yet exercised against the real GitHub GraphQL API (only a scripted fake): needs the token.
+- Real GraphQL smoke test on pallets/click (scratchpad output, not committed): 5 calls, cost 9 points, 4,991 remaining; snapshot and issues file pass their schemas; token absent from outputs. It exposed fuzzy label search (fixed). [H4] confirmed done.
+- Research agent's demo-repo shortlist is in chat awaiting [H6]: tsoa (TS), pwndbg (Python), go-git (Go, tier 1).
 
 ## Open questions
 
@@ -44,4 +45,4 @@
 ## Human steps still pending
 
 - [H7] done (user-confirmed): `EXPORT_SECRET` and `RUNTIME_MODE=snapshot` set in the NitroCloud dashboard under MCP > Deployments. Not yet verified on the live server: whether they apply without a redeploy, and whether they persist across deployments. Verify on the first redeploy (Phase 2 adds `exportSecretConfigured` and `runtimeMode` to `ping_repoatlas`, booleans only).
-- [H4] `GITHUB_TOKEN` must live in `.env`, not `.env.example` (see D12).
+- [H6] Approve the 3 demo repos (proposed: lukeautry/tsoa, pwndbg/pwndbg, go-git/go-git).
