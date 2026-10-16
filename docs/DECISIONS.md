@@ -47,3 +47,19 @@ After removing the calculator widget, `nitrostack-cli build` still succeeds ("0 
 - Local result (Windows, Node 24): git present, GitHub reachable, clone of a tiny repo 3.0s, persistence marker survives within a process.
 - Deploy route: zip via `nitrostack-cli pack --output repoatlas-spike.zip` (171.6 KB, 65 entries, respects `.gitignore`, excludes `node_modules`, `dist`, `out`, `.env*`, `.git`; the blueprint and guidebook are not in it). The dashboard shows both zip upload and GitHub connect (user-confirmed). Zip is primary; GitHub auto-deploy would need a public remote and is left as a Phase 8 option. `pack` does not edit `.gitignore` here.
 - `.probe/` added to `.gitignore`.
+
+## D11. RUNTIME_MODE = snapshot (Phase 1)
+
+Chosen from the live spike (`docs/SPIKE.md`): NitroCloud has no `git` binary, `/app` is read-only (only `/tmp` is writable, ephemeral), memory is capped at 500 MB, and the host is Node 20.20.2 on linux/arm64. Network to GitHub works and requests can run 100 s or more, but without git a live clone is not possible.
+
+Consequences:
+- `build_graph` serves shipped snapshots only; unknown repos get a clear message listing what is available.
+- `ts-morph`, `simple-git`, Octokit and `tsx` are devDependencies; `scripts/` lives outside `src/`.
+- No runtime GitHub calls, so `GITHUB_TOKEN` is not set on NitroCloud. Phase 5's live issue refresh stays behind `RUNTIME_MODE=live` and is not used in production.
+- `EXPORT_SECRET` must be set on NitroCloud before Phase 6 is deployed.
+- Runtime dependencies must be pure JS (arm64, no native modules).
+- `env_probe` is removed from code in Phase 2; the live copy goes away on the next redeploy.
+
+## D12. Secrets belong in `.env`, never `.env.example` (Phase 1)
+
+A real GitHub token was found pasted into the tracked `.env.example` (working tree only, never staged or committed; checked with `git log -S`). Do not stage `.env.example` while it holds a value. The token should move to `.env` (git-ignored) and `.env.example` go back to blank values. Commits since then stage files by path.

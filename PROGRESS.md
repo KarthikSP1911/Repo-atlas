@@ -1,7 +1,8 @@
 # RepoAtlas progress
 
-**Current phase:** 1 (Deployment spike), in progress: waiting on [H5] (user deploys the zip and sends back the live URL and `env_probe` output)
-**Next:** test the live `/mcp` endpoint, write `docs/SPIKE.md`, choose RUNTIME_MODE, then [H7] if needed
+**Current phase:** 1 (Deployment spike), complete, waiting for `continue`
+**Decision:** RUNTIME_MODE=snapshot (D11, `docs/SPIKE.md`)
+**Next:** Phase 2 (snapshot schema, store service, sample data, resource); remove `env_probe` from code
 
 ## Done
 
@@ -13,17 +14,20 @@
 - `CLAUDE.md`, `PROGRESS.md`, `docs/DECISIONS.md`, `.env.example`, `.gitignore` in place.
 - Acceptance: `npm run build` and `npx tsc --noEmit` pass; server starts and `ping_repoatlas` answers over `POST /mcp` (initialize, tools/list, tools/call checked with curl).
 
-### Phase 1: Deployment spike (in progress)
-- Added temporary `env_probe` tool (D10); build and `tsc --noEmit` pass; verified locally over `POST /mcp`.
-- Built `repoatlas-spike.zip` (171.6 KB, git-ignored) with `nitrostack-cli pack`.
-- H2 and H3 confirmed by the user: NitroCloud app `repoatlas` exists, dashboard offers zip upload and GitHub connect.
-- Remaining: user deploys (H5), I test the live endpoint, write `docs/SPIKE.md`, pick RUNTIME_MODE.
+### Phase 1: Deployment spike
+- Temporary `env_probe` tool deployed via `nitrostack-cli pack` zip (D10). Live URL: `https://repoatlas-6ad271a6-karthik-s-poojary-heapify-global-community.app.nitrocloud.ai` (`/mcp`, no auth).
+- Live results: no git, `/app` read-only, `/tmp` writable, GitHub HTTPS reachable, 500 MB memory, Node 20.20.2 arm64, requests of 100 s OK.
+- Decision: `RUNTIME_MODE=snapshot` (D11). Written up in `docs/SPIKE.md`; platform facts added to `CLAUDE.md`.
+- Live `env_probe` still deployed until the next redeploy (public, harmless; removed from code in Phase 2).
 
 ## Open questions
 
-- Does NitroCloud allow `git`, a writable disk, and outbound HTTPS? (Phase 1 spike decides RUNTIME_MODE.)
+- Where does the NitroCloud dashboard set environment variables? (needed for `EXPORT_SECRET`; [H7])
+- Is a shipped file under `/app/data/snapshots` readable at runtime? Confirm on the first redeploy after Phase 2.
+- A GitHub token was pasted into `.env.example` (D12). Move it to `.env`; consider rotating it.
 - Should the blueprint and guidebook stay git-ignored (D3)?
 
 ## Human steps still pending
 
-- [H5] Test `env_probe` in NitroStudio, deploy the zip, send back the live URL and the probe output.
+- [H7] Find where NitroCloud sets environment variables and set `EXPORT_SECRET` (needed before Phase 6 is deployed).
+- [H4] `GITHUB_TOKEN` must live in `.env`, not `.env.example` (see D12).
