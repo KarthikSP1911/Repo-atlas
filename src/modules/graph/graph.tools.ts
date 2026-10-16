@@ -11,7 +11,7 @@ export class GraphTools {
   @Tool({
     name: 'ping_repoatlas',
     description:
-      'Health ping for the RepoAtlas server. Returns the server name, version and runtime mode. Takes no repo data.',
+      'Health ping for the RepoAtlas server. Returns the server name, version, runtime mode and whether EXPORT_SECRET is configured (a boolean, never the value). Takes no repo data.',
     inputSchema: z.object({
       echo: z.string().max(100).optional().describe('Optional text to echo back'),
     }),
@@ -22,6 +22,7 @@ export class GraphTools {
         server: 'repoatlas',
         version: '1.0.0',
         runtimeMode: 'snapshot',
+        exportSecretConfigured: true,
         echo: 'hello',
       },
     },
@@ -33,6 +34,7 @@ export class GraphTools {
       server: 'repoatlas',
       version: '1.0.0',
       runtimeMode: process.env.RUNTIME_MODE ?? 'snapshot',
+      exportSecretConfigured: Boolean(process.env.EXPORT_SECRET),
       echo: input.echo ?? null,
     };
   }

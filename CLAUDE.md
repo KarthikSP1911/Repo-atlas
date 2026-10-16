@@ -54,7 +54,9 @@ Reply with: <what to send back, or "done">
 ```bash
 npm run dev        # nitrostack-cli dev (Studio + widgets)
 npm run build      # widgets + TypeScript to dist/
-npx tsc --noEmit   # typecheck
+npx tsc --noEmit   # typecheck (src only)
+npm run typecheck  # src and tests
+npm test           # vitest (tests/ folder)
 npm start          # build then start (production, dual transport, /mcp)
 nitrostack-cli generate types   # regenerate widget types from tool schemas
 nitrostack-cli pack             # zip for NitroCloud (excludes node_modules, dist, .env)

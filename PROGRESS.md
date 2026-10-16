@@ -1,8 +1,8 @@
 # RepoAtlas progress
 
-**Current phase:** 1 (Deployment spike), complete, waiting for `continue`
+**Current phase:** 2 (Snapshot schema and sample data), complete, waiting for `continue`
 **Decision:** RUNTIME_MODE=snapshot (D11, `docs/SPIKE.md`)
-**Next:** Phase 2 (snapshot schema, store service, sample data, resource); remove `env_probe` from code
+**Next:** Phase 3 (graph engine, offline precompute script, demo repos). Needs [H4] (`GITHUB_TOKEN` in `.env`) and [H6] (approve demo repos).
 
 ## Done
 
@@ -20,10 +20,18 @@
 - Decision: `RUNTIME_MODE=snapshot` (D11). Written up in `docs/SPIKE.md`; platform facts added to `CLAUDE.md`.
 - Live `env_probe` still deployed until the next redeploy (public, harmless; removed from code in Phase 2).
 
+### Phase 2: Snapshot schema and sample data
+- `src/services/snapshot.schema.ts` (types, Zod schemas, integrity rules, id helpers) and `src/services/store.service.ts` (lazy load, validation, LRU of 3, ref resolution, `summarize`). See D14.
+- `data/snapshots/sample.json`: 40 nodes, 80 edges, 21 KB.
+- Resource `graph://{repo}@{sha}/summary` in the graph module (`graph.resources.ts`).
+- `env_probe` removed from code; `ping_repoatlas` reports `exportSecretConfigured`.
+- vitest added. 43 unit tests pass (load, validate, summary, LRU, refs, ids, resource). `npm run typecheck` and `npm run build` pass. Checked on the real server over `/mcp`: DI, template read, helpful error.
+- Not redeployed yet: the live server still runs the Phase 1 zip (with `env_probe`).
+
 ## Open questions
 
 - Where does the NitroCloud dashboard set environment variables? (needed for `EXPORT_SECRET`; [H7])
-- Is a shipped file under `/app/data/snapshots` readable at runtime? Confirm on the first redeploy after Phase 2.
+- Is a shipped file under `/app/data/snapshots` readable at runtime? Confirm on the first redeploy (a redeploy is also what removes the live `env_probe` and shows whether the dashboard env vars apply, via `ping_repoatlas.exportSecretConfigured`). Suggest redeploying after Phase 4.
 - A GitHub token was pasted into `.env.example` (D12). Move it to `.env`; consider rotating it.
 - Should the blueprint and guidebook stay git-ignored (D3)?
 

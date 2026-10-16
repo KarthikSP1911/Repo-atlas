@@ -67,3 +67,20 @@ A real GitHub token was found pasted into the tracked `.env.example` (working tr
 ## D13. NitroCloud env vars live under MCP > Deployments (Phase 1)
 
 Found by the user: the dashboard sets environment variables under **MCP > Deployments** (the MCP Settings page has only Name, Slug and Delete; Delete's help text confirms variables are tied to the MCP). `EXPORT_SECRET` and `RUNTIME_MODE=snapshot` were set there. The `pack --include-env` fallback is no longer needed. Open: whether a change applies without a redeploy and whether values carry over to later deployments; check by calling `ping_repoatlas` after the next deploy (it reports `exportSecretConfigured` and `runtimeMode`, never the secret).
+
+## D14. Snapshot schema and store (Phase 2)
+
+Types are the blueprint section 5 types, defined once as Zod schemas in `src/services/snapshot.schema.ts` (re-exported from `store.service.ts`). Additions and choices:
+- **`schemaVersion: 1`** is required on every snapshot so the format can change later without guessing.
+- **Integrity rules** run on load (a failing file is skipped and reported by `StoreService.problems()`, never served): unique node ids; node id must start with `<kind>:`; every edge endpoint must exist; edge endpoint kinds must fit the edge kind (for example `imports` is file to file); `fixes` and `describes` edges must carry a `confidence`; `file` and `dir` nodes need `meta.path`.
+- **File `meta` conventions** (all optional, extra keys allowed): `path, lang, loc, fanIn, fanOut, centrality (0..1), churn, isEntry, isConfig, isTest, testFor, docsMentions, lastChangedAt, owners`. Phase 3 writes them, Phase 4 reads them with `getFileMeta`. They carry the inputs of the `key_files` formula.
+- **No emails or tokens in snapshots.** People are `person:<login>` nodes.
+- **Size caps:** 3 MB per file (rejected above it), 25,000 nodes, 100,000 edges.
+- **Ids:** `owner__repo@sha7`. GitHub owners cannot contain `_`, so the first `__` is the separator.
+- **Refs:** tools accept an id, the file name alias (`sample`), `owner/repo`, `owner__repo`, or a GitHub URL. A bare repo resolves to its newest snapshot. Wrong or unknown refs get an error that lists the available snapshots and says the server is in snapshot mode.
+- **Index and cache:** the directory is scanned once and every file validated into a small index (id, repo, sha, builtAt, tier, truncated). Full snapshots load lazily into an LRU of 3.
+- **`StoreService` has no constructor parameters** (NitroStack DI would try to inject them). `dir` defaults to `SNAPSHOT_DIR` and is overridable in tests. It is provided and exported by `GraphModule`; other modules import `GraphModule` to inject it.
+- **Resource URI:** `graph://{repo}@{sha}/summary` with `{repo}` = `owner__repo` and `{sha}` = 7-char prefix, because NitroStack matches each `{var}` as `[^/]+` (verified in `core/server.js`), so `owner/repo` cannot fit in one variable. Example: `graph://demo__sample-shop@5a3f0c1/summary`. Resource handlers may return a plain object; the framework wraps it as JSON (the template's `{contents: [...]}` shape would be double-wrapped). **[docs > blueprint]**
+- **Sample data:** `data/snapshots/sample.json` is a made-up `demo/sample-shop` repo (40 nodes, 80 edges, tier 2) generated once by a throwaway script so edges and metrics agree; only the JSON is committed. It is the fixture for Phase 4 and 5 tests and ships in the deploy zip.
+- **Tests** live in `tests/` (outside `src/` so the deploy build never compiles them). `npm test` runs vitest; `npm run typecheck` checks `src` and `tests`.
+- `env_probe` removed from code. `ping_repoatlas` now also reports `exportSecretConfigured` (boolean) to verify the NitroCloud env var after the next deploy (D13).

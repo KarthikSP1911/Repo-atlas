@@ -1,0 +1,985 @@
+{
+  "schemaVersion": 1,
+  "repo": "demo/sample-shop",
+  "sha": "5a3f0c1d2e4b6789abcdef0123456789abcdef01",
+  "builtAt": "2026-10-16T12:00:00Z",
+  "tier": 2,
+  "truncated": false,
+  "commitWindow": 200,
+  "nodes": [
+    {
+      "id": "dir:.",
+      "kind": "dir",
+      "label": "/",
+      "meta": {
+        "path": "."
+      }
+    },
+    {
+      "id": "dir:src",
+      "kind": "dir",
+      "label": "src",
+      "meta": {
+        "path": "src"
+      }
+    },
+    {
+      "id": "dir:src/routes",
+      "kind": "dir",
+      "label": "routes",
+      "meta": {
+        "path": "src/routes"
+      }
+    },
+    {
+      "id": "dir:src/services",
+      "kind": "dir",
+      "label": "services",
+      "meta": {
+        "path": "src/services"
+      }
+    },
+    {
+      "id": "dir:src/db",
+      "kind": "dir",
+      "label": "db",
+      "meta": {
+        "path": "src/db"
+      }
+    },
+    {
+      "id": "dir:src/utils",
+      "kind": "dir",
+      "label": "utils",
+      "meta": {
+        "path": "src/utils"
+      }
+    },
+    {
+      "id": "dir:tests",
+      "kind": "dir",
+      "label": "tests",
+      "meta": {
+        "path": "tests"
+      }
+    },
+    {
+      "id": "dir:docs",
+      "kind": "dir",
+      "label": "docs",
+      "meta": {
+        "path": "docs"
+      }
+    },
+    {
+      "id": "file:package.json",
+      "kind": "file",
+      "label": "package.json",
+      "meta": {
+        "path": "package.json",
+        "lang": "json",
+        "loc": 38,
+        "fanIn": 0,
+        "fanOut": 0,
+        "centrality": 0,
+        "churn": 0,
+        "isEntry": false,
+        "isConfig": true,
+        "isTest": false,
+        "docsMentions": 1
+      }
+    },
+    {
+      "id": "file:tsconfig.json",
+      "kind": "file",
+      "label": "tsconfig.json",
+      "meta": {
+        "path": "tsconfig.json",
+        "lang": "json",
+        "loc": 18,
+        "fanIn": 0,
+        "fanOut": 0,
+        "centrality": 0,
+        "churn": 0,
+        "isEntry": false,
+        "isConfig": true,
+        "isTest": false,
+        "docsMentions": 0
+      }
+    },
+    {
+      "id": "file:README.md",
+      "kind": "file",
+      "label": "README.md",
+      "meta": {
+        "path": "README.md",
+        "lang": "markdown",
+        "loc": 60,
+        "fanIn": 0,
+        "fanOut": 0,
+        "centrality": 0,
+        "churn": 0,
+        "isEntry": false,
+        "isConfig": false,
+        "isTest": false,
+        "docsMentions": 0
+      }
+    },
+    {
+      "id": "file:.env.example",
+      "kind": "file",
+      "label": ".env.example",
+      "meta": {
+        "path": ".env.example",
+        "lang": "env",
+        "loc": 6,
+        "fanIn": 0,
+        "fanOut": 0,
+        "centrality": 0,
+        "churn": 0,
+        "isEntry": false,
+        "isConfig": true,
+        "isTest": false,
+        "docsMentions": 1
+      }
+    },
+    {
+      "id": "file:src/index.ts",
+      "kind": "file",
+      "label": "index.ts",
+      "meta": {
+        "path": "src/index.ts",
+        "lang": "ts",
+        "loc": 24,
+        "fanIn": 0,
+        "fanOut": 3,
+        "centrality": 0,
+        "churn": 0,
+        "isEntry": true,
+        "isConfig": false,
+        "isTest": false,
+        "docsMentions": 1
+      }
+    },
+    {
+      "id": "file:src/server.ts",
+      "kind": "file",
+      "label": "server.ts",
+      "meta": {
+        "path": "src/server.ts",
+        "lang": "ts",
+        "loc": 70,
+        "fanIn": 1,
+        "fanOut": 4,
+        "centrality": 0.25,
+        "churn": 0,
+        "isEntry": false,
+        "isConfig": false,
+        "isTest": false,
+        "docsMentions": 0
+      }
+    },
+    {
+      "id": "file:src/config.ts",
+      "kind": "file",
+      "label": "config.ts",
+      "meta": {
+        "path": "src/config.ts",
+        "lang": "ts",
+        "loc": 32,
+        "fanIn": 3,
+        "fanOut": 0,
+        "centrality": 0.75,
+        "churn": 1,
+        "isEntry": false,
+        "isConfig": true,
+        "isTest": false,
+        "docsMentions": 0,
+        "lastChangedAt": "2026-09-11T09:15:00Z",
+        "owners": [
+          "person:alice"
+        ]
+      }
+    },
+    {
+      "id": "file:src/routes/users.ts",
+      "kind": "file",
+      "label": "users.ts",
+      "meta": {
+        "path": "src/routes/users.ts",
+        "lang": "ts",
+        "loc": 85,
+        "fanIn": 1,
+        "fanOut": 1,
+        "centrality": 0.25,
+        "churn": 0,
+        "isEntry": false,
+        "isConfig": false,
+        "isTest": false,
+        "docsMentions": 0
+      }
+    },
+    {
+      "id": "file:src/routes/orders.ts",
+      "kind": "file",
+      "label": "orders.ts",
+      "meta": {
+        "path": "src/routes/orders.ts",
+        "lang": "ts",
+        "loc": 120,
+        "fanIn": 1,
+        "fanOut": 2,
+        "centrality": 0.25,
+        "churn": 1,
+        "isEntry": false,
+        "isConfig": false,
+        "isTest": false,
+        "docsMentions": 0,
+        "lastChangedAt": "2026-08-02T10:00:00Z",
+        "owners": [
+          "person:alice"
+        ]
+      }
+    },
+    {
+      "id": "file:src/services/user.service.ts",
+      "kind": "file",
+      "label": "user.service.ts",
+      "meta": {
+        "path": "src/services/user.service.ts",
+        "lang": "ts",
+        "loc": 140,
+        "fanIn": 4,
+        "fanOut": 2,
+        "centrality": 1,
+        "churn": 1,
+        "isEntry": false,
+        "isConfig": false,
+        "isTest": false,
+        "docsMentions": 0,
+        "lastChangedAt": "2026-08-20T14:30:00Z",
+        "owners": [
+          "person:bob"
+        ]
+      }
+    },
+    {
+      "id": "file:src/services/order.service.ts",
+      "kind": "file",
+      "label": "order.service.ts",
+      "meta": {
+        "path": "src/services/order.service.ts",
+        "lang": "ts",
+        "loc": 210,
+        "fanIn": 2,
+        "fanOut": 3,
+        "centrality": 0.5,
+        "churn": 2,
+        "isEntry": false,
+        "isConfig": false,
+        "isTest": false,
+        "docsMentions": 1,
+        "lastChangedAt": "2026-10-01T16:45:00Z",
+        "owners": [
+          "person:alice",
+          "person:carol"
+        ]
+      }
+    },
+    {
+      "id": "file:src/db/client.ts",
+      "kind": "file",
+      "label": "client.ts",
+      "meta": {
+        "path": "src/db/client.ts",
+        "lang": "ts",
+        "loc": 55,
+        "fanIn": 3,
+        "fanOut": 1,
+        "centrality": 0.75,
+        "churn": 1,
+        "isEntry": false,
+        "isConfig": false,
+        "isTest": false,
+        "docsMentions": 1,
+        "lastChangedAt": "2026-10-01T16:45:00Z",
+        "owners": [
+          "person:carol"
+        ]
+      }
+    },
+    {
+      "id": "file:src/utils/logger.ts",
+      "kind": "file",
+      "label": "logger.ts",
+      "meta": {
+        "path": "src/utils/logger.ts",
+        "lang": "ts",
+        "loc": 28,
+        "fanIn": 4,
+        "fanOut": 0,
+        "centrality": 1,
+        "churn": 1,
+        "isEntry": false,
+        "isConfig": false,
+        "isTest": false,
+        "docsMentions": 0,
+        "lastChangedAt": "2026-09-11T09:15:00Z",
+        "owners": [
+          "person:alice"
+        ]
+      }
+    },
+    {
+      "id": "file:tests/users.test.ts",
+      "kind": "file",
+      "label": "users.test.ts",
+      "meta": {
+        "path": "tests/users.test.ts",
+        "lang": "ts",
+        "loc": 90,
+        "fanIn": 0,
+        "fanOut": 1,
+        "centrality": 0,
+        "churn": 1,
+        "isEntry": false,
+        "isConfig": false,
+        "isTest": true,
+        "docsMentions": 0,
+        "testFor": [
+          "src/services/user.service.ts"
+        ],
+        "lastChangedAt": "2026-08-20T14:30:00Z",
+        "owners": [
+          "person:bob"
+        ]
+      }
+    },
+    {
+      "id": "file:tests/orders.test.ts",
+      "kind": "file",
+      "label": "orders.test.ts",
+      "meta": {
+        "path": "tests/orders.test.ts",
+        "lang": "ts",
+        "loc": 130,
+        "fanIn": 0,
+        "fanOut": 2,
+        "centrality": 0,
+        "churn": 1,
+        "isEntry": false,
+        "isConfig": false,
+        "isTest": true,
+        "docsMentions": 0,
+        "testFor": [
+          "src/services/order.service.ts"
+        ],
+        "lastChangedAt": "2026-08-02T10:00:00Z",
+        "owners": [
+          "person:alice"
+        ]
+      }
+    },
+    {
+      "id": "file:docs/architecture.md",
+      "kind": "file",
+      "label": "architecture.md",
+      "meta": {
+        "path": "docs/architecture.md",
+        "lang": "markdown",
+        "loc": 75,
+        "fanIn": 0,
+        "fanOut": 0,
+        "centrality": 0,
+        "churn": 0,
+        "isEntry": false,
+        "isConfig": false,
+        "isTest": false,
+        "docsMentions": 0
+      }
+    },
+    {
+      "id": "entry:server",
+      "kind": "entry",
+      "label": "HTTP server (npm start)",
+      "meta": {
+        "command": "npm start",
+        "file": "src/index.ts"
+      }
+    },
+    {
+      "id": "doc:README.md",
+      "kind": "doc",
+      "label": "Sample Shop API",
+      "meta": {
+        "path": "README.md"
+      }
+    },
+    {
+      "id": "doc:docs/architecture.md",
+      "kind": "doc",
+      "label": "Architecture notes",
+      "meta": {
+        "path": "docs/architecture.md"
+      }
+    },
+    {
+      "id": "person:alice",
+      "kind": "person",
+      "label": "alice",
+      "meta": {
+        "role": "maintainer",
+        "commits": 2
+      }
+    },
+    {
+      "id": "person:bob",
+      "kind": "person",
+      "label": "bob",
+      "meta": {
+        "role": "contributor",
+        "commits": 1
+      }
+    },
+    {
+      "id": "person:carol",
+      "kind": "person",
+      "label": "carol",
+      "meta": {
+        "role": "contributor",
+        "commits": 1
+      }
+    },
+    {
+      "id": "commit:c1a2b3d",
+      "kind": "commit",
+      "label": "feat(orders): add order totals (#12)",
+      "meta": {
+        "date": "2026-08-02T10:00:00Z"
+      }
+    },
+    {
+      "id": "commit:d4e5f6a",
+      "kind": "commit",
+      "label": "fix(users): handle duplicate emails, fixes #8 (#15)",
+      "meta": {
+        "date": "2026-08-20T14:30:00Z"
+      }
+    },
+    {
+      "id": "commit:e7f8a9b",
+      "kind": "commit",
+      "label": "chore: bump logger config",
+      "meta": {
+        "date": "2026-09-11T09:15:00Z"
+      }
+    },
+    {
+      "id": "commit:f0a1b2c",
+      "kind": "commit",
+      "label": "feat(db): retry on connection reset (#21)",
+      "meta": {
+        "date": "2026-10-01T16:45:00Z"
+      }
+    },
+    {
+      "id": "pr:12",
+      "kind": "pr",
+      "label": "Add order totals",
+      "meta": {
+        "number": 12,
+        "state": "merged",
+        "mergedAt": "2026-08-02T10:20:00Z"
+      }
+    },
+    {
+      "id": "pr:15",
+      "kind": "pr",
+      "label": "Handle duplicate emails on signup",
+      "meta": {
+        "number": 15,
+        "state": "merged",
+        "mergedAt": "2026-08-20T15:00:00Z"
+      }
+    },
+    {
+      "id": "pr:21",
+      "kind": "pr",
+      "label": "Retry database connection on reset",
+      "meta": {
+        "number": 21,
+        "state": "merged",
+        "mergedAt": "2026-10-01T17:10:00Z"
+      }
+    },
+    {
+      "id": "issue:5",
+      "kind": "issue",
+      "label": "Orders total ignores discounts",
+      "meta": {
+        "number": 5,
+        "state": "closed",
+        "labels": [
+          "bug"
+        ]
+      }
+    },
+    {
+      "id": "issue:8",
+      "kind": "issue",
+      "label": "Signup fails with a 500 on duplicate email",
+      "meta": {
+        "number": 8,
+        "state": "closed",
+        "labels": [
+          "bug",
+          "good first issue"
+        ]
+      }
+    },
+    {
+      "id": "issue:14",
+      "kind": "issue",
+      "label": "DB connection drops under load",
+      "meta": {
+        "number": 14,
+        "state": "closed",
+        "labels": [
+          "bug",
+          "help wanted"
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "dir:.",
+      "to": "dir:src",
+      "kind": "contains"
+    },
+    {
+      "from": "dir:src",
+      "to": "dir:src/routes",
+      "kind": "contains"
+    },
+    {
+      "from": "dir:src",
+      "to": "dir:src/services",
+      "kind": "contains"
+    },
+    {
+      "from": "dir:src",
+      "to": "dir:src/db",
+      "kind": "contains"
+    },
+    {
+      "from": "dir:src",
+      "to": "dir:src/utils",
+      "kind": "contains"
+    },
+    {
+      "from": "dir:.",
+      "to": "dir:tests",
+      "kind": "contains"
+    },
+    {
+      "from": "dir:.",
+      "to": "dir:docs",
+      "kind": "contains"
+    },
+    {
+      "from": "dir:.",
+      "to": "file:package.json",
+      "kind": "contains"
+    },
+    {
+      "from": "dir:.",
+      "to": "file:tsconfig.json",
+      "kind": "contains"
+    },
+    {
+      "from": "dir:.",
+      "to": "file:README.md",
+      "kind": "contains"
+    },
+    {
+      "from": "dir:.",
+      "to": "file:.env.example",
+      "kind": "contains"
+    },
+    {
+      "from": "dir:src",
+      "to": "file:src/index.ts",
+      "kind": "contains"
+    },
+    {
+      "from": "dir:src",
+      "to": "file:src/server.ts",
+      "kind": "contains"
+    },
+    {
+      "from": "dir:src",
+      "to": "file:src/config.ts",
+      "kind": "contains"
+    },
+    {
+      "from": "dir:src/routes",
+      "to": "file:src/routes/users.ts",
+      "kind": "contains"
+    },
+    {
+      "from": "dir:src/routes",
+      "to": "file:src/routes/orders.ts",
+      "kind": "contains"
+    },
+    {
+      "from": "dir:src/services",
+      "to": "file:src/services/user.service.ts",
+      "kind": "contains"
+    },
+    {
+      "from": "dir:src/services",
+      "to": "file:src/services/order.service.ts",
+      "kind": "contains"
+    },
+    {
+      "from": "dir:src/db",
+      "to": "file:src/db/client.ts",
+      "kind": "contains"
+    },
+    {
+      "from": "dir:src/utils",
+      "to": "file:src/utils/logger.ts",
+      "kind": "contains"
+    },
+    {
+      "from": "dir:tests",
+      "to": "file:tests/users.test.ts",
+      "kind": "contains"
+    },
+    {
+      "from": "dir:tests",
+      "to": "file:tests/orders.test.ts",
+      "kind": "contains"
+    },
+    {
+      "from": "dir:docs",
+      "to": "file:docs/architecture.md",
+      "kind": "contains"
+    },
+    {
+      "from": "file:src/index.ts",
+      "to": "file:src/server.ts",
+      "kind": "imports",
+      "weight": 1
+    },
+    {
+      "from": "file:src/index.ts",
+      "to": "file:src/config.ts",
+      "kind": "imports",
+      "weight": 1
+    },
+    {
+      "from": "file:src/index.ts",
+      "to": "file:src/utils/logger.ts",
+      "kind": "imports",
+      "weight": 1
+    },
+    {
+      "from": "file:src/server.ts",
+      "to": "file:src/routes/users.ts",
+      "kind": "imports",
+      "weight": 1
+    },
+    {
+      "from": "file:src/server.ts",
+      "to": "file:src/routes/orders.ts",
+      "kind": "imports",
+      "weight": 1
+    },
+    {
+      "from": "file:src/server.ts",
+      "to": "file:src/config.ts",
+      "kind": "imports",
+      "weight": 1
+    },
+    {
+      "from": "file:src/server.ts",
+      "to": "file:src/utils/logger.ts",
+      "kind": "imports",
+      "weight": 1
+    },
+    {
+      "from": "file:src/routes/users.ts",
+      "to": "file:src/services/user.service.ts",
+      "kind": "imports",
+      "weight": 1
+    },
+    {
+      "from": "file:src/routes/orders.ts",
+      "to": "file:src/services/order.service.ts",
+      "kind": "imports",
+      "weight": 1
+    },
+    {
+      "from": "file:src/routes/orders.ts",
+      "to": "file:src/services/user.service.ts",
+      "kind": "imports",
+      "weight": 1
+    },
+    {
+      "from": "file:src/services/user.service.ts",
+      "to": "file:src/db/client.ts",
+      "kind": "imports",
+      "weight": 1
+    },
+    {
+      "from": "file:src/services/user.service.ts",
+      "to": "file:src/utils/logger.ts",
+      "kind": "imports",
+      "weight": 1
+    },
+    {
+      "from": "file:src/services/order.service.ts",
+      "to": "file:src/db/client.ts",
+      "kind": "imports",
+      "weight": 1
+    },
+    {
+      "from": "file:src/services/order.service.ts",
+      "to": "file:src/utils/logger.ts",
+      "kind": "imports",
+      "weight": 1
+    },
+    {
+      "from": "file:src/services/order.service.ts",
+      "to": "file:src/services/user.service.ts",
+      "kind": "imports",
+      "weight": 1
+    },
+    {
+      "from": "file:src/db/client.ts",
+      "to": "file:src/config.ts",
+      "kind": "imports",
+      "weight": 1
+    },
+    {
+      "from": "file:tests/users.test.ts",
+      "to": "file:src/services/user.service.ts",
+      "kind": "imports",
+      "weight": 1
+    },
+    {
+      "from": "file:tests/orders.test.ts",
+      "to": "file:src/services/order.service.ts",
+      "kind": "imports",
+      "weight": 1
+    },
+    {
+      "from": "file:tests/orders.test.ts",
+      "to": "file:src/db/client.ts",
+      "kind": "imports",
+      "weight": 1
+    },
+    {
+      "from": "entry:server",
+      "to": "file:src/index.ts",
+      "kind": "starts"
+    },
+    {
+      "from": "doc:README.md",
+      "to": "file:src/index.ts",
+      "kind": "describes",
+      "confidence": "exact"
+    },
+    {
+      "from": "doc:README.md",
+      "to": "file:.env.example",
+      "kind": "describes",
+      "confidence": "exact"
+    },
+    {
+      "from": "doc:README.md",
+      "to": "file:package.json",
+      "kind": "describes",
+      "confidence": "likely"
+    },
+    {
+      "from": "doc:docs/architecture.md",
+      "to": "file:src/services/order.service.ts",
+      "kind": "describes",
+      "confidence": "exact"
+    },
+    {
+      "from": "doc:docs/architecture.md",
+      "to": "file:src/db/client.ts",
+      "kind": "describes",
+      "confidence": "exact"
+    },
+    {
+      "from": "doc:docs/architecture.md",
+      "to": "dir:src/routes",
+      "kind": "describes",
+      "confidence": "likely"
+    },
+    {
+      "from": "person:alice",
+      "to": "commit:c1a2b3d",
+      "kind": "authored"
+    },
+    {
+      "from": "commit:c1a2b3d",
+      "to": "file:src/services/order.service.ts",
+      "kind": "touches"
+    },
+    {
+      "from": "commit:c1a2b3d",
+      "to": "file:src/routes/orders.ts",
+      "kind": "touches"
+    },
+    {
+      "from": "commit:c1a2b3d",
+      "to": "file:tests/orders.test.ts",
+      "kind": "touches"
+    },
+    {
+      "from": "person:bob",
+      "to": "commit:d4e5f6a",
+      "kind": "authored"
+    },
+    {
+      "from": "commit:d4e5f6a",
+      "to": "file:src/services/user.service.ts",
+      "kind": "touches"
+    },
+    {
+      "from": "commit:d4e5f6a",
+      "to": "file:tests/users.test.ts",
+      "kind": "touches"
+    },
+    {
+      "from": "person:alice",
+      "to": "commit:e7f8a9b",
+      "kind": "authored"
+    },
+    {
+      "from": "commit:e7f8a9b",
+      "to": "file:src/utils/logger.ts",
+      "kind": "touches"
+    },
+    {
+      "from": "commit:e7f8a9b",
+      "to": "file:src/config.ts",
+      "kind": "touches"
+    },
+    {
+      "from": "person:carol",
+      "to": "commit:f0a1b2c",
+      "kind": "authored"
+    },
+    {
+      "from": "commit:f0a1b2c",
+      "to": "file:src/db/client.ts",
+      "kind": "touches"
+    },
+    {
+      "from": "commit:f0a1b2c",
+      "to": "file:src/services/order.service.ts",
+      "kind": "touches"
+    },
+    {
+      "from": "person:alice",
+      "to": "pr:12",
+      "kind": "authored"
+    },
+    {
+      "from": "person:bob",
+      "to": "pr:12",
+      "kind": "reviewed"
+    },
+    {
+      "from": "pr:12",
+      "to": "file:src/services/order.service.ts",
+      "kind": "touches"
+    },
+    {
+      "from": "pr:12",
+      "to": "file:src/routes/orders.ts",
+      "kind": "touches"
+    },
+    {
+      "from": "pr:12",
+      "to": "file:tests/orders.test.ts",
+      "kind": "touches"
+    },
+    {
+      "from": "pr:12",
+      "to": "issue:5",
+      "kind": "fixes",
+      "confidence": "exact"
+    },
+    {
+      "from": "person:bob",
+      "to": "pr:15",
+      "kind": "authored"
+    },
+    {
+      "from": "person:alice",
+      "to": "pr:15",
+      "kind": "reviewed"
+    },
+    {
+      "from": "person:carol",
+      "to": "pr:15",
+      "kind": "reviewed"
+    },
+    {
+      "from": "pr:15",
+      "to": "file:src/services/user.service.ts",
+      "kind": "touches"
+    },
+    {
+      "from": "pr:15",
+      "to": "file:tests/users.test.ts",
+      "kind": "touches"
+    },
+    {
+      "from": "pr:15",
+      "to": "issue:8",
+      "kind": "fixes",
+      "confidence": "exact"
+    },
+    {
+      "from": "person:carol",
+      "to": "pr:21",
+      "kind": "authored"
+    },
+    {
+      "from": "person:alice",
+      "to": "pr:21",
+      "kind": "reviewed"
+    },
+    {
+      "from": "pr:21",
+      "to": "file:src/db/client.ts",
+      "kind": "touches"
+    },
+    {
+      "from": "pr:21",
+      "to": "file:src/services/order.service.ts",
+      "kind": "touches"
+    },
+    {
+      "from": "pr:21",
+      "to": "issue:14",
+      "kind": "fixes",
+      "confidence": "likely"
+    },
+    {
+      "from": "commit:d4e5f6a",
+      "to": "issue:8",
+      "kind": "fixes",
+      "confidence": "likely"
+    }
+  ]
+}
