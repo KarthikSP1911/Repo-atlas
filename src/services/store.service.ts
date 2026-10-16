@@ -1,6 +1,7 @@
 import { Injectable } from '@nitrostack/core';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+import { IssuesFileSchema, type IssuesFile } from './issues.schema.js';
 import {
   MAX_SNAPSHOT_BYTES,
   NODE_KINDS,
@@ -176,6 +177,17 @@ export class StoreService {
       );
     }
 
+    // A bare repo name such as "tsoa" resolves when exactly one snapshot has that repo name.
+    if (/^[A-Za-z0-9._-]+$/.test(raw)) {
+      const q = raw.toLowerCase();
+      const named = [...idx.values()].filter((i) => i.repo.split('/')[1].toLowerCase() === q);
+      const byRepo = new Map<string, SnapshotInfo>();
+      for (const i of named.sort((a, b) => b.builtAt.localeCompare(a.builtAt))) if (!byRepo.has(i.repo.toLowerCase())) byRepo.set(i.repo.toLowerCase(), i);
+      if (byRepo.size === 1) return [...byRepo.values()][0].id;
+      if (byRepo.size > 1) {
+        throw new SnapshotError('bad_ref', `"${raw.slice(0, 60)}" matches several repos: ${[...byRepo.values()].map((i) => i.repo).join(', ')}. Use owner/repo.`, available);
+      }
+    }
     const repo = normalizeRepoRef(raw);
     if (!repo) {
       throw new SnapshotError('bad_ref', `Could not read "${raw.slice(0, 80)}" as a snapshot id, owner/repo or GitHub URL.`, available);
@@ -205,6 +217,32 @@ export class StoreService {
       this.cache.delete(oldest);
     }
     return snap;
+  }
+
+  /**
+   * The open-issues file fetched alongside a snapshot (`<file>.issues.json`), or null when the
+   * snapshot has none. Validated; a malformed file is an error, not silently ignored.
+   * Issue text is untrusted data.
+   */
+  async loadIssues(ref: string): Promise<IssuesFile | null> {
+    const id = await this.resolve(ref);
+    const info = this.index!.get(id)!;
+    const file = path.join(this.absDir, `${info.file}${ISSUES_SUFFIX}`);
+    let text: string;
+    try {
+      text = await fs.readFile(file, 'utf8');
+    } catch {
+      return null;
+    }
+    let raw: unknown;
+    try {
+      raw = JSON.parse(text);
+    } catch {
+      throw new SnapshotError('invalid', `${info.file}${ISSUES_SUFFIX} is not valid JSON.`);
+    }
+    const parsed = IssuesFileSchema.safeParse(raw);
+    if (!parsed.success) throw new SnapshotError('invalid', `${info.file}${ISSUES_SUFFIX} failed validation: ${parsed.error.issues[0]?.message ?? 'unknown'}`);
+    return parsed.data;
   }
 
   async summary(ref: string): Promise<SnapshotSummary> {

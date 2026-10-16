@@ -159,6 +159,20 @@ describe('ref resolution and errors', () => {
     expect(err.message).toContain('other__thing@3333333');
   });
 
+  it('resolves a bare repo name when it is unambiguous and lists options when it is not', async () => {
+    const s = storeFor({
+      'a.json': withSha('1111111', 'acme/widgets', '2026-01-01T00:00:00Z'),
+      'b.json': withSha('2222222', 'acme/widgets', '2026-02-01T00:00:00Z'),
+      'c.json': withSha('3333333', 'other/gadgets'),
+      'd.json': withSha('4444444', 'third/gadgets'),
+    });
+    expect(await s.resolve('widgets')).toBe('acme__widgets@2222222');
+    expect(await s.resolve('WIDGETS')).toBe('acme__widgets@2222222');
+    const err = (await s.resolve('gadgets').catch((e: unknown) => e)) as SnapshotError;
+    expect(err.code).toBe('bad_ref');
+    expect(err.message).toMatch(/other\/gadgets, third\/gadgets/);
+  });
+
   it.each(['', '   ', 'not a ref!', '../../etc/passwd', '..\\..\\secret', 'a/b/../../c@@'])('rejects or misses bad ref %j', async (ref) => {
     const err = (await store().resolve(ref).catch((e: unknown) => e)) as SnapshotError;
     expect(err).toBeInstanceOf(SnapshotError);

@@ -12,7 +12,48 @@
       "kind": "dir",
       "label": "/",
       "meta": {
-        "path": "."
+        "path": ".",
+        "project": {
+          "languages": {
+            "ts": 11
+          },
+          "scripts": {
+            "start": "node dist/index.js",
+            "build": "tsc",
+            "test": "vitest"
+          },
+          "stack": [
+            "Express",
+            "TypeScript",
+            "Vitest"
+          ],
+          "dependencies": [
+            "express",
+            "typescript",
+            "vitest"
+          ],
+          "workspaces": [],
+          "name": "sample-shop",
+          "description": "A small shop API with users and orders",
+          "license": "MIT",
+          "packageManager": "npm",
+          "readmeTitle": "Sample Shop API",
+          "readmeExcerpt": "A small REST API that serves users and orders for a demo shop.",
+          "primaryLanguage": "TypeScript",
+          "defaultBranch": "main"
+        },
+        "coChange": [
+          {
+            "a": "src/services/order.service.ts",
+            "b": "tests/orders.test.ts",
+            "count": 3
+          },
+          {
+            "a": "src/routes/orders.ts",
+            "b": "src/services/order.service.ts",
+            "count": 2
+          }
+        ]
       }
     },
     {
@@ -399,12 +440,18 @@
       }
     },
     {
-      "id": "entry:server",
+      "id": "entry:src/index.ts",
       "kind": "entry",
-      "label": "HTTP server (npm start)",
+      "label": "main: src/index.ts",
       "meta": {
-        "command": "npm start",
-        "file": "src/index.ts"
+        "path": "src/index.ts",
+        "kind": "main",
+        "reasons": [
+          "package.json main",
+          "scripts.start"
+        ],
+        "score": 10,
+        "command": "npm start"
       }
     },
     {
@@ -782,7 +829,7 @@
       "weight": 1
     },
     {
-      "from": "entry:server",
+      "from": "entry:src/index.ts",
       "to": "file:src/index.ts",
       "kind": "starts"
     },
