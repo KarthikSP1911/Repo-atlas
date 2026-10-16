@@ -15,7 +15,11 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
     "precompute": "tsx scripts/precompute-snapshots.ts",
-    "check-snapshots": "tsx scripts/check-snapshots.ts"
+    "check-snapshots": "tsx scripts/check-snapshots.ts",
+    "eval:backtest": "tsx scripts/eval/backtest.ts",
+    "eval:keyfiles": "tsx scripts/eval/keyfiles.ts",
+    "eval:handcheck": "tsx scripts/eval/handcheck.ts",
+    "eval": "npm run eval:keyfiles && npm run eval:backtest && npm run eval:handcheck"
   },
   "dependencies": {
     "@modelcontextprotocol/ext-apps": "^1.0.0",

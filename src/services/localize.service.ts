@@ -54,6 +54,13 @@ export interface LocalizeOpts {
   includeTests?: boolean;
   /** Number of files to return (default LOCALIZE.topFiles). */
   topFiles?: number;
+  /** Override the a, b, c, d weights (used by the evaluation scripts to tune them). */
+  weights?: { a: number; b: number; c: number; d: number };
+  /**
+   * Called with the raw 0..1 components of every candidate file before they are weighted, so the
+   * evaluation can re-rank under other weights without re-running BM25.
+   */
+  onCandidates?: (rows: { path: string; textMatch: number; historySimilarity: number; graphProximity: number; recency: number }[]) => void;
 }
 
 export interface Components {
@@ -401,6 +408,8 @@ export function localizeIssue(idx: GraphIndex, issue: IssueInput, opts: Localize
   // 4. combine.
   const candidates = new Set<string>([...textScore.keys(), ...historyCredit.keys(), ...graphScore.keys()]);
   const ranked: LocalizedFile[] = [];
+  const W = opts.weights ?? LOCALIZE;
+  const rawRows: { path: string; textMatch: number; historySimilarity: number; graphProximity: number; recency: number }[] = [];
   for (const p of candidates) {
     const f = idx.files.get(p);
     if (!f) continue;
@@ -408,7 +417,8 @@ export function localizeIssue(idx: GraphIndex, issue: IssueInput, opts: Localize
     const h = clamp01(historyScore(p));
     const g = clamp01(graphScore.get(p) ?? 0);
     const rec = recencyOf(f.meta.lastChangedAt, idx.snap.builtAt);
-    const total = LOCALIZE.a * t + LOCALIZE.b * h + LOCALIZE.c * g + LOCALIZE.d * rec.value;
+    rawRows.push({ path: p, textMatch: t, historySimilarity: h, graphProximity: g, recency: rec.value });
+    const total = W.a * t + W.b * h + W.c * g + W.d * rec.value;
 
     const evidence: string[] = [];
     const tt = textTerms.get(p);
@@ -444,6 +454,7 @@ export function localizeIssue(idx: GraphIndex, issue: IssueInput, opts: Localize
       relatedIssues: [...new Set(relatedIssues)],
     });
   }
+  opts.onCandidates?.(rawRows);
   ranked.sort((a, b) => b.score - a.score || a.path.localeCompare(b.path));
   const files = ranked.slice(0, topN);
 

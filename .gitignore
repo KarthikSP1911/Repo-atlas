@@ -68,3 +68,6 @@ docs/Buildathon Guidebook (1).pdf
 
 # Added by nitrostack pack
 .git/
+
+# Evaluation scratch data (fetched issue bodies, cached PR details)
+scripts/eval/.cache/
