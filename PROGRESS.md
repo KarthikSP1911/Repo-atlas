@@ -1,7 +1,7 @@
 # RepoAtlas progress
 
-**Current phase:** 0 (Setup), complete, waiting for `continue`
-**Next:** Phase 1 (deployment spike: `env_probe` tool, deploy, pick RUNTIME_MODE)
+**Current phase:** 1 (Deployment spike), in progress: waiting on [H5] (user deploys the zip and sends back the live URL and `env_probe` output)
+**Next:** test the live `/mcp` endpoint, write `docs/SPIKE.md`, choose RUNTIME_MODE, then [H7] if needed
 
 ## Done
 
@@ -13,6 +13,12 @@
 - `CLAUDE.md`, `PROGRESS.md`, `docs/DECISIONS.md`, `.env.example`, `.gitignore` in place.
 - Acceptance: `npm run build` and `npx tsc --noEmit` pass; server starts and `ping_repoatlas` answers over `POST /mcp` (initialize, tools/list, tools/call checked with curl).
 
+### Phase 1: Deployment spike (in progress)
+- Added temporary `env_probe` tool (D10); build and `tsc --noEmit` pass; verified locally over `POST /mcp`.
+- Built `repoatlas-spike.zip` (171.6 KB, git-ignored) with `nitrostack-cli pack`.
+- H2 and H3 confirmed by the user: NitroCloud app `repoatlas` exists, dashboard offers zip upload and GitHub connect.
+- Remaining: user deploys (H5), I test the live endpoint, write `docs/SPIKE.md`, pick RUNTIME_MODE.
+
 ## Open questions
 
 - Does NitroCloud allow `git`, a writable disk, and outbound HTTPS? (Phase 1 spike decides RUNTIME_MODE.)
@@ -20,5 +26,4 @@
 
 ## Human steps still pending
 
-- [H2] NitroStudio: install, sign in, connect the project, test `ping_repoatlas`.
-- [H3] NitroCloud account created and login handy.
+- [H5] Test `env_probe` in NitroStudio, deploy the zip, send back the live URL and the probe output.

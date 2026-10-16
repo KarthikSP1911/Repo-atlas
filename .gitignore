@@ -62,3 +62,9 @@ docs/Buildathon Guidebook (1).pdf
 
 # NitroStack pack output
 *.zip
+
+# Phase 1 spike marker
+.probe/
+
+# Added by nitrostack pack
+.git/
