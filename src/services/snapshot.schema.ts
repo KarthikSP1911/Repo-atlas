@@ -64,6 +64,14 @@ export const FileMetaSchema = z
     isConfig: z.boolean(),
     isTest: z.boolean(),
     testFor: z.array(z.string()),
+    testedBy: z.array(z.string()),
+    tags: z.array(z.string()),
+    /** Exported (JS/TS) or public (Python) names. */
+    exports: z.array(z.string()),
+    /** Other top-level names. */
+    symbols: z.array(z.string()),
+    /** First doc comment or docstring line. Untrusted text. */
+    doc: z.string(),
     docsMentions: z.number().int().nonnegative(),
     lastChangedAt: z.string(),
     owners: z.array(z.string()),
