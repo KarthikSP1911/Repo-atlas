@@ -42,7 +42,7 @@ const LANG_BY_EXT: Record<string, string> = {
   ts: 'ts', tsx: 'ts', mts: 'ts', cts: 'ts', js: 'js', jsx: 'js', mjs: 'js', cjs: 'js', py: 'py', go: 'go', rs: 'rust',
   java: 'java', kt: 'kotlin', rb: 'ruby', php: 'php', c: 'c', h: 'c', cc: 'cpp', cpp: 'cpp', hpp: 'cpp', cs: 'csharp',
   swift: 'swift', scala: 'scala', md: 'markdown', mdx: 'markdown', json: 'json', yml: 'yaml', yaml: 'yaml', toml: 'toml',
-  sh: 'shell', bash: 'shell', html: 'html', css: 'css', scss: 'css', sql: 'sql', txt: 'text', rst: 'text', vue: 'vue', svelte: 'svelte',
+  sh: 'shell', bash: 'shell', zsh: 'shell', html: 'html', s: 'asm', asm: 'asm', hbs: 'handlebars', ex: 'elixir', exs: 'elixir', dart: 'dart', lua: 'lua', r: 'r', pl: 'perl', zig: 'zig', nix: 'nix', tf: 'terraform', proto: 'protobuf', graphql: 'graphql', ini: 'ini', css: 'css', scss: 'css', sql: 'sql', txt: 'text', rst: 'text', vue: 'vue', svelte: 'svelte',
 };
 
 export function langOf(p: string): string {
@@ -51,7 +51,7 @@ export function langOf(p: string): string {
   if (base === 'Makefile') return 'make';
   const dot = base.lastIndexOf('.');
   const ext = dot > 0 ? base.slice(dot + 1).toLowerCase() : '';
-  return LANG_BY_EXT[ext] ?? (ext || 'other');
+  return LANG_BY_EXT[ext] ?? 'other';
 }
 
 const MAX_PARSE_BYTES = 400 * 1024;

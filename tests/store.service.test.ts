@@ -21,8 +21,12 @@ const shipped = (): Snapshot => JSON.parse(fs.readFileSync('data/snapshots/sampl
 const clone = <T>(x: T): T => JSON.parse(JSON.stringify(x)) as T;
 
 let tmp: string;
+let sampleDir: string; // a directory holding only the sample, so tests do not depend on other shipped snapshots
 beforeAll(() => {
   tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'repoatlas-store-'));
+  sampleDir = path.join(tmp, 'sample-only');
+  fs.mkdirSync(sampleDir);
+  fs.copyFileSync('data/snapshots/sample.json', path.join(sampleDir, 'sample.json'));
 });
 afterAll(() => fs.rmSync(tmp, { recursive: true, force: true }));
 
@@ -55,7 +59,7 @@ describe('shipped sample snapshot', () => {
 
   it('loads by alias, id, owner/repo, owner__repo and GitHub URL', async () => {
     const store = new StoreService();
-    store.dir = 'data/snapshots';
+    store.dir = sampleDir;
     for (const ref of [
       'sample',
       SAMPLE_ID,
@@ -194,7 +198,7 @@ describe('LRU cache', () => {
 describe('summary', () => {
   it('summarises the sample', async () => {
     const store = new StoreService();
-    store.dir = 'data/snapshots';
+    store.dir = sampleDir;
     const s = await store.summary('sample');
     expect(s.id).toBe(SAMPLE_ID);
     expect(s.uri).toBe('graph://demo__sample-shop@5a3f0c1/summary');
@@ -250,7 +254,7 @@ describe('graph summary resource', () => {
   const ctx = { logger: { info: () => undefined } } as never;
   const resources = (): GraphResources => {
     const store = new StoreService();
-    store.dir = 'data/snapshots';
+    store.dir = sampleDir;
     return new GraphResources(store);
   };
 

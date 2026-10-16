@@ -253,7 +253,7 @@ export function exportTargets(exp: unknown, depth = 0): string[] {
   return ['import', 'node', 'default', 'require'].flatMap((k) => exportTargets(obj[k], depth + 1));
 }
 
-const NON_PRODUCT_DIR = /(^|\/)(examples?|samples?|demos?|docs?|benchmarks?|fixtures?)\//i;
+const NON_PRODUCT_DIR = /(^|\/)_?(examples?|samples?|demos?|cookbook|docs?|benchmarks?|fixtures?)\//i;
 
 const JS_RUN_RE = /(?:node|tsx|ts-node|nodemon|bun(?: run)?|deno run)\s+(?:--?[\w-]+(?:=\S+)?\s+)*([\w./@-]+\.(?:[cm]?[jt]sx?))/;
 
@@ -428,7 +428,7 @@ function depNamesFromPyproject(text: string): string[] {
 
 /** Tooling that is meaningful even as a devDependency; other hints count only as runtime dependencies. */
 const DEV_OK = new Set(['typescript', 'vitest', 'jest', 'mocha', 'vite', 'webpack', 'pytest', 'prisma']);
-const PROGRAMMING = new Set(['ts', 'js', 'py', 'go', 'rust', 'java', 'kotlin', 'ruby', 'php', 'c', 'cpp', 'csharp', 'swift', 'scala', 'shell', 'sql', 'css', 'html', 'vue', 'svelte', 'docker']);
+const PROGRAMMING = new Set(['ts', 'js', 'py', 'go', 'rust', 'java', 'kotlin', 'ruby', 'php', 'c', 'cpp', 'csharp', 'swift', 'scala', 'shell', 'sql', 'css', 'html', 'vue', 'svelte', 'docker', 'asm', 'elixir', 'dart', 'lua', 'r', 'perl', 'zig', 'handlebars']);
 
 export function detectProject(files: Map<string, ParsedFile>, texts: Map<string, string>, lockfiles: string[]): ProjectInfo {
   const languages: Record<string, number> = {};

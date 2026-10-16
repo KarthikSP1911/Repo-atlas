@@ -7,6 +7,21 @@ import { gitClient } from './ingest.service.js';
  * download blobs), plus one budgeted GraphQL pass for merged PRs and open issues.
  */
 
+// --- Privacy ---------------------------------------------------------------
+
+const EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}/g;
+
+/** Replace email addresses in free text with a placeholder. Snapshots must not carry emails. */
+export function scrubEmails(text: string): string {
+  return text.replace(EMAIL_RE, '[email]');
+}
+
+/** Some people set their git author name to an email address; keep only the part before the @. */
+export function cleanAuthorName(name: string): string {
+  const n = name.trim();
+  return n.includes('@') ? n.slice(0, n.indexOf('@')).trim() || 'unknown' : n;
+}
+
 // --- History ---------------------------------------------------------------
 
 export interface HistoryCommit {
@@ -52,9 +67,9 @@ export function parseLog(raw: string, repo: string): HistoryCommit[] {
     const refs = extractRefs(`${subject}\n${body}`, repo);
     out.push({
       sha: sha.trim(),
-      subject: subject.slice(0, 160),
+      subject: scrubEmails(subject).slice(0, 160),
       date,
-      author: author.trim(),
+      author: cleanAuthorName(author),
       files,
       prRef: refs.prRef,
       fixes: refs.fixes,
@@ -201,11 +216,11 @@ export function mapPr(n: any): PrData {
   const reviewers = [...new Set<string>((n.reviews?.nodes ?? []).map((r: any) => r?.author?.login).filter(Boolean))].filter((l) => l !== author);
   return {
     number: n.number,
-    title: String(n.title ?? '').slice(0, 200),
+    title: scrubEmails(String(n.title ?? '')).slice(0, 200),
     author,
     mergedAt: n.mergedAt ?? null,
     reviewers,
-    closing: (n.closingIssuesReferences?.nodes ?? []).map((i: any) => ({ number: i.number, title: String(i.title ?? '').slice(0, 200), state: String(i.state ?? '') })),
+    closing: (n.closingIssuesReferences?.nodes ?? []).map((i: any) => ({ number: i.number, title: scrubEmails(String(i.title ?? '')).slice(0, 200), state: String(i.state ?? '') })),
     files: (n.files?.nodes ?? []).map((f: any) => f.path).filter(Boolean),
   };
 }
@@ -225,9 +240,9 @@ export function mapIssue(n: any): OpenIssue {
   }
   return {
     number: n.number,
-    title: String(n.title ?? '').slice(0, 400),
+    title: scrubEmails(String(n.title ?? '')).slice(0, 400),
     url: String(n.url ?? ''),
-    body: String(n.body ?? '').slice(0, 2000),
+    body: scrubEmails(String(n.body ?? '')).slice(0, 2000),
     labels: (n.labels?.nodes ?? []).map((l: any) => l.name),
     assignees: (n.assignees?.nodes ?? []).map((a: any) => a.login),
     author: n.author?.login ?? null,
@@ -239,7 +254,7 @@ export function mapIssue(n: any): OpenIssue {
       author: c.author?.login ?? null,
       association: String(c.authorAssociation ?? 'NONE'),
       createdAt: c.createdAt,
-      body: String(c.body ?? '').slice(0, 400),
+      body: scrubEmails(String(c.body ?? '')).slice(0, 400),
     })),
     linkedPrs: [...linked.values()],
   };

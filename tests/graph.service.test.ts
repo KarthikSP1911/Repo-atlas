@@ -82,6 +82,8 @@ describe('regressions found on real repos (ky, click)', () => {
   });
 
   it('does not treat examples, docs or fixtures as the project entry points', () => {
+    const go = filesOf(pf('_examples/blame/main.go', [], { signals: { goMain: true } }), pf('cmd/tool/main.go', [], { signals: { goMain: true } }));
+    expect(detectEntries(go, new Map()).map((e) => e.path)).toEqual(['cmd/tool/main.go']);
     const files = filesOf(pf('examples/a/app.py', [], { signals: { mainGuard: true } }), pf('docs/demo/server.js', [], { signals: { listen: true } }), pf('src/lib/core.py'));
     const texts = new Map([['pyproject.toml', '[project.scripts]\nex = "examples.a.app:main"\n']]);
     expect(detectEntries(files, texts)).toEqual([]);

@@ -139,7 +139,7 @@ describe('other languages and tiers', () => {
     expect(r.files.get('src/lib.rs')!.lang).toBe('rust');
   });
 
-  it.each([['a/b.TSX', 'ts'], ['x.mjs', 'js'], ['Dockerfile', 'docker'], ['LICENSE', 'other'], ['a.weird', 'weird']])('langOf(%s)', (p, l) => {
+  it.each([['a/b.TSX', 'ts'], ['x.mjs', 'js'], ['Dockerfile', 'docker'], ['LICENSE', 'other'], ['a.weird', 'other'], ['x.typed', 'other'], ['pkg/glibc-test-libs', 'other'], ['boot.S', 'asm']])('langOf(%s)', (p, l) => {
     expect(langOf(p)).toBe(l);
   });
 });

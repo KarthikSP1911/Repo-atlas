@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   ApiBudget,
   BULK_FILES,
+  cleanAuthorName,
   extractRefs,
   fetchGithubData,
   isBot,
@@ -10,6 +11,7 @@ import {
   parseLog,
   personSlug,
   sanitizeError,
+  scrubEmails,
   type GraphqlFn,
 } from '../src/services/link.service.js';
 
@@ -49,6 +51,33 @@ describe('parseLog', () => {
 
   it('ignores junk records', () => {
     expect(parseLog('garbage\x1e\x1ehello', 'a/b')).toEqual([]);
+  });
+});
+
+describe('privacy', () => {
+  it('scrubs emails from free text and author names', () => {
+    expect(scrubEmails('Contact bob.smith+x@example.co.uk or a@b.io now')).toBe('Contact [email] or [email] now');
+    expect(scrubEmails('no email here, version@1.2')).toBe('no email here, version@1.2');
+    expect(cleanAuthorName('cedric.bail@free.fr')).toBe('cedric.bail');
+    expect(cleanAuthorName('Alice Smith')).toBe('Alice Smith');
+    expect(cleanAuthorName('@')).toBe('unknown');
+  });
+
+  it('parseLog never keeps an email from the author name or subject', () => {
+    const raw = `${SHA(1)}cedric@free.fr2026-10-01T00:00:00+00:00thanks to jo@x.org (#4)
+
+a.ts
+`;
+    const [c] = parseLog(raw, 'a/b');
+    expect(c.author).toBe('cedric');
+    expect(c.subject).toBe('thanks to [email] (#4)');
+    expect(JSON.stringify(c)).not.toContain('@');
+  });
+
+  it('mapIssue and mapPr scrub emails', () => {
+    const issue = mapIssue({ number: 1, title: 'mail a@b.com', body: 'me@x.org', url: '', createdAt: 'c', updatedAt: 'u', comments: { totalCount: 1, nodes: [{ author: null, authorAssociation: 'NONE', createdAt: 't', body: 'c@d.net' }] } });
+    expect(JSON.stringify(issue)).not.toMatch(/@[a-z]/);
+    expect(mapPr({ number: 1, title: 'fix for z@y.com' }).title).toBe('fix for [email]');
   });
 });
 

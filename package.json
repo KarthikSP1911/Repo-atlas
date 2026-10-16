@@ -14,7 +14,8 @@
     "widget": "npm --prefix src/widgets",
     "test": "vitest run",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
-    "precompute": "tsx scripts/precompute-snapshots.ts"
+    "precompute": "tsx scripts/precompute-snapshots.ts",
+    "check-snapshots": "tsx scripts/check-snapshots.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/ext-apps": "^1.0.0",

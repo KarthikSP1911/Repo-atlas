@@ -17,6 +17,7 @@ import {
   fetchGithubData,
   isBot,
   personSlug,
+  scrubEmails,
   readHistory,
   type GithubData,
   type GraphqlFn,
@@ -123,7 +124,9 @@ export function assemble(p: AssembleParams): Snapshot {
     path: '.',
     project: {
       ...analysis.project,
-      description: analysis.project.description ?? github.description ?? undefined,
+      readmeTitle: analysis.project.readmeTitle && scrubEmails(analysis.project.readmeTitle),
+      readmeExcerpt: analysis.project.readmeExcerpt && scrubEmails(analysis.project.readmeExcerpt),
+      description: scrubEmails(analysis.project.description ?? github.description ?? '') || undefined,
       license: analysis.project.license ?? github.license ?? undefined,
       primaryLanguage: github.primaryLanguage ?? undefined,
       defaultBranch: github.defaultBranch ?? ingest.defaultBranch,
@@ -159,7 +162,7 @@ export function assemble(p: AssembleParams): Snapshot {
     if (p.withSymbols && parsed) {
       if (parsed.exports.length) meta.exports = parsed.exports;
       if (parsed.symbols.length) meta.symbols = parsed.symbols;
-      if (parsed.doc) meta.doc = parsed.doc;
+      if (parsed.doc) meta.doc = scrubEmails(parsed.doc);
     }
     addNode({ id: `file:${f.path}`, kind: 'file', label: f.path.slice(f.path.lastIndexOf('/') + 1), meta });
   }
@@ -174,7 +177,7 @@ export function assemble(p: AssembleParams): Snapshot {
 
   // Docs.
   for (const d of analysis.docs) {
-    addNode({ id: `doc:${d.path}`, kind: 'doc', label: d.title, meta: { path: d.path } });
+    addNode({ id: `doc:${d.path}`, kind: 'doc', label: scrubEmails(d.title), meta: { path: d.path } });
     for (const x of d.describes) addEdge({ from: `doc:${d.path}`, to: `${x.isDir ? 'dir' : 'file'}:${x.path}`, kind: 'describes', confidence: x.confidence });
   }
 
@@ -183,7 +186,7 @@ export function assemble(p: AssembleParams): Snapshot {
   for (const a of analysis.files.values()) for (const o of a.owners) owners.add(o);
   const ranked = [...analysis.persons.values()].filter((x) => !x.bot).sort((a, b) => b.commits - a.commits || a.id.localeCompare(b.id));
   const keepPerson = new Set<string>([...owners, ...ranked.slice(0, MAX_PERSONS).map((x) => x.id)]);
-  for (const x of ranked) if (keepPerson.has(x.id)) addNode({ id: x.id, kind: 'person', label: x.name, meta: { commits: x.commits } });
+  for (const x of ranked) if (keepPerson.has(x.id)) addNode({ id: x.id, kind: 'person', label: scrubEmails(x.name), meta: { commits: x.commits } });
   const loginPerson = (login: string): string => {
     const id = `person:${personSlug(login)}`;
     const existing = nodeById.get(id);
@@ -198,7 +201,7 @@ export function assemble(p: AssembleParams): Snapshot {
   const ensureIssue = (n: number, extra?: { title?: string; state?: string }): string => {
     const id = `issue:${n}`;
     if (!nodeIds.has(id)) {
-      addNode({ id, kind: 'issue', label: extra?.title ?? `#${n}`, meta: { number: n, state: extra?.state?.toLowerCase() ?? 'unknown', ...(extra?.title ? {} : { stub: true }) } });
+      addNode({ id, kind: 'issue', label: scrubEmails(extra?.title ?? `#${n}`), meta: { number: n, state: extra?.state?.toLowerCase() ?? 'unknown', ...(extra?.title ? {} : { stub: true }) } });
     }
     return id;
   };
