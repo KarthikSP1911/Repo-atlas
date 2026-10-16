@@ -138,6 +138,8 @@ export interface PrData {
   files: string[];
 }
 
+export const BEGINNER_LABEL = /good[\s_-]*first|first[\s_-]*timers?|help[\s_-]*wanted|beginner|newcomer/i;
+
 const PR_QUERY = `
 query($owner:String!,$name:String!,$first:Int!,$after:String){
   rateLimit{cost remaining resetAt}
@@ -298,7 +300,8 @@ export async function fetchGithubData(
 
     const lab = (await budget.run('labels', gql, LABELS_QUERY, { owner, name })).repository;
     const names = new Set<string>();
-    for (const key of ['gfi', 'hw', 'ft']) for (const l of lab[key]?.nodes ?? []) names.add(l.name);
+    // GitHub's label search is fuzzy (a "help wanted" search can return "help output"), so keep real matches only.
+    for (const key of ['gfi', 'hw', 'ft']) for (const l of lab[key]?.nodes ?? []) if (BEGINNER_LABEL.test(String(l.name))) names.add(l.name);
     data.labelsQueried = [...names];
 
     const byNumber = new Map<number, OpenIssue>();

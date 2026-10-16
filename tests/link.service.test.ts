@@ -188,6 +188,24 @@ describe('fetchGithubData and ApiBudget', () => {
     expect(budget.log).toHaveLength(5);
   });
 
+  it("keeps only real beginner labels from GitHub's fuzzy label search", async () => {
+    const base = fake().fn;
+    const gql: GraphqlFn = async (query, vars) => {
+      if (query.includes('gfi:')) {
+        const rateLimit = { cost: 1, remaining: 4000, resetAt: 'r' };
+        return { rateLimit, repository: { gfi: { nodes: [{ name: 'good first issue' }, { name: 'good first review' }] }, hw: { nodes: [{ name: 'help output' }, { name: 'Help Wanted' }] }, ft: { nodes: [{ name: 'first-timers-only' }, { name: 'firstly' }] } } };
+      }
+      return base(query, vars);
+    };
+    const d = await fetchGithubData(gql, 'a/b', new ApiBudget());
+    expect(d.labelsQueried.sort()).toEqual(['Help Wanted', 'first-timers-only', 'good first issue', 'good first review'].sort());
+    const none: GraphqlFn = async (query, vars) =>
+      query.includes('gfi:') ? { rateLimit: { cost: 1, remaining: 4000, resetAt: 'r' }, repository: { gfi: { nodes: [] }, hw: { nodes: [{ name: 'help output' }] }, ft: { nodes: [] } } } : base(query, vars);
+    const d2 = await fetchGithubData(none, 'a/b', new ApiBudget());
+    expect(d2.labelsQueried).toEqual([]);
+    expect(d2.limits.join(' ')).toMatch(/No "good first issue"/);
+  });
+
   it('stops at the call budget and says so', async () => {
     const { fn } = fake();
     const budget = new ApiBudget(2);
