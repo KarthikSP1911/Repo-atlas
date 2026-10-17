@@ -384,12 +384,12 @@ export const TOOL_SPECS: ToolSpec[] = [
     fields: [
       {
         name: 'confirmToken',
-        label: 'Confirm token (leave empty the first time)',
+        label: 'Confirm token (leave this empty)',
         kind: 'text',
         default: '',
         required: false,
-        placeholder: 'empty for step 1',
-        help: 'Step 1: leave this empty and press Run tool. You get a preview and a token. Step 2: press "I confirm: get the draft" under the preview, or paste the token here. The token works for 10 minutes and only for this repo.',
+        placeholder: 'leave empty: the page fills it in for you',
+        help: 'You do not need to type anything here. Press Run tool to get a short preview. Then press the "I confirm: get the draft" button that appears under the preview to get the full document. The page copies the token in for you; it is valid for 10 minutes and only for this repo.',
       },
     ],
     returns: [
