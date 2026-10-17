@@ -1,5 +1,6 @@
 'use client';
 
+import { Select } from './Select';
 import { useId, useState } from 'react';
 import { DossierPanel, useExplain } from './Dossier';
 import { GenericValue } from './GenericValue';
@@ -69,22 +70,16 @@ export function TourStep({ call, snapshotId }: { call: CallFn; snapshotId: strin
     <Card n={3} title="Take the guided tour" tool="tour_next" blurb="The server keeps no tour state: each call names the role and the stage. Click a file in the content or the graph to explain it." locked={false}>
       <div className="dm-form">
         <label htmlFor={roleId}>Tour for</label>
-        <select
+        <Select
           id={roleId}
-          className="dm-input"
           value={role}
-          onChange={(e) => {
-            setRole(e.target.value);
+          options={ROLES}
+          onChange={(v) => {
+            setRole(v);
             reset();
             setStage(1);
           }}
-        >
-          {ROLES.map((r) => (
-            <option key={r.value} value={r.value}>
-              {r.label}
-            </option>
-          ))}
-        </select>
+        />
         <button type="button" className="dm-btn primary" onClick={() => go(1)} disabled={state.status === 'loading'}>
           {done ? 'Restart at stage 1' : 'Start the tour'}
         </button>

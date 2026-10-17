@@ -3,6 +3,7 @@
 import { useId, useState } from 'react';
 import { LOCAL_MCP_URL, MCP_URL } from '../lib/config';
 import { REQUIRED_TOOLS, callTool, listTools } from '../lib/mcp';
+import { endpointSchema, parseResponse, pingResponse } from '../lib/schemas';
 import { OLD_BUILD_HINT } from './demo-util';
 
 type Check = { status: 'idle' } | { status: 'loading' } | { status: 'ok'; count: number; missing: string[]; liveBuilds: boolean | null } | { status: 'error'; message: string };
@@ -13,14 +14,19 @@ export function EndpointBox({ endpoint, onChange }: { endpoint: string; onChange
   const inputId = useId();
 
   const runCheck = async (): Promise<void> => {
+    const addr = endpointSchema.safeParse(endpoint);
+    if (!addr.success) {
+      setCheck({ status: 'error', message: addr.error.issues[0].message });
+      return;
+    }
     setCheck({ status: 'loading' });
     try {
-      const names = await listTools(endpoint, { timeoutMs: 20_000 });
+      const names = await listTools(addr.data, { timeoutMs: 20_000 });
       // ping_repoatlas says whether this build can build any repo (newer builds report liveBuilds; older ones do not).
       let liveBuilds: boolean | null = null;
       try {
-        const ping = (await callTool(endpoint, 'ping_repoatlas', {}, { timeoutMs: 20_000 })).data as { liveBuilds?: unknown } | null;
-        liveBuilds = typeof ping?.liveBuilds === 'boolean' ? ping.liveBuilds : false;
+        const ping = parseResponse(pingResponse, (await callTool(addr.data, 'ping_repoatlas', {}, { timeoutMs: 20_000 })).data, 'ping_repoatlas');
+        liveBuilds = typeof ping.liveBuilds === 'boolean' ? ping.liveBuilds : false;
       } catch {
         liveBuilds = null;
       }

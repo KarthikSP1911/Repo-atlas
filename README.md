@@ -98,7 +98,7 @@ Needs Node 20.18+ and npm 9+.
 npm install                 # installs the server and the widget app
 npm run dev                 # NitroStack dev server and widgets (open it in NitroStudio)
 npm run build               # widgets + TypeScript to dist/
-npm test                    # vitest (525 tests)
+npm test                    # vitest (600 tests)
 npm run typecheck           # src, tests and scripts
 npm run check-snapshots     # loads every shipped snapshot and exits non-zero on a bad one
 ```

@@ -1,5 +1,6 @@
 'use client';
 
+import { Select } from './Select';
 import { useId, useState } from 'react';
 import { LANGUAGES, LEVELS, asRec, fmtDate, num, recList, str, strList } from './demo-util';
 import { Card, Chips, LimitsBox, RawJson, RunStatus, SafeLink } from './ui';
@@ -10,7 +11,7 @@ export interface Found {
   candidates: Record<string, unknown>[];
 }
 
-function IssueCard({ issue }: { issue: Record<string, unknown> }) {
+export function IssueCard({ issue }: { issue: Record<string, unknown> }) {
   const claim = asRec(issue.claim);
   const clarity = asRec(issue.clarity);
   const fresh = asRec(issue.freshness);
@@ -92,17 +93,15 @@ export function FindWorkStep({ call, snapshotId, onFound }: { call: CallFn; snap
             </label>
           ))}
         </div>
-        <div className="dm-form">
-          <label htmlFor={levelId}>Level</label>
-          <select id={levelId} className="dm-input" value={level} onChange={(e) => setLevel(e.target.value)}>
-            {LEVELS.map((l) => (
-              <option key={l} value={l}>
-                {l}
-              </option>
-            ))}
-          </select>
-          <label htmlFor={areasId}>Familiar areas (optional, comma separated)</label>
-          <input id={areasId} className="dm-input wide" value={areas} maxLength={200} placeholder="for example routing, cli" onChange={(e) => setAreas(e.target.value)} />
+        <div className="dm-fields">
+          <div className="dm-field">
+            <label htmlFor={levelId}>Level</label>
+            <Select id={levelId} value={level} onChange={setLevel} options={LEVELS.map((l) => ({ value: l, label: l.charAt(0).toUpperCase() + l.slice(1) }))} />
+          </div>
+          <div className="dm-field">
+            <label htmlFor={areasId}>Familiar areas (optional, comma separated)</label>
+            <input id={areasId} className="dm-input wide" value={areas} maxLength={200} placeholder="for example routing, cli" onChange={(e) => setAreas(e.target.value)} />
+          </div>
         </div>
         <div>
           <button type="button" className="dm-btn primary" onClick={() => void go()} disabled={langs.length === 0 || busy}>

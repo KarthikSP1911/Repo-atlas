@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { MCP_URL } from '../lib/config';
 import { callTool } from '../lib/mcp';
+import { endpointSchema } from '../lib/schemas';
 import type { LogEntry } from './CallLog';
 import type { CallFn } from './useToolRun';
 
@@ -20,7 +21,8 @@ export function useMcp(): { endpoint: string; changeEndpoint: (url: string) => v
   useEffect(() => {
     try {
       const saved = window.localStorage.getItem(STORAGE_KEY);
-      if (saved) setEndpoint(saved);
+      const ok = saved ? endpointSchema.safeParse(saved) : null;
+      if (ok?.success) setEndpoint(ok.data);
     } catch {
       // storage can be blocked (private mode): the default endpoint is fine
     }

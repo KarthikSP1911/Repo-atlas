@@ -203,7 +203,7 @@ code {
 }
 
 .container {
-  max-width: 1440px;
+  max-width: 1680px;
   margin: 0 auto;
   padding: 0 clamp(20px, 4.5vw, 64px);
 }
@@ -1051,6 +1051,17 @@ td code {
   }
   .cmd-form .btn {
     width: 100%;
+  }
+}
+/* ---------- overall scale: the site reads best at about 80% of the browser default on large screens ---------- */
+@media (min-width: 1100px) {
+  body {
+    zoom: 0.8;
+  }
+}
+@media (min-width: 640px) and (max-width: 1099px) {
+  body {
+    zoom: 0.9;
   }
 }
 @media (prefers-reduced-motion: reduce) {

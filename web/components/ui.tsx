@@ -68,12 +68,33 @@ export function RawJson({ value, title = 'What the agent receives (raw JSON)', d
   );
 }
 
+/** A path with a line-break opportunity after every slash, so long paths wrap at folder boundaries. */
+function BreakablePath({ path }: { path: string }) {
+  const segs = path.split('/');
+  return (
+    <>
+      {segs.map((seg, i) => (
+        <span key={i}>
+          {seg}
+          {i < segs.length - 1 ? '/' : ''}
+          {i < segs.length - 1 && <wbr />}
+        </span>
+      ))}
+    </>
+  );
+}
+
 /** A file path that explains itself when clicked, or plain code when no handler is given. */
 export function FileButton({ path, onExplain, busy }: { path: string; onExplain?: (path: string) => void; busy?: boolean }) {
-  if (!onExplain) return <code className="dm-path">{path}</code>;
+  if (!onExplain)
+    return (
+      <code className="dm-path">
+        <BreakablePath path={path} />
+      </code>
+    );
   return (
     <button type="button" className="dm-file" onClick={() => onExplain(path)} disabled={busy} title={`Explain ${path} with explain_file`}>
-      {path}
+      <BreakablePath path={path} />
     </button>
   );
 }

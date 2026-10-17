@@ -1,5 +1,6 @@
 'use client';
 
+import { Select } from './Select';
 import { useId, useState } from 'react';
 import { DossierPanel, useExplain, type ExplainHandle } from './Dossier';
 import { ROLES, asRec, num, recList, str, strList } from './demo-util';
@@ -172,13 +173,7 @@ function KeyFiles({ call, snapshotId, explain }: { call: CallFn; snapshotId: str
       </h3>
       <div className="dm-form">
         <label htmlFor={roleId}>Reading as</label>
-        <select id={roleId} className="dm-input" value={role} onChange={(e) => setRole(e.target.value)}>
-          {ROLES.map((r) => (
-            <option key={r.value} value={r.value}>
-              {r.label}
-            </option>
-          ))}
-        </select>
+        <Select id={roleId} value={role} options={ROLES} onChange={setRole} />
         <button type="button" className="dm-btn" onClick={go} disabled={state.status === 'loading'}>
           Run key_files
         </button>

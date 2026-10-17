@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { CUSTOM_REPO, OLD_BUILD_HINT, looksLikeOldBuild } from './demo-util';
 import { REPOS, TIER_MEANING, asRec, fmtDate, num, repoArgOf, str } from './demo-util';
 import { RepoPicker } from './RepoPicker';
+import { buildGraphResponse, repoSchema } from '../lib/schemas';
 import { Card, LimitsBox, RawJson, RunStatus } from './ui';
 import { useToolRun, type CallFn } from './useToolRun';
 
@@ -18,14 +19,17 @@ export function RepoStep({ call, onBuilt, initialRepo }: { call: CallFn; onBuilt
   const [pick, setPick] = useState<string>(initialRepo ? CUSTOM_REPO : REPOS[0].value);
   const [custom, setCustom] = useState<string>(initialRepo ?? '');
   const repo = repoArgOf(pick, custom);
+  const repoCheck = repoSchema.safeParse(repo);
+  const repoError = pick === CUSTOM_REPO && custom.trim() !== '' && !repoCheck.success ? repoCheck.error.issues[0].message : null;
   const { state, run, reset } = useToolRun(call);
 
   const build = async (): Promise<void> => {
-    if (!repo) return;
+    if (!repoCheck.success) return;
     onBuilt(null);
-    const data = await run('build_graph', { repo });
+    const data = await run('build_graph', { repo: repoCheck.data });
+    const answer = buildGraphResponse.safeParse(data);
     const d = asRec(data);
-    const snapshotId = str(d.snapshotId);
+    const snapshotId = answer.success && answer.data.status === 'ready' ? str(answer.data.snapshotId) : '';
     if (snapshotId) onBuilt({ snapshotId, repo: str(d.repo) || repo, data: d });
   };
 
@@ -46,6 +50,7 @@ export function RepoStep({ call, onBuilt, initialRepo }: { call: CallFn; onBuilt
         <RepoPicker
           value={pick}
           custom={custom}
+          error={repoError}
           onChange={(v, c) => {
             setPick(v);
             setCustom(c);
@@ -53,7 +58,7 @@ export function RepoStep({ call, onBuilt, initialRepo }: { call: CallFn; onBuilt
             onBuilt(null);
           }}
         />
-        <button type="button" className="dm-btn primary" onClick={() => void build()} disabled={state.status === 'loading' || repo === ''}>
+        <button type="button" className="dm-btn primary" onClick={() => void build()} disabled={state.status === 'loading' || !repoCheck.success}>
           {state.status === 'loading' ? 'Building…' : 'Build graph'}
         </button>
       </div>

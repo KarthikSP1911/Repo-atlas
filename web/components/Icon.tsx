@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 /** Small stroke icons drawn for this site (16x16, currentColor). Decorative: always aria-hidden. */
 const PATHS: Record<string, ReactNode> = {
   check: <path d="M3 8.5l3.2 3.2L13 4.8" />,
+  chevron: <path d="M4 6l4 4 4-4" />,
   graph: (
     <>
       <circle cx="4" cy="4.5" r="1.8" />

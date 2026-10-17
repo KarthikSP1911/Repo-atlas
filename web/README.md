@@ -32,3 +32,10 @@ The page currently shows one image: the graph the widget draws, rendered from re
 ## Before you edit the connect URL
 
 `MCP_URL` in `app/page.tsx` is the NitroCloud endpoint. Update it if the deployment URL ever changes.
+
+## Design notes
+
+- **Scale.** On screens 1100px and wider the page is drawn at 80% (`zoom: 0.8` on `body` in `app/globals.css`), 90% from 640 to 1099px, and 100% on phones. If you also zoom out in the browser the page will look smaller than intended; reset the browser zoom to 100% (Ctrl+0).
+- **Form controls.** Dropdowns use `components/Select.tsx` (a keyboard-accessible listbox) and checkboxes are styled pills, so nothing falls back to the browser's own widgets.
+- **Validation.** `lib/schemas.ts` holds the zod schemas: what people type (repo links, stage, issue number, languages) is checked with plain-language messages before anything is sent, and the few server answers the page relies on are checked before use. `tests/web-schemas.test.ts` checks that the arguments built here pass the server's own tool schemas.
+- **Tool guidance.** `lib/tool-specs.ts` is the plain-English description of each tool: what it does, what to enter, what comes back and how to read it.

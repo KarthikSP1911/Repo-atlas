@@ -43,18 +43,55 @@ function Primitive({ v, onExplain, busy, max }: { v: unknown; onExplain?: (p: st
 
 const isPrimitive = (v: unknown): boolean => v === null || v === undefined || ['string', 'number', 'boolean'].includes(typeof v);
 const isPrimitiveList = (v: unknown): boolean => Array.isArray(v) && v.length <= 8 && v.every(isPrimitive);
+/** An object whose values are all plain (for example a score broken into its parts). */
+const isFlatRec = (v: unknown): boolean => isRec(v) && Object.keys(v).length <= 12 && Object.values(v).every(isPrimitive);
+
+const isEmptyValue = (v: unknown): boolean => v === null || v === undefined || v === '' || (Array.isArray(v) && v.length === 0) || (isRec(v) && Object.keys(v).length === 0);
 
 function tableKeys(items: Rec[]): string[] | null {
-  const keys: string[] = [];
-  for (const it of items) for (const k of Object.keys(it)) if (!HIDDEN_KEYS.has(k) && !keys.includes(k)) keys.push(k);
-  if (keys.length === 0 || keys.length > 7) return null;
-  for (const it of items) for (const k of keys) if (!isPrimitive(it[k]) && !isPrimitiveList(it[k])) return null;
+  const all: string[] = [];
+  for (const it of items) for (const k of Object.keys(it)) if (!HIDDEN_KEYS.has(k) && !all.includes(k)) all.push(k);
+  // A column that is empty in every row says nothing; the full data stays in the raw JSON.
+  const keys = all.filter((k) => items.some((it) => !isEmptyValue(it[k])));
+  if (keys.length === 0 || keys.length > 10) return null;
+  for (const it of items) for (const k of keys) if (!isPrimitive(it[k]) && !isPrimitiveList(it[k]) && !isFlatRec(it[k])) return null;
   return keys;
 }
 
+/** Short values (numbers, single words) read better as chips than as a tall bullet list. */
+const isChipList = (items: unknown[]): boolean => items.length <= 40 && items.every((x) => typeof x === 'number' || (typeof x === 'string' && x.length <= 24 && !looksLikePath(x)));
+
+const fmtNum = (n: number): string => (Number.isInteger(n) ? String(n) : String(Number(n.toFixed(3))));
+
 function Cell({ v, onExplain, busy }: { v: unknown; onExplain?: (p: string) => void; busy?: boolean }) {
+  if (isFlatRec(v)) {
+    // Zero-valued parts say nothing (a score broken into 12 parts is mostly zeros), so only the non-zero ones are shown.
+    const entries = Object.entries(v as Rec).filter(([, x]) => x !== null && x !== undefined && x !== '' && x !== 0 && x !== false);
+    if (entries.length === 0) return <span className="muted">none</span>;
+    return (
+      <span className="dm-kv">
+        {entries.map(([k, x]) => (
+          <span key={k} className="chip">
+            {humanize(k)} <strong>{typeof x === 'number' ? fmtNum(x) : String(x)}</strong>
+          </span>
+        ))}
+      </span>
+    );
+  }
   if (Array.isArray(v)) {
     if (v.length === 0) return <span className="muted">none</span>;
+    // Sentences read better as a short list than as one long comma-joined line.
+    if (v.some((x) => typeof x === 'string' && x.length > 48)) {
+      return (
+        <ul className="dm-list tight">
+          {v.map((x, i) => (
+            <li key={i}>
+              <Primitive v={x} onExplain={onExplain} busy={busy} max={160} />
+            </li>
+          ))}
+        </ul>
+      );
+    }
     return (
       <span className="dm-inline">
         {v.map((x, i) => (
@@ -78,6 +115,18 @@ function ListView({ items, depth, onExplain, busy }: { items: unknown[]; depth: 
       show {Math.min(MAX_ITEMS, items.length - shown)} more ({items.length - shown} hidden)
     </button>
   ) : null;
+
+  if (items.every(isPrimitive) && isChipList(items)) {
+    return (
+      <ul className="dm-chips" aria-label="values">
+        {items.map((x, i) => (
+          <li key={i} className="chip">
+            {String(x)}
+          </li>
+        ))}
+      </ul>
+    );
+  }
 
   if (items.every(isPrimitive)) {
     return (
@@ -166,7 +215,7 @@ export function GenericValue({ value, depth = 0, onExplain, busy }: Props) {
     return (
       <dl className="dm-dl">
         {entries.map(([k, v]) => (
-          <div key={k} className="dm-row">
+          <div key={k} className={`dm-row${isPrimitive(v) || isPrimitiveList(v) ? '' : ' stack'}`}>
             <dt>{humanize(k)}</dt>
             <dd>
               <GenericValue value={v} depth={depth + 1} onExplain={onExplain} busy={busy} />

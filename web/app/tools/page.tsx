@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { CallLog } from '../../components/CallLog';
 import { EndpointBox } from '../../components/EndpointBox';
 import { ToolExplorer } from '../../components/ToolExplorer';
+import { ToolGuide } from '../../components/ToolGuide';
 import { useMcp } from '../../components/useMcp';
 import '../demo/demo.css';
 
@@ -20,14 +21,14 @@ export default function ToolsPage() {
         <span className="label label-accent">12 tools</span>
         <h1>Tool explorer</h1>
         <p className="lede">
-          Run any single RepoAtlas tool against the real server and see exactly what an agent receives, including the graph widget that <code>tour_next</code> and <code>explain_file</code> draw. For the guided
-          six-step path, use the <a href="/demo/">live demo</a>.
+          Try any RepoAtlas tool by hand. Each one tells you what it does, what to enter and what you will get back. For a guided six-step path instead, use the <a href="/demo/">live demo</a>.
         </p>
       </header>
 
       <EndpointBox endpoint={endpoint} onChange={changeEndpoint} />
-      <CallLog entries={log} onClear={clearLog} />
+      <ToolGuide />
       <ToolExplorer key={endpoint} call={call} />
+      <CallLog entries={log} onClear={clearLog} />
 
       <p className="muted dm-foot">
         Text from repos and issues is untrusted data and is shown as plain text. Snapshots are precomputed, so results are as of the date each tool reports.
