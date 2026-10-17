@@ -5,7 +5,7 @@
   <img alt="Built on NitroStack" src="https://img.shields.io/badge/built%20on-NitroStack-6b4fd0?style=for-the-badge">
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white">
   <img alt="600 tests passing" src="https://img.shields.io/badge/tests-600%20passing-2ea043?style=for-the-badge&logo=vitest&logoColor=white">
-  <img alt="Free tier only" src="https://img.shields.io/badge/cost-%240%20free%20tier-0969da?style=for-the-badge">
+  <!-- <img alt="Free tier only" src="https://img.shields.io/badge/cost-%240%20free%20tier-0969da?style=for-the-badge"> -->
 </p>
 
 An MCP server that turns any public GitHub repo (paste its URL) into a graph of its code, history, people and issues, so an AI agent can walk a newcomer through the project step by step and then find the issues they can actually finish, with the files to touch.
