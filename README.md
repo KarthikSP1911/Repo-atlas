@@ -117,8 +117,7 @@ npm run eval                # key-file overlap, localization backtest, hand-chec
 ## Deploy (NitroCloud)
 
 ```bash
-npm run build && npx tsc --noEmit
-npx nitrostack-cli pack --output repoatlas.zip     # no node_modules, no .env
+npm run deploy:pack     # pins NitroStack versions, builds, typechecks, checks snapshots, writes repoatlas.zip
 ```
 
 Upload the zip under the app's MCP, Deployments page, and set `EXPORT_SECRET` (and `RUNTIME_MODE=snapshot`) in the dashboard's environment variables there. The MCP endpoint is `<live URL>/mcp`; connect it to Claude or ChatGPT as a custom connector, or use NitroChat.
