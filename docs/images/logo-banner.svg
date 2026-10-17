@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 280" width="1200" height="280" role="img" aria-labelledby="t" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title id="t">RepoAtlas: know where to start in any GitHub repo</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b0f17"/>
+      <stop offset="1" stop-color="#151b2b"/>
+    </linearGradient>
+    <linearGradient id="bar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#3b82f6"/>
+      <stop offset="1" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="280" rx="18" fill="url(#bg)"/>
+  <rect x="0" y="262" width="1200" height="18" rx="0" fill="url(#bar)"/>
+  <rect width="1200" height="280" rx="18" fill="none" stroke="#1f2937"/>
+
+  <!-- faint repo graph on the right: files linked by imports -->
+  <g stroke="#2b3550" stroke-width="2" fill="none">
+    <path d="M760 70 L880 120 L980 64 L1100 110"/>
+    <path d="M880 120 L850 205 L960 190 L1060 215"/>
+    <path d="M980 64 L960 190"/>
+    <path d="M1100 110 L1060 215"/>
+    <path d="M760 70 L850 205"/>
+  </g>
+  <g fill="#1a2238" stroke="#3b4a75" stroke-width="2">
+    <circle cx="760" cy="70" r="10"/>
+    <circle cx="980" cy="64" r="10"/>
+    <circle cx="1100" cy="110" r="10"/>
+    <circle cx="850" cy="205" r="10"/>
+    <circle cx="960" cy="190" r="10"/>
+    <circle cx="1060" cy="215" r="10"/>
+  </g>
+  <circle cx="880" cy="120" r="16" fill="#3b82f6" stroke="#93c5fd" stroke-width="3"/>
+
+  <!-- the RepoAtlas mark: three linked nodes in a rounded square -->
+  <g transform="translate(70 76) scale(4.5)">
+    <rect width="32" height="32" rx="8" fill="#ffffff"/>
+    <path d="M10.5 11.5l5.5 10M21.5 11.5l-5.5 10M10.5 11h11" stroke="#0b0f17" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <circle cx="10.5" cy="11" r="3" fill="#0b0f17"/>
+    <circle cx="21.5" cy="11" r="3" fill="#0b0f17"/>
+    <circle cx="16" cy="22" r="3" fill="#0b0f17"/>
+  </g>
+
+  <text x="244" y="140" font-size="68" font-weight="800" fill="#ffffff" letter-spacing="-2">RepoAtlas</text>
+  <text x="246" y="182" font-size="23" fill="#cbd5e1">Know where to start in any GitHub repo.</text>
+  <text x="246" y="216" font-size="15" fill="#8b9ab8" letter-spacing="0.4">An MCP server that maps a repo and finds the issues you can finish</text>
+</svg>

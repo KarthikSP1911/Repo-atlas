@@ -1,4 +1,12 @@
-# RepoAtlas
+<h1 align="center"><img src="docs/images/logo-banner.svg" alt="RepoAtlas: know where to start in any GitHub repo" width="100%"></h1>
+
+<p align="center">
+  <img alt="MCP server" src="https://img.shields.io/badge/MCP-server-111827?style=for-the-badge&logo=modelcontextprotocol&logoColor=white">
+  <img alt="Built on NitroStack" src="https://img.shields.io/badge/built%20on-NitroStack-6b4fd0?style=for-the-badge">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white">
+  <img alt="600 tests passing" src="https://img.shields.io/badge/tests-600%20passing-2ea043?style=for-the-badge&logo=vitest&logoColor=white">
+  <img alt="Free tier only" src="https://img.shields.io/badge/cost-%240%20free%20tier-0969da?style=for-the-badge">
+</p>
 
 An MCP server that turns any public GitHub repo (paste its URL) into a graph of its code, history, people and issues, so an AI agent can walk a newcomer through the project step by step and then find the issues they can actually finish, with the files to touch.
 
@@ -116,6 +124,18 @@ sequenceDiagram
   A->>S: export_guide(confirmToken)
   S-->>A: ARCHITECTURE.md text (nothing is written anywhere)
 ```
+
+## Tech stack
+
+| Area | Built with |
+|---|---|
+| **Server** | <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white"> <img alt="Node.js 20" src="https://img.shields.io/badge/Node.js-20-5FA04E?style=flat-square&logo=nodedotjs&logoColor=white"> <img alt="NitroStack" src="https://img.shields.io/badge/NitroStack-6b4fd0?style=flat-square"> <img alt="Model Context Protocol" src="https://img.shields.io/badge/MCP-Model%20Context%20Protocol-111827?style=flat-square&logo=modelcontextprotocol&logoColor=white"> <img alt="Zod" src="https://img.shields.io/badge/Zod-3E67B1?style=flat-square&logo=zod&logoColor=white"> |
+| **Graph and search** | <img alt="graphology" src="https://img.shields.io/badge/graphology-graph%20metrics-0f766e?style=flat-square"> <img alt="MiniSearch" src="https://img.shields.io/badge/MiniSearch-text%20search-0f766e?style=flat-square"> |
+| **Repo analysis (offline)** | <img alt="Git" src="https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white"> <img alt="ts-morph" src="https://img.shields.io/badge/ts--morph-compiler%20API-3178C6?style=flat-square&logo=typescript&logoColor=white"> <img alt="GitHub GraphQL" src="https://img.shields.io/badge/GitHub-GraphQL-181717?style=flat-square&logo=github&logoColor=white"> |
+| **Repo analysis (on demand)** | <img alt="GitHub archive and REST API" src="https://img.shields.io/badge/GitHub-archive%20+%20REST-181717?style=flat-square&logo=github&logoColor=white"> <img alt="Streaming tar reader" src="https://img.shields.io/badge/streaming-tar%20reader-475569?style=flat-square"> |
+| **Website** | <img alt="Next.js 14" src="https://img.shields.io/badge/Next.js-14-000000?style=flat-square&logo=nextdotjs&logoColor=white"> <img alt="React 18" src="https://img.shields.io/badge/React-18-20232A?style=flat-square&logo=react&logoColor=61DAFB"> <img alt="Zod" src="https://img.shields.io/badge/Zod-3E67B1?style=flat-square&logo=zod&logoColor=white"> <img alt="jsPDF" src="https://img.shields.io/badge/jsPDF-PDF%20export-b91c1c?style=flat-square"> |
+| **Quality** | <img alt="Vitest" src="https://img.shields.io/badge/Vitest-6E9F18?style=flat-square&logo=vitest&logoColor=white"> <img alt="TypeScript strict" src="https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white"> <img alt="Mermaid" src="https://img.shields.io/badge/Mermaid-diagrams-FF3670?style=flat-square&logo=mermaid&logoColor=white"> |
+| **Hosting (all free tier)** | <img alt="NitroCloud" src="https://img.shields.io/badge/NitroCloud-MCP%20server-6b4fd0?style=flat-square"> <img alt="Vercel" src="https://img.shields.io/badge/Vercel-website-000000?style=flat-square&logo=vercel&logoColor=white"> <img alt="GitHub" src="https://img.shields.io/badge/GitHub-source-181717?style=flat-square&logo=github&logoColor=white"> |
 
 ## Demo data
 
@@ -250,7 +270,7 @@ web/                                           static demo site: landing, live d
 src/config/weights.ts                          every tunable weight in one file
 data/snapshots/                                shipped snapshots (3 MB each at most)
 scripts/                                       precompute, check-snapshots, eval/
-docs/                                          DECISIONS, SPIKE, EVAL, API_BUDGET, eval/, images/ (the HLD diagram)
+docs/                                          DECISIONS, SPIKE, EVAL, API_BUDGET, eval/, images/ (HLD diagram, logo banner)
 tests/                                         vitest
 ```
 
