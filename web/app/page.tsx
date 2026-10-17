@@ -20,7 +20,7 @@ const TOOLS: { name: string; group: string; tone: string; text: string }[] = [
   { name: 'find_candidate_issues', group: 'Contribute', tone: 'label-done', text: 'Open, recent, clear and likely unclaimed issues, with the evidence for each.' },
   { name: 'localize_issue', group: 'Contribute', tone: 'label-done', text: 'The top 5 files an issue would change, with evidence, owner and reading order.' },
   { name: 'score_first_change', group: 'Contribute', tone: 'label-done', text: 'A first-change score with every factor shown, an effort estimate and watch-outs.' },
-  { name: 'export_guide', group: 'Action', tone: 'label-attention', text: 'Drafts an ARCHITECTURE.md. Preview first, full text only after a confirm token.' },
+  { name: 'export_guide', group: 'Action', tone: 'label-attention', text: 'Drafts an ARCHITECTURE.md. Preview first, full text only after you confirm.' },
 ];
 
 const STEPS: { icon: string; title: string; tools: string[]; text: string }[] = [
@@ -35,7 +35,7 @@ const FEATURES: { icon: string; title: string; text: string }[] = [
   { icon: 'layers', title: 'Any public repo', text: 'Four repos are precomputed and answer instantly. Any other public GitHub repo is built on demand from its URL, in seconds, with an approximate import graph and a note saying so. Private repos are not supported.' },
   { icon: 'graph', title: 'Two tiers', text: 'JavaScript, TypeScript and Python get an import graph. Every other language gets the file tree, history and people only, and every tool says so.' },
   { icon: 'clock', title: 'As of a date', text: 'Every answer states the snapshot’s commit and build date. “Likely unclaimed” is evidence, not a guarantee.' },
-  { icon: 'shield', title: 'Safe by design', text: 'The one action returns text only and needs a confirmation token. Text from repos and issues is untrusted data. Building a repo reads public data from GitHub; tokens are never logged or returned.' },
+  { icon: 'shield', title: 'Safe by design', text: 'The one action returns text only and needs a confirmation step. Text from repos and issues is untrusted data. Building a repo reads public data from GitHub; tokens are never logged or returned.' },
 ];
 
 const MCP_REMOTE = JSON.stringify({ mcpServers: { repoatlas: { command: 'npx', args: ['-y', 'mcp-remote', MCP_URL] } } }, null, 2);

@@ -48,9 +48,9 @@ export function ExportStep({ call, snapshotId }: { call: CallFn; snapshotId: str
   };
 
   return (
-    <Card n={6} title="Export a draft guide" tool="export_guide" blurb="Two steps on purpose: a preview first, then a confirmation token to get the text. The tool only returns text. It never writes to any repository." locked={false}>
+    <Card n={6} title="Export a draft guide" tool="export_guide" blurb="Two steps on purpose: a preview first, then a confirmation to get the text. The tool only returns text. It never writes to any repository." locked={false}>
       <button type="button" className="dm-btn primary" onClick={getPreview} disabled={preview.state.status === 'loading'}>
-        Get the preview
+        Step 1: Get the preview
       </button>
       <RunStatus state={preview.state} label="export_guide" onRetry={getPreview} />
       <p className="muted">If the server has no export secret configured, this tool returns an error, which is shown as is. Everything else in the demo still works.</p>
@@ -60,7 +60,7 @@ export function ExportStep({ call, snapshotId }: { call: CallFn; snapshotId: str
           <h3>Preview: {str(pv.title)}</h3>
           <p className="dm-notice">Nothing is written anywhere. This only returns text to your browser.</p>
           <p className="muted">
-            {num(pv.lines) ?? '?'} lines, {num(pv.characters) ?? '?'} characters. The confirmation token expires {fmtDate(p.expiresAt)}.
+            {num(pv.lines) ?? '?'} lines, {num(pv.characters) ?? '?'} characters. You have until {fmtDate(p.expiresAt)} to confirm.
           </p>
           <h4>Sections</h4>
           <ol className="dm-list">
@@ -72,21 +72,21 @@ export function ExportStep({ call, snapshotId }: { call: CallFn; snapshotId: str
           <Markdown text={str(pv.excerpt)} />
           <div className="dm-actions">
             <button type="button" className="dm-btn primary" disabled={!token || draft.state.status === 'loading'} onClick={() => void draft.run('export_guide', { snapshotId, confirmToken: token })}>
-              I confirm: get the draft
+              Step 2: Get the full draft
             </button>
             <button type="button" className="dm-btn" disabled={refusal.state.status === 'loading'} onClick={() => void refusal.run('export_guide', { snapshotId, confirmToken: 'not-a-real-token' })}>
-              Try without confirming
+              Test the safety check
             </button>
           </div>
           <RunStatus state={draft.state} label="export_guide" />
           {refusal.state.status === 'error' && (
             <div className="dm-refusal" aria-live="polite">
               <h4>The safety step worked</h4>
-              <p>The server refused a made-up token:</p>
+              <p>The server refused a request that skipped the preview:</p>
               <p className="dm-quote">{refusal.state.error}</p>
             </div>
           )}
-          {refusal.state.status === 'done' && <p className="dm-error">The server accepted a made-up token. That should not happen; please report it.</p>}
+          {refusal.state.status === 'done' && <p className="dm-error">The server accepted a request that skipped the preview. That should not happen; please report it.</p>}
           <RawJson value={preview.state.data} />
         </div>
       )}

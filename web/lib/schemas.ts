@@ -146,7 +146,8 @@ export const FORM_SCHEMAS = {
   find_candidate_issues: z.object({ ...profileFields, limit: optionalInt('How many issues', 1, 25) }),
   localize_issue: z.object({ issueNumber: optionalInt('Issue number', 1, 10_000_000) }),
   score_first_change: z.object({ issueNumber: optionalInt('Issue number', 1, 10_000_000), ...profileFields }),
-  export_guide: z.object({ confirmToken: z.string().transform((v) => v.trim()).pipe(z.string().max(200, 'That token is too long.')) }),
+  // The page handles the confirmation code itself; blank means "step 1: preview".
+  export_guide: z.object({ confirmToken: z.string().default('').transform((v) => v.trim()).pipe(z.string().max(200, 'That code is too long.')) }),
 } as const;
 
 export type ToolName = keyof typeof FORM_SCHEMAS;

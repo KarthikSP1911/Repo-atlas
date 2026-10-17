@@ -318,12 +318,18 @@ function ToolPanel({
         </form>
       )}
       <div className="dm-actions">
-        <button type="button" className="dm-btn primary" disabled={loading} onClick={() => void go()}>
-          {loading ? 'Running…' : 'Run tool'}
-        </button>
-        {spec.name === 'export_guide' && (
-          <button type="button" className="dm-btn" disabled={loading} onClick={() => void go({ ...values, confirmToken: 'not-a-real-token' })}>
-            Try a wrong token
+        {spec.name === 'export_guide' ? (
+          <>
+            <button type="button" className="dm-btn primary" disabled={loading} onClick={() => void go({ ...values, confirmToken: '' })}>
+              {loading ? 'Running…' : 'Step 1: Preview the guide'}
+            </button>
+            <button type="button" className="dm-btn" disabled={loading} onClick={() => void go({ ...values, confirmToken: 'not-a-real-token' })}>
+              Test the safety check
+            </button>
+          </>
+        ) : (
+          <button type="button" className="dm-btn primary" disabled={loading} onClick={() => void go()}>
+            {loading ? 'Running…' : 'Run tool'}
           </button>
         )}
       </div>
@@ -377,17 +383,16 @@ function ToolPanel({
           )}
           {previewToken && (
             <div className="dm-notice">
-              <p>This is the preview. Nothing is written anywhere. To get the full draft, confirm with the token.</p>
+              <p>This is only the preview. Nothing is written anywhere. Happy with it? Press the button to get the full document.</p>
               <button
                 type="button"
                 className="dm-btn primary"
                 disabled={loading}
                 onClick={() => {
-                  set('confirmToken', previewToken);
                   void go({ ...values, confirmToken: previewToken });
                 }}
               >
-                I confirm: get the draft
+                Step 2: Get the full draft
               </button>
             </div>
           )}

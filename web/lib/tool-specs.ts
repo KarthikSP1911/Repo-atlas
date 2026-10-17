@@ -379,24 +379,15 @@ export const TOOL_SPECS: ToolSpec[] = [
     name: 'export_guide',
     group: 'Action',
     title: 'Export an ARCHITECTURE.md draft (two steps)',
-    summary: 'Writes a draft ARCHITECTURE.md describing the project. It works in two steps on purpose: first a preview and a confirm token, then, only with that token, the full text. It only returns text and never changes anything in the repo.',
+    summary: 'Writes a draft ARCHITECTURE.md describing the project. It works in two steps on purpose: first a short preview, then, once you confirm, the full text. It only returns text and never changes anything in the repo.',
     whenToUse: 'When you want a written guide to hand to a teammate.',
-    fields: [
-      {
-        name: 'confirmToken',
-        label: 'Confirm token (leave this empty)',
-        kind: 'text',
-        default: '',
-        required: false,
-        placeholder: 'leave empty: the page fills it in for you',
-        help: 'You do not need to type anything here. Press Run tool to get a short preview. Then press the "I confirm: get the draft" button that appears under the preview to get the full document. The page copies the token in for you; it is valid for 10 minutes and only for this repo.',
-      },
-    ],
+    fields: [],
+    noInputNote: 'Nothing to type. Press "Step 1: Preview the guide", read the preview, then press "Step 2: Get the full draft". The page handles the confirmation code for you.',
     returns: [
-      { name: 'Step 1: preview', meaning: 'The title and outline of the document, a confirm token and when it expires. Nothing is written anywhere.' },
-      { name: 'Step 2: draft', meaning: 'The full ARCHITECTURE.md text, ready to copy.' },
+      { name: 'Step 1: preview', meaning: 'The title and outline of the document and the first few lines. Nothing is written anywhere.' },
+      { name: 'Step 2: full draft', meaning: 'The whole ARCHITECTURE.md, with Copy and Download buttons.' },
     ],
-    readIt: 'Try "Try a wrong token" once to see the safety check refuse. Text taken from the repo is flattened in the draft, so links and formatting from the repo cannot sneak in.',
+    readIt: 'Press "Test the safety check" once to see the server refuse a request that skips the preview. Text taken from the repo is flattened in the draft, so links and formatting from the repo cannot sneak in.',
   },
 ];
 
@@ -412,6 +403,6 @@ export const GLOSSARY: { term: string; meaning: string }[] = [
   { term: 'Role', meaning: 'Who the answer is for: new developer, reviewer, tester or quick look.' },
   { term: 'Stage', meaning: 'One stop of the eight-stop guided tour.' },
   { term: 'Profile', meaning: 'Your languages, experience and interests, used to match you with issues.' },
-  { term: 'Confirm token', meaning: 'A short-lived code from the export preview that proves you saw it before the full draft is returned.' },
+  { term: 'Confirmation code', meaning: 'A short-lived code the server gives with the export preview. Sending it back is how the server knows you saw the preview first. The page does this for you when you press Step 2.' },
   { term: 'Widget', meaning: 'The small interactive picture (the import graph) that some tools draw.' },
 ];
