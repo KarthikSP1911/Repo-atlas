@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { CUSTOM_REPO } from './demo-util';
+import { CUSTOM_REPO, OLD_BUILD_HINT, looksLikeOldBuild } from './demo-util';
 import { REPOS, TIER_MEANING, asRec, fmtDate, num, repoArgOf, str } from './demo-util';
 import { RepoPicker } from './RepoPicker';
 import { Card, LimitsBox, RawJson, RunStatus } from './ui';
@@ -63,6 +63,11 @@ export function RepoStep({ call, onBuilt, initialRepo }: { call: CallFn; onBuilt
           <p className="dm-error">
             <strong>Could not build this repo:</strong> {str(d.message)}
           </p>
+          {looksLikeOldBuild(str(d.message)) && (
+            <p className="dm-notice">
+              <strong>Why:</strong> {OLD_BUILD_HINT}
+            </p>
+          )}
           <RawJson value={state.data} />
         </div>
       )}

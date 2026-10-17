@@ -4,7 +4,7 @@ import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { TOOL_SPECS, GROUPS, type Field, type ToolSpec } from '../lib/tool-specs';
 import { GenericValue } from './GenericValue';
 import { GraphPanel } from './GraphPanel';
-import { REPOS, asRec, recList, repoArgOf, str } from './demo-util';
+import { OLD_BUILD_HINT, REPOS, asRec, looksLikeOldBuild, recList, repoArgOf, str } from './demo-util';
 import { RepoPicker } from './RepoPicker';
 import { LimitsBox, RawJson } from './ui';
 import type { CallFn } from './useToolRun';
@@ -307,6 +307,11 @@ function ToolPanel({
         {run.status === 'error' && (
           <p className="dm-error">
             <strong>Error:</strong> {run.error}
+          </p>
+        )}
+        {(run.status === 'error' ? looksLikeOldBuild(run.error ?? '') : run.status === 'done' && str(d.status) === 'unavailable' && looksLikeOldBuild(str(d.message))) && (
+          <p className="dm-notice">
+            <strong>Why:</strong> {OLD_BUILD_HINT}
           </p>
         )}
       </div>

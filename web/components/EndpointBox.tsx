@@ -2,9 +2,10 @@
 
 import { useId, useState } from 'react';
 import { LOCAL_MCP_URL, MCP_URL } from '../lib/config';
-import { REQUIRED_TOOLS, listTools } from '../lib/mcp';
+import { REQUIRED_TOOLS, callTool, listTools } from '../lib/mcp';
+import { OLD_BUILD_HINT } from './demo-util';
 
-type Check = { status: 'idle' } | { status: 'loading' } | { status: 'ok'; count: number; missing: string[] } | { status: 'error'; message: string };
+type Check = { status: 'idle' } | { status: 'loading' } | { status: 'ok'; count: number; missing: string[]; liveBuilds: boolean | null } | { status: 'error'; message: string };
 
 /** Endpoint input, the two presets, and the "Check connection" button (tools/list). */
 export function EndpointBox({ endpoint, onChange }: { endpoint: string; onChange: (url: string) => void }) {
@@ -15,7 +16,15 @@ export function EndpointBox({ endpoint, onChange }: { endpoint: string; onChange
     setCheck({ status: 'loading' });
     try {
       const names = await listTools(endpoint, { timeoutMs: 20_000 });
-      setCheck({ status: 'ok', count: names.length, missing: REQUIRED_TOOLS.filter((t) => !names.includes(t)) });
+      // ping_repoatlas says whether this build can build any repo (newer builds report liveBuilds; older ones do not).
+      let liveBuilds: boolean | null = null;
+      try {
+        const ping = (await callTool(endpoint, 'ping_repoatlas', {}, { timeoutMs: 20_000 })).data as { liveBuilds?: unknown } | null;
+        liveBuilds = typeof ping?.liveBuilds === 'boolean' ? ping.liveBuilds : false;
+      } catch {
+        liveBuilds = null;
+      }
+      setCheck({ status: 'ok', count: names.length, missing: REQUIRED_TOOLS.filter((t) => !names.includes(t)), liveBuilds });
     } catch (e) {
       setCheck({ status: 'error', message: e instanceof Error ? e.message : String(e) });
     }
@@ -55,6 +64,11 @@ export function EndpointBox({ endpoint, onChange }: { endpoint: string; onChange
             {check.missing.length === 0
               ? `Connected. The server offers ${check.count} tools, including all 12 RepoAtlas tools.`
               : `Connected, but ${check.missing.length} required tool${check.missing.length === 1 ? ' is' : 's are'} missing: ${check.missing.join(', ')}. The server needs a redeploy.`}
+          </p>
+        )}
+        {check.status === 'ok' && check.missing.length === 0 && check.liveBuilds === false && (
+          <p className="dm-notice">
+            <strong>Limited server:</strong> {OLD_BUILD_HINT}
           </p>
         )}
         {check.status === 'error' && (

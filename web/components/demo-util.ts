@@ -60,6 +60,12 @@ export function shortArgs(args: Record<string, unknown>, max = 70): string {
   return clip(parts.join(', '), max);
 }
 
+/** What the old (snapshot-only) server build says when asked for a repo it does not have. */
+export const looksLikeOldBuild = (message: string): boolean => /snapshot mode|cannot clone or build repos on demand|only serves repos precomputed/i.test(message);
+
+export const OLD_BUILD_HINT =
+  'This server can only open its four precomputed repos (it is an older RepoAtlas build, or LIVE_BUILDS=off). The latest code builds any public GitHub repo: redeploy it (npm run deploy:pack, then upload repoatlas.zip in NitroCloud), or use a local server that runs the latest code.';
+
 /** Value of the repo picker's "another repo" option; the text box holds the URL. */
 export const CUSTOM_REPO = '__custom';
 
