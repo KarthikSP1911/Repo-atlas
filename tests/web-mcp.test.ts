@@ -117,9 +117,43 @@ describe('callTool', () => {
     const fetchFn = (async () => {
       throw new TypeError('Failed to fetch');
     }) as unknown as typeof fetch;
-    const e = await failure(callTool('http://localhost:3000/mcp', 't', {}, { fetchFn }));
+    const e = await failure(callTool('http://localhost:3000/mcp', 't', {}, { fetchFn, retryDelayMs: 0 }));
     expect(e.kind).toBe('network');
     expect(e.message).toMatch(/server is running/i);
+  });
+
+  it('retries a transient network failure and then succeeds', async () => {
+    const msg = toolResult({ content: [{ type: 'text', text: '{"ok":true}' }] });
+    let calls = 0;
+    const fetchFn = (async () => {
+      calls++;
+      if (calls < 3) throw new TypeError('Failed to fetch');
+      return new Response(sse(msg), { status: 200, headers: { 'content-type': 'text/event-stream' } });
+    }) as unknown as typeof fetch;
+    const r = await callTool('http://localhost:3000/mcp', 't', {}, { fetchFn, retryDelayMs: 0 });
+    expect(r.data).toEqual({ ok: true });
+    expect(calls).toBe(3);
+  });
+
+  it('retries a 503 but gives up after the retry budget', async () => {
+    let calls = 0;
+    const fetchFn = (async () => {
+      calls++;
+      return new Response('upstream call failed', { status: 503 });
+    }) as unknown as typeof fetch;
+    const e = await failure(callTool('http://localhost:3000/mcp', 't', {}, { fetchFn, retryDelayMs: 0, retries: 2 }));
+    expect(e.kind).toBe('http');
+    expect(calls).toBe(3);
+  });
+
+  it('does not retry a 500', async () => {
+    let calls = 0;
+    const fetchFn = (async () => {
+      calls++;
+      return new Response('boom', { status: 500 });
+    }) as unknown as typeof fetch;
+    await failure(callTool('http://localhost:3000/mcp', 't', {}, { fetchFn, retryDelayMs: 0 }));
+    expect(calls).toBe(1);
   });
 
   it('times out when the server never answers', async () => {

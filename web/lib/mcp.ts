@@ -21,6 +21,10 @@ export interface CallOptions {
   fetchFn?: typeof fetch;
   timeoutMs?: number;
   signal?: AbortSignal;
+  /** Extra attempts after a transient failure (network error, 502/503/504). Default 3. */
+  retries?: number;
+  /** Base wait before a retry; grows linearly per attempt. Default 350. */
+  retryDelayMs?: number;
 }
 
 export interface CallResult {
@@ -104,7 +108,41 @@ function textOf(result: Record<string, unknown>): string {
   return '';
 }
 
+const DEFAULT_RETRIES = 3;
+const DEFAULT_RETRY_DELAY_MS = 350;
+
+function isTransient(e: unknown): boolean {
+  if (!(e instanceof McpError)) return false;
+  if (e.kind === 'network') return e.message.startsWith('Could not reach');
+  return e.kind === 'http' && /HTTP (502|503|504)\b/.test(e.message);
+}
+
+function sleep(ms: number, signal?: AbortSignal): Promise<void> {
+  return new Promise((resolve) => {
+    if (ms <= 0 || signal?.aborted) return resolve();
+    const t = setTimeout(resolve, ms);
+    signal?.addEventListener('abort', () => { clearTimeout(t); resolve(); }, { once: true });
+  });
+}
+
+/**
+ * The hosted gateway sometimes answers a request with a bare 503 that carries no CORS headers, so
+ * a browser reports it as a plain network failure. The calls are read-only, so retrying is safe.
+ */
 async function rpc(endpoint: string, method: string, params: unknown, opts: CallOptions): Promise<{ message: Record<string, unknown>; ms: number }> {
+  const retries = opts.retries ?? DEFAULT_RETRIES;
+  const delay = opts.retryDelayMs ?? DEFAULT_RETRY_DELAY_MS;
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return await rpcOnce(endpoint, method, params, opts);
+    } catch (e) {
+      if (attempt >= retries || opts.signal?.aborted || !isTransient(e)) throw e;
+      await sleep(delay * (attempt + 1), opts.signal);
+    }
+  }
+}
+
+async function rpcOnce(endpoint: string, method: string, params: unknown, opts: CallOptions): Promise<{ message: Record<string, unknown>; ms: number }> {
   const url = checkEndpoint(endpoint);
   const fetchFn = opts.fetchFn ?? fetch;
   const timeoutMs = opts.timeoutMs ?? DEFAULT_TIMEOUT_MS;
