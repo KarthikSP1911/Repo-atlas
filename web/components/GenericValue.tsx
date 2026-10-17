@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { clip, humanize, isRec, looksLikePath, type Rec } from './demo-util';
+import { Markdown, looksLikeMarkdown } from './Markdown';
 import { FileButton } from './ui';
 
 /**
@@ -37,7 +38,10 @@ export function ClipText({ text, max = CLIP_AT }: { text: string; max?: number }
 
 function Primitive({ v, onExplain, busy, max }: { v: unknown; onExplain?: (p: string) => void; busy?: boolean; max?: number }) {
   if (v === null || v === undefined || v === '') return <span className="muted">none</span>;
-  if (typeof v === 'string') return looksLikePath(v) && onExplain ? <FileButton path={v} onExplain={onExplain} busy={busy} /> : <ClipText text={v} max={max} />;
+  if (typeof v === 'string') {
+    if (looksLikeMarkdown(v)) return <Markdown text={v} />;
+    return looksLikePath(v) && onExplain ? <FileButton path={v} onExplain={onExplain} busy={busy} /> : <ClipText text={v} max={max} />;
+  }
   return <>{String(v)}</>;
 }
 

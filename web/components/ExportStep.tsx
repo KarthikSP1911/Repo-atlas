@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { asRec, fmtDate, num, str, strList } from './demo-util';
+import { Markdown } from './Markdown';
 import { Card, LimitsBox, RawJson, RunStatus } from './ui';
 import { useToolRun, type CallFn } from './useToolRun';
 
@@ -11,6 +12,7 @@ export function ExportStep({ call, snapshotId }: { call: CallFn; snapshotId: str
   const draft = useToolRun(call);
   const refusal = useToolRun(call);
   const [copied, setCopied] = useState<string>('');
+  const [view, setView] = useState<'formatted' | 'source'>('formatted');
 
   const p = asRec(preview.state.data);
   const pv = asRec(p.preview);
@@ -67,9 +69,7 @@ export function ExportStep({ call, snapshotId }: { call: CallFn; snapshotId: str
             ))}
           </ol>
           <h4>Excerpt</h4>
-          <pre className="dm-pre" tabIndex={0}>
-            {str(pv.excerpt)}
-          </pre>
+          <Markdown text={str(pv.excerpt)} />
           <div className="dm-actions">
             <button type="button" className="dm-btn primary" disabled={!token || draft.state.status === 'loading'} onClick={() => void draft.run('export_guide', { snapshotId, confirmToken: token })}>
               I confirm: get the draft
@@ -108,9 +108,21 @@ export function ExportStep({ call, snapshotId }: { call: CallFn; snapshotId: str
           <p className="muted" aria-live="polite">
             {copied}
           </p>
-          <pre className="dm-pre tall" tabIndex={0}>
-            {markdown}
-          </pre>
+          <div className="dm-actions" role="group" aria-label="View">
+            <button type="button" className={`dm-btn${view === 'formatted' ? ' primary' : ''}`} aria-pressed={view === 'formatted'} onClick={() => setView('formatted')}>
+              Formatted
+            </button>
+            <button type="button" className={`dm-btn${view === 'source' ? ' primary' : ''}`} aria-pressed={view === 'source'} onClick={() => setView('source')}>
+              Markdown source
+            </button>
+          </div>
+          {view === 'formatted' ? (
+            <Markdown text={markdown} />
+          ) : (
+            <pre className="dm-pre tall" tabIndex={0}>
+              {markdown}
+            </pre>
+          )}
           <LimitsBox limits={d.limits} />
           <RawJson value={draft.state.data} />
         </div>
