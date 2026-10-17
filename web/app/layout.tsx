@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
+import '@fontsource-variable/inter';
 import { GeistMono } from 'geist/font/mono';
-import { GeistSans } from 'geist/font/sans';
 import { SiteFooter } from '../components/SiteFooter';
 import { SiteHeader } from '../components/SiteHeader';
 import './globals.css';
@@ -23,7 +23,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+    <html lang="en" className={GeistMono.variable}>
       <body>
         <SiteHeader />
         {children}

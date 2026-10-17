@@ -48,7 +48,7 @@
   --shadow: 0 1px 2px #0000000a;
   --shadow-lg: 0 8px 30px #0000001a;
   --radius: 12px;
-  --font: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font: 'Inter Variable', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
 
   /* legacy names used by older rules */
@@ -117,8 +117,9 @@ body {
   background: var(--canvas);
   color: var(--fg);
   font-family: var(--font);
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 17px;
+  line-height: 1.65;
+  font-feature-settings: 'cv11', 'ss03';
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -153,10 +154,10 @@ h1 {
   line-height: 1.05;
 }
 h2 {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
 }
 h3 {
-  font-size: 1rem;
+  font-size: 1.1rem;
 }
 p {
   margin: 0 0 12px;
@@ -244,10 +245,10 @@ code {
 .nav-link {
   display: inline-flex;
   align-items: center;
-  padding: 6px 12px;
+  padding: 7px 14px;
   border-radius: 999px;
   color: var(--fg-muted);
-  font-size: 14px;
+  font-size: 15px;
   text-decoration: none;
 }
 .nav-link:hover {
@@ -270,7 +271,7 @@ code {
   justify-content: center;
   gap: 8px;
   font: inherit;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
   line-height: 20px;
   padding: 7px 16px;
@@ -298,19 +299,19 @@ code {
   border-color: var(--btn-primary-hover);
 }
 .btn-lg {
-  font-size: 16px;
+  font-size: 17px;
   padding: 11px 26px;
   line-height: 24px;
 }
 .btn-sm {
   padding: 4px 12px;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 20px;
 }
 
 .label {
   display: inline-block;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   line-height: 18px;
   padding: 1px 9px;
@@ -392,7 +393,7 @@ code {
   color: transparent;
 }
 .lede {
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   line-height: 1.6;
   color: var(--fg-muted);
   max-width: 680px;
@@ -420,7 +421,7 @@ code {
 .cmd code {
   background: none;
   padding: 0;
-  font-size: 13px;
+  font-size: 14px;
   overflow-x: auto;
   white-space: nowrap;
   scrollbar-width: none;
@@ -442,7 +443,7 @@ code {
   color: var(--fg);
   font: inherit;
   font-family: var(--mono);
-  font-size: 14px;
+  font-size: 15px;
   padding: 8px 0;
 }
 .cmd-form:focus-within {
@@ -451,7 +452,7 @@ code {
 }
 .hero-note {
   margin: 14px 0 0;
-  font-size: 14px;
+  font-size: 15px;
 }
 .sr-only {
   position: absolute;
@@ -478,19 +479,19 @@ code {
   text-align: center;
 }
 .section-head h2 {
-  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-size: clamp(2rem, 4.2vw, 2.8rem);
   letter-spacing: -0.04em;
 }
 .section-head p {
   color: var(--fg-muted);
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   margin: 0;
 }
 .eyebrow {
   display: block;
   margin-bottom: 12px;
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -523,7 +524,7 @@ code {
   padding: 12px 20px;
   background: var(--canvas-subtle);
   border-bottom: 1px solid var(--border);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
 }
 .box-header .muted {
@@ -567,13 +568,13 @@ code {
 }
 .session .tool {
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
 }
 .session .out {
   grid-column: 2;
   color: var(--fg-muted);
-  font-size: 14px;
+  font-size: 15px;
   overflow-wrap: anywhere;
 }
 .session-foot {
@@ -581,7 +582,7 @@ code {
   border-top: 1px solid var(--border);
   background: var(--canvas-subtle);
   color: var(--fg-muted);
-  font-size: 12px;
+  font-size: 13px;
 }
 .window-dots {
   display: inline-flex;
@@ -610,19 +611,19 @@ code {
 }
 .stat b {
   display: block;
-  font-size: 2.6rem;
+  font-size: 2.8rem;
   line-height: 1.1;
   font-weight: 600;
   letter-spacing: -0.045em;
 }
 .stat span {
   color: var(--fg-muted);
-  font-size: 14px;
+  font-size: 15px;
 }
 
 /* ---------- diff (before / after) ---------- */
 .diff {
-  font-size: 14px;
+  font-size: 15px;
   line-height: 20px;
 }
 .diff-line {
@@ -660,7 +661,7 @@ code {
   border-bottom: 1px solid var(--border);
   color: var(--fg-muted);
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -705,7 +706,7 @@ code {
   color: var(--fg);
 }
 .timeline h3 {
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   margin: 8px 0 4px;
 }
 .timeline p {
@@ -722,7 +723,7 @@ code {
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: 15px;
 }
 th,
 td {
@@ -734,7 +735,7 @@ td {
 th {
   color: var(--fg-muted);
   font-weight: 500;
-  font-size: 12px;
+  font-size: 13px;
   font-family: var(--mono);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -772,7 +773,7 @@ td code {
   border: 1px solid var(--border);
   border-radius: 999px;
   padding: 0 10px;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 22px;
   background: var(--canvas-subtle);
   color: var(--fg);
@@ -792,7 +793,7 @@ td code {
 }
 .figure figcaption {
   color: var(--fg-muted);
-  font-size: 14px;
+  font-size: 15px;
   margin-top: 16px;
   text-align: center;
 }
@@ -804,7 +805,7 @@ td code {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  font-size: 14px;
+  font-size: 15px;
   margin-bottom: 6px;
 }
 .bar-row .bar-top b {
@@ -835,7 +836,7 @@ td code {
   border: 1px solid var(--attention-muted);
   border-radius: var(--radius);
   background: var(--attention-subtle);
-  font-size: 14px;
+  font-size: 15px;
 }
 .callout svg {
   flex: none;
@@ -856,7 +857,7 @@ td code {
   border-radius: var(--radius);
   overflow-x: auto;
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
 }
 .codeblock .btn {
@@ -869,7 +870,7 @@ td code {
   margin-top: 12px;
 }
 .codelabel {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
   margin: 24px 0 10px;
 }
@@ -889,7 +890,7 @@ td code {
 }
 .feature p {
   color: var(--fg-muted);
-  font-size: 14px;
+  font-size: 15px;
   margin: 0;
 }
 
@@ -897,7 +898,7 @@ td code {
 .site-footer {
   margin-top: 120px;
   border-top: 1px solid var(--border);
-  font-size: 14px;
+  font-size: 15px;
   color: var(--fg-muted);
 }
 .site-footer .container {
@@ -910,7 +911,7 @@ td code {
   gap: 32px;
 }
 .footer-grid h3 {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--fg);
   margin-bottom: 14px;
   letter-spacing: 0;
@@ -942,7 +943,7 @@ td code {
   margin-top: 40px;
   padding-top: 20px;
   border-top: 1px solid var(--border);
-  font-size: 13px;
+  font-size: 14px;
 }
 
 /* ---------- small screens ---------- */

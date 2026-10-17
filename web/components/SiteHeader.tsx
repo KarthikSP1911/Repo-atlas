@@ -6,15 +6,12 @@ import { Icon } from './Icon';
 import { Logo } from './Logo';
 
 const LINKS = [
-  { href: '/demo/', label: 'Live demo', match: (p: string) => p.startsWith('/demo') },
-  { href: '/tools/', label: 'Tool explorer', match: (p: string) => p.startsWith('/tools') },
   { href: '/#how', label: 'How it works', match: () => false },
-  { href: '/#tools', label: 'Tools', match: () => false },
-  { href: '/#accuracy', label: 'Accuracy', match: () => false },
+  { href: '/tools/', label: 'Tool explorer', match: (p: string) => p.startsWith('/tools') },
   { href: '/#connect', label: 'Connect', match: () => false },
 ] as const;
 
-/** One sticky, blurred bar: brand, links, and the two calls to action. On phones the links drop to a scrolling second row. */
+/** One sticky, blurred bar: brand, three links, and the two calls to action. */
 export function SiteHeader() {
   const path = usePathname() ?? '/';
   return (
@@ -40,8 +37,8 @@ export function SiteHeader() {
             <Icon name="fork" size={14} />
             GitHub
           </a>
-          <a className="btn btn-sm btn-primary" href="/demo/">
-            Try the demo
+          <a className="btn btn-sm btn-primary" href="/demo/" aria-current={path.startsWith('/demo') ? 'page' : undefined}>
+            Live demo
           </a>
         </div>
       </header>

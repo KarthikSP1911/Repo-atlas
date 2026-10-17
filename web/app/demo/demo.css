@@ -3,7 +3,7 @@
 .dm {
   padding-top: 32px;
   padding-bottom: 8px;
-  font-size: 14px;
+  font-size: 16px;
   max-width: 1012px;
 }
 .dm-head {
@@ -27,7 +27,7 @@
   margin-top: 24px;
 }
 .dm-small {
-  font-size: 12px;
+  font-size: 13px;
 }
 .dm-break {
   overflow-wrap: anywhere;
@@ -46,7 +46,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
-  font-size: 14px;
+  font-size: 15px;
   margin: -20px -20px 20px;
   padding: 12px 20px;
   background: var(--canvas-subtle);
@@ -55,11 +55,11 @@
   font-weight: 500;
 }
 .dm-card h3 {
-  font-size: 14px;
+  font-size: 15px;
   margin: 16px 0 6px;
 }
 .dm-card h4 {
-  font-size: 14px;
+  font-size: 15px;
   margin: 14px 0 4px;
 }
 .dm-blurb {
@@ -81,12 +81,12 @@
   border-radius: 50%;
   background: var(--fg);
   color: var(--canvas);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
 }
 .dm-tool {
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--muted);
   border: 1px solid var(--border);
@@ -108,7 +108,7 @@
 .dm-btn {
   font: inherit;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 20px;
   padding: 6px 16px;
   border-radius: 999px;
@@ -133,7 +133,7 @@
 }
 .dm-btn.small {
   padding: 3px 12px;
-  font-size: 12px;
+  font-size: 13px;
 }
 .dm-btn[aria-pressed='true'] {
   background: var(--neutral-muted);
@@ -172,7 +172,7 @@
 }
 .dm-input {
   font: inherit;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 20px;
   padding: 7px 12px;
   border-radius: 8px;
@@ -191,7 +191,7 @@
 }
 .dm-input.mono {
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 14px;
 }
 .dm-form {
   display: flex;
@@ -214,7 +214,7 @@
 }
 .dm-form label {
   font-weight: 600;
-  font-size: 14px;
+  font-size: 15px;
 }
 .dm-checks {
   display: flex;
@@ -237,7 +237,7 @@
 /* file buttons and tags */
 .dm-file {
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13px;
   text-align: left;
   padding: 1px 7px;
   border-radius: 8px;
@@ -255,7 +255,7 @@
 }
 .dm-tag {
   display: inline-block;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   line-height: 18px;
   padding: 0 7px;
@@ -345,7 +345,7 @@
 }
 .dm-quote {
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13px;
   overflow-wrap: anywhere;
 }
 
@@ -378,7 +378,7 @@
 .dm-row dt {
   color: var(--muted);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 15px;
 }
 .dm-row dd {
   margin: 0;
@@ -393,7 +393,7 @@
   max-width: 100%;
 }
 .dm-table {
-  font-size: 13px;
+  font-size: 14px;
   border: 1px solid var(--border);
   border-radius: 8px;
 }
@@ -427,7 +427,7 @@
   list-style: none;
   padding: 0;
   margin: 4px 0;
-  font-size: 13px;
+  font-size: 14px;
 }
 .dm-chain li {
   margin: 3px 0;
@@ -443,7 +443,7 @@
 .dm-card summary {
   cursor: pointer;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 15px;
 }
 .dm-limits {
   color: var(--muted);
@@ -460,7 +460,7 @@
   overflow: auto;
   max-height: 320px;
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.45;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -555,7 +555,7 @@
 .dm-fact h4 {
   margin: 6px 0 2px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -583,12 +583,12 @@
   border-radius: 8px;
 }
 .dm-legend {
-  font-size: 12px;
+  font-size: 13px;
   margin: 6px 0 0;
 }
 .dm-picked {
   margin-top: 6px;
-  font-size: 14px;
+  font-size: 15px;
 }
 .dm-nograph {
   margin: 10px 0;
@@ -674,7 +674,7 @@
   margin-bottom: 8px;
 }
 .tx-group {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--fg-muted);
   margin: 12px 0 4px;
@@ -695,7 +695,7 @@
   width: 100%;
   font: inherit;
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 14px;
   text-align: left;
   padding: 5px 8px;
   border: 0;
