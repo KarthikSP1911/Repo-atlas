@@ -40,6 +40,7 @@ export function limitsOf(snap: Snapshot): Limits {
     `Snapshot of commit ${snap.sha.slice(0, 7)} built ${snap.builtAt}; the repo may have changed since.`,
   ];
   if (snap.truncated) notes.push('Truncated: size caps were applied, so this is a partial graph of the repo.');
+  if (snap.source) notes.push(...snap.source.notes);
   return {
     snapshotId: idx.id,
     repo: snap.repo,

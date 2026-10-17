@@ -2,6 +2,7 @@ import { Injectable } from '@nitrostack/core';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { IssuesFileSchema, type IssuesFile } from './issues.schema.js';
+import { liveEnabled, liveRegistry } from './live/registry.js';
 import {
   MAX_SNAPSHOT_BYTES,
   NODE_KINDS,
@@ -97,6 +98,7 @@ export function summarize(snap: Snapshot): SnapshotSummary {
   if (snap.truncated) {
     limits.push('Truncated: size caps were applied, so this is a partial graph of the repo.');
   }
+  if (snap.source) limits.push(...snap.source.notes);
 
   return {
     id,
@@ -151,15 +153,16 @@ export class StoreService {
   }
 
   async list(): Promise<SnapshotInfo[]> {
-    const idx = await this.ensureIndex();
+    const idx = await this.mergedIndex();
     return [...idx.values()].sort((a, b) => a.id.localeCompare(b.id));
   }
 
   /** Turn an id, alias, `owner/repo`, `owner__repo` or GitHub URL into a snapshot id. */
   async resolve(ref: string): Promise<string> {
-    const idx = await this.ensureIndex();
-    const available = [...idx.keys()].sort();
     const raw = (ref ?? '').trim();
+    if (parseSnapshotId(raw)) await liveRegistry.get(raw); // brings a snapshot built earlier by this machine back into memory
+    const idx = await this.mergedIndex();
+    const available = [...idx.keys()].sort();
     if (!raw) throw new SnapshotError('bad_ref', 'Give a snapshot id (owner__repo@sha7), an owner/repo, or a GitHub URL.', available);
 
     if (idx.has(raw)) return raw;
@@ -172,7 +175,7 @@ export class StoreService {
         'not_found',
         sameRepo
           ? `No snapshot ${raw}. This server has ${sameRepo.id} for ${asId.repo}; use that id.`
-          : `No snapshot ${raw}. Available snapshots: ${available.join(', ') || 'none'}.`,
+          : `No snapshot ${raw}. ${liveEnabled() ? `If it was built on demand it may have expired on this server: call build_graph with ${asId.repo} again. ` : ''}Available snapshots: ${available.join(', ') || 'none'}.`,
         available,
       );
     }
@@ -196,13 +199,17 @@ export class StoreService {
     if (found) return found.id;
     throw new SnapshotError(
       'not_found',
-      `No snapshot for ${repo}. RepoAtlas runs in snapshot mode: it only serves repos precomputed ahead of time. Available snapshots: ${available.join(', ') || 'none'}.`,
+      liveEnabled()
+        ? `No snapshot for ${repo} is loaded yet. Call build_graph with this repo first (any public GitHub repo is built on demand). Available snapshots: ${available.join(', ') || 'none'}.`
+        : `No snapshot for ${repo}. This server only serves repos precomputed ahead of time. Available snapshots: ${available.join(', ') || 'none'}.`,
       available,
     );
   }
 
   async load(ref: string): Promise<Snapshot> {
     const id = await this.resolve(ref);
+    const live = await liveRegistry.get(id);
+    if (live) return live.snapshot;
     const hit = this.cache.get(id);
     if (hit) {
       this.cache.delete(id);
@@ -226,6 +233,8 @@ export class StoreService {
    */
   async loadIssues(ref: string): Promise<IssuesFile | null> {
     const id = await this.resolve(ref);
+    const live = await liveRegistry.get(id);
+    if (live) return live.issues;
     const info = this.index!.get(id)!;
     const file = path.join(this.absDir, `${info.file}${ISSUES_SUFFIX}`);
     let text: string;
@@ -261,6 +270,20 @@ export class StoreService {
     return [...idx.values()]
       .filter((i) => i.repo.toLowerCase() === want)
       .sort((a, b) => b.builtAt.localeCompare(a.builtAt))[0];
+  }
+
+  /** Precomputed snapshots plus any built on demand that are still in memory. */
+  private async mergedIndex(): Promise<Map<string, SnapshotInfo>> {
+    const disk = await this.ensureIndex();
+    const live = liveRegistry.list();
+    if (live.length === 0) return disk;
+    const merged = new Map(disk);
+    for (const e of live) {
+      const s = e.snapshot;
+      const id = snapshotId(s.repo, s.sha);
+      if (!merged.has(id)) merged.set(id, { id, file: `live:${id}`, repo: s.repo, sha: s.sha, builtAt: s.builtAt, tier: s.tier, truncated: s.truncated });
+    }
+    return merged;
   }
 
   private async ensureIndex(): Promise<Map<string, SnapshotInfo>> {

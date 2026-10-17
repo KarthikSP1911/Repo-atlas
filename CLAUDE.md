@@ -19,7 +19,7 @@ RepoAtlas is an MCP server on **NitroStack (TypeScript)**, deployed to **NitroCl
 
 ## Hard constraints
 
-- **Free tier only.** No paid services, no server-side LLM calls (the agent is the client), no Redis or database, no headless browser, no runtime crawling. Cache in memory. Snapshots are JSON files on disk.
+- **Free tier only.** No paid services, no server-side LLM calls (the agent is the client), no Redis or database, no headless browser, no crawling beyond one repo per `build_graph` call. Cache in memory. Snapshots are JSON files on disk, plus repos built on demand held in memory (D18).
 - **Next.js scope:** widgets live in `src/widgets/` as a Next.js app per NitroStack's template. Optional static Next.js demo site in `web/` (Phase 8 only, static export, no API routes).
 - **NitroStack conventions:** `@McpApp` + `@Module` + `@Injectable`; tools in `*.tools.ts` with a Zod `inputSchema`; handlers `(input, ctx: ExecutionContext)`; every relative import ends in `.js`; each tool has `examples`; widget tools have `examples.response` and `@Widget('name')`; widgets use `useWidgetSDK()` and inline styles only.
 - **Tool names must be exactly** these 12: `build_graph`, `project_overview`, `find_entry_points`, `key_files`, `trace_flow`, `explain_file`, `tour_next`, `profile_contributor`, `find_candidate_issues`, `localize_issue`, `score_first_change`, `export_guide`. Plus resource `graph://{repo}@{sha}/summary` and prompt `guide_me`. Do not use `@Controller` prefixes (they rename tools).
@@ -30,7 +30,7 @@ RepoAtlas is an MCP server on **NitroStack (TypeScript)**, deployed to **NitroCl
 
 ## Platform facts (Phase 1 spike, see `docs/SPIKE.md`)
 
-NitroCloud runs Node 20.20.2 on linux/arm64, has **no git binary**, a **read-only `/app`** (only `/tmp`, ephemeral), a **500 MB** memory cap, and allows outbound HTTPS. So `RUNTIME_MODE=snapshot`: snapshots ship in the zip and are read from `process.cwd()/data/snapshots`; no clone, no runtime GitHub calls, no `GITHUB_TOKEN` on the server; runtime deps must be pure JS; `ts-morph`, `simple-git`, Octokit and `tsx` are devDependencies and `scripts/` stays outside `src/`.
+NitroCloud runs Node 20.20.2 on linux/arm64, has **no git binary**, a **read-only `/app`** (only `/tmp`, ephemeral), a **500 MB** memory cap, and allows outbound HTTPS. So precomputed snapshots ship in the zip and are read from `process.cwd()/data/snapshots`, and any other public repo is built on demand from GitHub's tarball (no clone; `src/services/live/`, D18). `GITHUB_TOKEN` on the server is optional (richer data, no download rate limit); it is only ever sent to api.github.com and never logged or returned. Runtime deps must be pure JS; `ts-morph`, `simple-git`, Octokit and `tsx` are devDependencies, `scripts/` stays outside `src/`, and `tests/server-imports.test.ts` enforces that the server never imports them.
 
 ## Hard-won facts (see docs/DECISIONS.md D16)
 

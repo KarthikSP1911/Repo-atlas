@@ -86,22 +86,38 @@ describe('build_graph and project_overview tools', () => {
     }
   });
 
-  it('build_graph returns a clear message, not an error, for repos it does not have', async () => {
-    const tools = new GraphTools(realStore);
-    const r = (await tools.buildGraph({ repo: 'facebook/react' }, ctx)) as { status: string; message: string; available: { snapshotId: string }[]; snapshotId?: string };
-    expect(r.status).toBe('unavailable');
-    expect(r.snapshotId).toBeUndefined();
-    expect(r.message).toMatch(/snapshot mode/);
-    expect(r.available.map((a) => a.snapshotId)).toContain('pwndbg__pwndbg@b5162e6');
-    expect(r.available.at(-1)!.snapshotId).toBe('demo__sample-shop@5a3f0c1'); // the fixture is listed last
+  // Live builds are switched off here so these tests never reach GitHub (tests/live-build.test.ts covers the on-demand path with fakes).
+  const liveOff = async (fn: () => Promise<void>): Promise<void> => {
+    const prev = process.env.LIVE_BUILDS;
+    process.env.LIVE_BUILDS = 'off';
+    try {
+      await fn();
+    } finally {
+      if (prev === undefined) delete process.env.LIVE_BUILDS;
+      else process.env.LIVE_BUILDS = prev;
+    }
+  };
+
+  it('build_graph returns a clear message, not an error, for repos it does not have (live builds off)', async () => {
+    await liveOff(async () => {
+      const tools = new GraphTools(realStore);
+      const r = (await tools.buildGraph({ repo: 'facebook/react' }, ctx)) as { status: string; message: string; available: { snapshotId: string }[]; snapshotId?: string };
+      expect(r.status).toBe('unavailable');
+      expect(r.snapshotId).toBeUndefined();
+      expect(r.message).toMatch(/precomputed ahead of time/);
+      expect(r.available.map((a) => a.snapshotId)).toContain('pwndbg__pwndbg@b5162e6');
+      expect(r.available.at(-1)!.snapshotId).toBe('demo__sample-shop@5a3f0c1'); // the fixture is listed last
+    });
   });
 
-  it('build_graph on a server with no snapshots says so', async () => {
-    const empty = new StoreService();
-    empty.dir = path.join(tmp, 'nothing-here');
-    const r = (await new GraphTools(empty).buildGraph({ repo: 'a/b' }, ctx)) as { status: string; nextSteps: string[] };
-    expect(r.status).toBe('unavailable');
-    expect(r.nextSteps.join(' ')).toMatch(/No snapshots are installed/);
+  it('build_graph on a server with no snapshots says so (live builds off)', async () => {
+    await liveOff(async () => {
+      const empty = new StoreService();
+      empty.dir = path.join(tmp, 'nothing-here');
+      const r = (await new GraphTools(empty).buildGraph({ repo: 'a/b' }, ctx)) as { status: string; nextSteps: string[] };
+      expect(r.status).toBe('unavailable');
+      expect(r.nextSteps.join(' ')).toMatch(/No snapshots are installed/);
+    });
   });
 
   it('project_overview carries evidence and the limits note, and errors helpfully on a bad id', async () => {
@@ -116,9 +132,14 @@ describe('build_graph and project_overview tools', () => {
   it('ping reports the secret as a boolean only', async () => {
     const tools = new GraphTools(realStore);
     process.env.EXPORT_SECRET = 'super-secret-value';
+    process.env.GITHUB_TOKEN = 'ghp_super_secret_token_value';
     const r = await tools.ping({ echo: 'x' }, ctx);
     expect(r.exportSecretConfigured).toBe(true);
+    expect(r.githubTokenConfigured).toBe(true);
+    expect(r.liveBuilds).toBe(true);
     expect(JSON.stringify(r)).not.toContain('super-secret-value');
+    expect(JSON.stringify(r)).not.toContain('super_secret_token');
     delete process.env.EXPORT_SECRET;
+    delete process.env.GITHUB_TOKEN;
   });
 });

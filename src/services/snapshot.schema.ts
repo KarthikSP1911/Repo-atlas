@@ -111,6 +111,8 @@ export const SnapshotSchema = z
     truncated: z.boolean(),
     /** Number of most recent commits the history layer covers. */
     commitWindow: z.number().int().nonnegative(),
+    /** Present only on snapshots built on demand by the server; notes say how, and what is approximate. */
+    source: z.object({ kind: z.literal('live'), notes: z.array(z.string().max(400)).max(14) }).optional(),
     nodes: z.array(GNodeSchema).max(MAX_NODES),
     edges: z.array(GEdgeSchema).max(MAX_EDGES),
   })

@@ -151,10 +151,10 @@ describe('ref resolution and errors', () => {
     expect((err as SnapshotError).message).toContain('acme__widgets@2222222');
   });
 
-  it('lists available snapshots for an unknown repo and mentions snapshot mode', async () => {
+  it('lists available snapshots for an unknown repo and says to call build_graph', async () => {
     const err = (await store().resolve('github.com/nobody/nothing').catch((e: unknown) => e)) as SnapshotError;
     expect(err.code).toBe('not_found');
-    expect(err.message).toMatch(/snapshot mode/);
+    expect(err.message).toMatch(/Call build_graph with this repo first/);
     expect(err.available).toEqual(['acme__widgets@1111111', 'acme__widgets@2222222', 'other__thing@3333333']);
     expect(err.message).toContain('other__thing@3333333');
   });

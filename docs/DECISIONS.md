@@ -124,3 +124,27 @@ Full detail in `docs/EVAL.md`. Decisions:
 - **Key-file overlap is reported as not scorable,** not estimated: the demo repos' docs name 0 to 2 rankable files. A human-judgement sheet replaces it.
 - **No first-timer PRs** were available among the eligible PRs (0 of 49), which is stated as a caveat.
 - **Email scrubbing.** A go-git contributor's git author name was an email address; emails are now scrubbed from every free-text field, with a test that gates all shipped snapshots.
+
+## D18. build_graph works for any public GitHub repo (on-demand builds)
+
+**Why this changes an earlier rule.** The blueprint and D11 said: no runtime crawling, no server-side GitHub calls, snapshot mode only, because NitroCloud has no `git` binary. The owner then asked for `build_graph` to work for any repo given its URL. This decision lifts those rules for `build_graph` only, and keeps every other constraint (free tier, no server-side LLM, no database, no headless browser).
+
+**How it works without `git`** (`src/services/live/`):
+- **Archive, not clone.** The repo is downloaded as one streamed `tar.gz` from `codeload.github.com` (not the GitHub API, so no token and no API quota; GitHub puts the commit id in the archive's pax header). `tar.ts` is a small streaming reader that keeps only the file bodies we ask for and treats every path as hostile (strip the top folder, reject `..`, absolute, control characters, over-long names; skip symlinks). `fetch-tarball.ts` follows redirects by hand and only to codeload; it stops (not fails) at 80 MB downloaded, 700 MB unpacked, 120,000 files or the time limit, and the snapshot is marked truncated with the reason.
+- **Same engine.** The offline engine's pure parts were moved into light modules (`parse.common`, `ingest.common`, `people`, `github.fetch`, `assemble`) and re-exported, so `analyze` and snapshot assembly run on the server unchanged. Only the parser differs: `live/parse-light.ts` finds imports with regexes (relative paths, tsconfig `paths`, `@/` and `~/` aliases, workspace packages, Python) instead of ts-morph, which is too heavy for the server. On this repository's own 150+ import edges it finds at least 97% of ts-morph's and invents at most 2% (`tests/live-parse.test.ts`). Live snapshots say "approximate" in their limits.
+- **GitHub API, best effort.** Description, commits and open issues come from REST (issues through the search endpoint, which returns issues only). With a server `GITHUB_TOKEN` the build also uses GraphQL (merged PRs, issue comments, linked PRs), reads the changed files of the newest 40 commits, and downloads through the authenticated tarball route. Without a token it still works, with fewer signals, and each missing signal is named in `limits.notes`. The token is only ever sent to `api.github.com`, never forwarded on a redirect, and is covered by tests that search every output for it.
+- **Storage.** Memory only (8 repos, 6 hours; `LIVE_SNAPSHOT_TTL_MIN`) plus a best-effort copy in the OS temp folder. A build lives on one server instance; when another instance (or a restart) has not seen a snapshot id, tools say "call build_graph with owner/repo again". There is no database.
+- **Free-tier protection.** At most 2 builds at once (others wait 20 s, then get a "busy" message), 40 new repos per hour server-wide, one build shared by simultaneous callers, results reused for hours, 40 s default wall clock (`LIVE_BUILD_TIMEOUT_MS`). `LIVE_BUILDS=off` restores snapshot-only behaviour.
+- **Precomputed first.** A repo with a precomputed snapshot is served from it (instant, evaluated). Everything else is built.
+- **Results are labelled.** `build_graph` returns `source: "built_on_demand"`, and the snapshot carries `source.notes` (how it was built, what is approximate, what was not read). Those notes appear in every tool's `limits.notes`.
+
+**Measured** (no token, this machine): sindresorhus/is 1.2 s, flask 1.4 s, express 1.4 s, cobra (Go, tier 1) 1.4 s, React 4.8 s (7,260 files, kept 1,500), Next.js 20.8 s (34,000 files, 50 MB download, kept 1,500). With a token, pallets/click took 9.5 s end to end over `/mcp` (40 per-commit calls), then 50 ms when reused.
+
+**Limits we found and accepted.**
+- **codeload rate-limits by network address** (HTTP 429 after about ten large downloads in a minute from one IP). A shared server address can hit that; the error says so, and a server token avoids it (authenticated route).
+- **Accuracy is not measured for on-demand builds.** The 69% localization figure is for the three precomputed repos. A lighter parser and (without a token) no per-commit file history will lower it. The site says so.
+- **Large repos are partial.** The 1,500-file cap keeps the shallowest code first, which in monorepos like Next.js favours `bench/` over `packages/next`. Same rule as the offline engine; not tuned.
+- **Private repos** are not supported (GitHub answers 404).
+- **Unauthenticated REST is 60 calls an hour per server address,** about 4 per build.
+
+**Guards.** `tests/server-imports.test.ts` walks the import graph from the app module and fails if the deployed server could reach `simple-git`, `ts-morph`, `typescript`, Octokit or anything not in `dependencies` (this would crash startup on NitroCloud while unit tests passed). `graphology-metrics` moved from devDependencies to dependencies because `analyze` now runs on the server.

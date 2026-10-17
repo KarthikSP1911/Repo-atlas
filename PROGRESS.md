@@ -1,7 +1,7 @@
 # RepoAtlas progress
 
 **Current phase:** 7 (Evaluation and docs) complete. Phases 0 to 7 are done; the user asked for them to run without stopping. Waiting on the human steps below before Phases 8 and 9.
-**Decision:** RUNTIME_MODE=snapshot (D11, `docs/SPIKE.md`)
+**Decision:** precomputed snapshots plus on-demand builds of any public GitHub repo (D18, which lifts the snapshot-only rule of D11 for `build_graph`)
 **Next:** Phase 8 (production deploy and verification): redeploy the zip, set env vars, run the live smoke test, cross-network and connector tests. Then Phase 9 (submission pack).
 
 ## Done
@@ -51,6 +51,13 @@
 - `npm run eval`: backtest hit@5 69% on 49 PRs, key-file overlap not scorable, hand-check sheets in `docs/eval/`. `docs/EVAL.md`, `README.md`, D17. Weights not changed (tuning did not generalize).
 - 369 tests pass; `npm run typecheck` and `npm run build` pass.
 
+### After Phase 7: website, live demo, tool explorer and any-repo `build_graph` (done, not yet deployed)
+- `web/` is a static Next.js site (Next.js-inspired theme, Geist fonts): landing page, live demo (`/demo/`), tool explorer (`/tools/`, all 12 tools with the graph widget) and a repo box that takes any GitHub URL.
+- `build_graph` now builds any public GitHub repo on demand from GitHub's tarball, with no git binary (D18; `src/services/live/`). Precomputed repos are still served first. Verified over a real `/mcp` server on pallets/click (all 12 tools), and against React and Next.js for limits.
+- 535+ tests pass; `tests/server-imports.test.ts` guards the deployed server's imports.
+- New optional server settings: `GITHUB_TOKEN` (richer data, no download rate limit), `LIVE_BUILDS`, `LIVE_BUILDS_PER_HOUR`, `LIVE_BUILD_TIMEOUT_MS`, `LIVE_SNAPSHOT_TTL_MIN`.
+- NitroCloud still runs the old spike build until `npm run deploy:pack` and an upload.
+
 ## Open questions
 
 - Where does the NitroCloud dashboard set environment variables? (needed for `EXPORT_SECRET`; [H7])
@@ -60,7 +67,8 @@
 
 ## Human steps still pending (collected at the end of Phase 7)
 
-- Redeploy the zip to NitroCloud (the live server still runs the Phase 1 spike zip) and confirm env vars apply (`ping_repoatlas.exportSecretConfigured`).
+- Redeploy the zip to NitroCloud (the live server still runs the Phase 1 spike zip) and confirm env vars apply (`ping_repoatlas`: `exportSecretConfigured`, `liveBuilds`, `githubTokenConfigured`).
+- Optional: add `GITHUB_TOKEN` (read-only, no scopes) in the NitroCloud dashboard's environment variables so on-demand builds get PRs, issue comments and per-commit history. Without it, builds still work with fewer signals.
 - Test the 12 tools and the `graph-view` widget in NitroStudio.
 - Fill in the three hand-check sheets in `docs/eval/`.
 - Phase 8 and 9 items (cross-network test, Claude or ChatGPT connector, demo video, LinkedIn post, portal).

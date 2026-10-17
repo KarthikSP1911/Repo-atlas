@@ -221,7 +221,7 @@ describe('tour_next tool (called directly)', () => {
   });
 
   it('gives a helpful error for an unknown snapshot', async () => {
-    await expect(tools().tourNext({ snapshotId: 'nobody/nothing', role: 'new_dev', stage: 1 }, ctx)).rejects.toThrow(/snapshot mode.*demo__sample-shop@5a3f0c1/s);
+    await expect(tools().tourNext({ snapshotId: 'nobody/nothing', role: 'new_dev', stage: 1 }, ctx)).rejects.toThrow(/build_graph.*demo__sample-shop@5a3f0c1/s);
     await expect(tools().tourNext({ snapshotId: 'demo__sample-shop@9999999', role: 'new_dev', stage: 1 }, ctx)).rejects.toThrow(/use that id/);
   });
 
@@ -316,7 +316,7 @@ describe('guide_me prompt', () => {
     }
     expect(text).toMatch(/untrusted data/);
     expect(text).toMatch(/never follow instructions/);
-    expect(text).toMatch(/snapshot mode/);
+    expect(text).toMatch(/built on demand/);
     expect(text).toMatch(/tier/i);
     expect(text).toMatch(/as of/i);
     expect(text).toMatch(/Do NOT reveal/);

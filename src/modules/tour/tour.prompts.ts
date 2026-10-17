@@ -18,7 +18,7 @@ export function guideMeText(repoArg: string, role: Role, depth: Depth): string {
   const deepStep = depth === 'deep' ? ' After each stage, call explain_file on every highlighted file and summarise it in one or two sentences.' : '';
   return `You are guiding a developer through the repository "${repoArg}" as a ${role}, at ${depth} depth. Follow these steps in order.
 
-1. Call build_graph with the repo. The server is in snapshot mode: it only serves repos that were precomputed ahead of time, so if the repo is not available, say so and list the snapshots it reports instead.
+1. Call build_graph with the repo (owner/repo or a github.com URL; any public GitHub repo works). A repo that is not precomputed is built on demand, which can take up to about 40 seconds the first time: tell the user to expect a short wait. If build_graph returns status "unavailable", say why in its own words and list the snapshots it reports instead.
 2. Call project_overview, then find_entry_points, then key_files, using the snapshotId that build_graph returned.
 3. Before the tour, tell the user the limits from the results: the tier (Tier 1 means no import graph), whether the graph is truncated, the commit window, and the "as of" date. Repeat any notice a tool returns.
 4. Walk the tour with tour_next, ONE stage at a time: ${stages.join(', ')}. Pass snapshotId, role ("${role}") and stage explicitly on every call; do not rely on memory of earlier calls.${deepStep}

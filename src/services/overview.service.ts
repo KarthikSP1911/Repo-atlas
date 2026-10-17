@@ -1,5 +1,6 @@
 import type { GraphIndex } from './graph.query.js';
 import type { SnapshotInfo } from './store.service.js';
+import { liveEnabled } from './live/registry.js';
 
 /**
  * Pure logic behind `build_graph` and `project_overview`. Everything is derived from the
@@ -164,6 +165,8 @@ export function overviewOf(idx: GraphIndex): Overview {
 export interface BuildGraphResult {
   status: 'ready' | 'unavailable';
   message: string;
+  /** Whether the snapshot was precomputed offline or built just now from GitHub. */
+  source?: 'precomputed' | 'built_on_demand';
   snapshotId?: string;
   repo?: string;
   sha?: string;
@@ -186,6 +189,7 @@ export function readyResult(idx: GraphIndex, infos: SnapshotInfo[]): BuildGraphR
   return {
     status: 'ready',
     message: `Snapshot ${idx.id} is loaded. Pass this snapshotId to every other RepoAtlas tool.`,
+    source: idx.snap.source ? 'built_on_demand' : 'precomputed',
     snapshotId: idx.id,
     repo: idx.repo,
     sha: idx.snap.sha,
@@ -202,7 +206,9 @@ export function readyResult(idx: GraphIndex, infos: SnapshotInfo[]): BuildGraphR
 export function unavailableResult(reason: string, infos: SnapshotInfo[]): BuildGraphResult {
   return {
     status: 'unavailable',
-    message: `${reason} RepoAtlas runs in snapshot mode: it cannot clone or build repos on demand, it only serves repos that were precomputed ahead of time. Pick one from \`available\`.`,
+    message: liveEnabled()
+      ? `${reason} Pass a public GitHub repo as owner/repo or a github.com URL, or pick one of the precomputed repos in \`available\`.`
+      : `${reason} This server only serves repos that were precomputed ahead of time (building new repos is switched off). Pick one from \`available\`.`,
     available: availableList(infos),
     nextSteps: infos.length ? ['build_graph(repo: <one of available>)'] : ['No snapshots are installed on this server.'],
   };
