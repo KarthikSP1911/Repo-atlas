@@ -249,7 +249,7 @@ export default function Home() {
               </li>
             ))}
           </ol>
-          <p className="muted" style={{ marginTop: 24 }}>
+          <p className="muted" style={{ marginTop: 24, textAlign: 'center' }}>
             Try asking: <em>“Walk me through {d.snapshot.repo}. I’m a TypeScript dev with about a year of experience.”</em>
           </p>
         </section>
