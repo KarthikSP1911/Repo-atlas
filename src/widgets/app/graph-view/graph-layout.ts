@@ -47,6 +47,8 @@ export interface Layout {
 }
 
 export const MAX_NODES = 25;
+/** At most this many edges are drawn; the ones touching a highlighted file come first. */
+export const MAX_EDGES = 40;
 const PAD = 16;
 const ROW_H = 36;
 const NODE_H = 26;
@@ -135,7 +137,9 @@ export function layoutSubgraph(input: { nodes: SgNode[]; edges: SgEdge[] }, maxL
     const sign = forward ? 1 : -1;
     edges.push({ from: e.from, to: e.to, d: `M${x1.toFixed(1)},${y1.toFixed(1)} C${(x1 + sign * dx).toFixed(1)},${y1.toFixed(1)} ${(x2 - sign * dx).toFixed(1)},${y2.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)}`, emphasis: a.node.highlight || b.node.highlight });
   }
-  return { nodes: [...placed.values()], edges, width, height };
+  // A dense graph is unreadable: always keep the edges that touch the current stop, then fill up to the cap.
+  const kept = [...edges.filter((e) => e.emphasis), ...edges.filter((e) => !e.emphasis)].slice(0, MAX_EDGES);
+  return { nodes: [...placed.values()], edges: kept, width, height };
 }
 
 /** The subgraph lives at `subgraph` in tour_next and explain_file results; accept a bare subgraph too. */

@@ -111,10 +111,13 @@ export const MAX_SUBGRAPH_NODES = 25;
 export function buildSubgraph(idx: GraphIndex, highlight: string[], max = MAX_SUBGRAPH_NODES): Subgraph {
   const focus = [...new Set(highlight)].filter((p) => idx.files.has(p)).slice(0, max);
   const chosen = new Set(focus);
+  const isTestFile = (g: GraphIndex, p: string): boolean => Boolean(g.files.get(p)?.meta.isTest) || Boolean(g.files.get(p)?.meta.tags?.includes('test'));
+  const focusHasTest = focus.some((f) => isTestFile(idx, f));
   const neighbours = new Map<string, number>();
   for (const f of focus) {
     for (const l of [...idx.imports(f), ...idx.importedBy(f)]) {
       if (chosen.has(l.path) || !idx.files.has(l.path)) continue;
+      if (!focusHasTest && isTestFile(idx, l.path)) continue; // tests import the same hubs and swamp the picture
       neighbours.set(l.path, (neighbours.get(l.path) ?? 0) + 1 + (idx.files.get(l.path)?.meta.centrality ?? 0));
     }
   }
