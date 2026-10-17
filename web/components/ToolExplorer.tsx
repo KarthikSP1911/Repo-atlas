@@ -281,6 +281,14 @@ function ToolPanel({
   if (issueCards.length > 0) delete body.candidates;
 
   const previewToken = spec.name === 'export_guide' ? (exportPreviewResponse.safeParse(d).data?.confirmToken ?? '') : '';
+  // The code and the "Next" line are instructions for the server and an AI agent; a person gets the buttons instead (both stay in the raw JSON).
+  if (previewToken) {
+    delete body.confirmToken;
+    delete body.next;
+  }
+  const previewInfo = asRec(d.preview);
+  const shownLines = str(previewInfo.excerpt) ? str(previewInfo.excerpt).split('\n').length : 0;
+  const totalLines = typeof previewInfo.lines === 'number' ? previewInfo.lines : 0;
   const stage = Number(values.stage);
   const nextTool = NEXT_TOOL[spec.name];
   const nextSpec = nextTool ? TOOL_SPECS.find((t) => t.name === nextTool) : undefined;
@@ -383,7 +391,9 @@ function ToolPanel({
           )}
           {previewToken && (
             <div className="dm-notice">
-              <p>This is only the preview. Nothing is written anywhere. Happy with it? Press the button to get the full document.</p>
+              <p>
+                This is only a preview{shownLines > 0 && totalLines > shownLines ? `: the first ${shownLines} of ${totalLines} lines, so it stops part-way on purpose` : ''}. Nothing is written anywhere. Press the button to get the whole document.
+              </p>
               <button
                 type="button"
                 className="dm-btn primary"

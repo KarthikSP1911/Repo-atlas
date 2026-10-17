@@ -70,6 +70,9 @@ export function ExportStep({ call, snapshotId }: { call: CallFn; snapshotId: str
           </ol>
           <h4>Excerpt</h4>
           <Markdown text={str(pv.excerpt)} />
+          <p className="muted">
+            This excerpt is only the first {str(pv.excerpt).split('\n').length} of {num(pv.lines) ?? '?'} lines, so it stops part-way on purpose. Step 2 gives you the whole document.
+          </p>
           <div className="dm-actions">
             <button type="button" className="dm-btn primary" disabled={!token || draft.state.status === 'loading'} onClick={() => void draft.run('export_guide', { snapshotId, confirmToken: token })}>
               Step 2: Get the full draft
