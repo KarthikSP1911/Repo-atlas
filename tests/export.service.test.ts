@@ -128,7 +128,8 @@ describe('export_guide tool: preview, confirm, refuse', () => {
     expect(r.markdown).toBeUndefined();
     expect(r.confirmToken).toMatch(/^\d{13}\.[A-Za-z0-9_-]{43}$/);
     expect(r.preview.sections).toContain('Overview');
-    expect(r.preview.excerpt.split('\n').length).toBeLessThanOrEqual(24);
+    // the preview carries the whole draft, so a person can read everything before confirming
+    expect(r.preview.excerpt.split('\n')).toHaveLength(r.preview.lines);
     expect(JSON.stringify(r)).not.toContain(SECRET);
   });
 

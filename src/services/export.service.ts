@@ -153,7 +153,10 @@ export interface Preview {
   characters: number;
 }
 
-export function previewOf(markdown: string, excerptLines = 24): Preview {
+/** The preview carries the whole draft (drafts are about a hundred lines), up to this many lines, so the person can review everything before confirming. */
+export const PREVIEW_MAX_LINES = 400;
+
+export function previewOf(markdown: string, excerptLines = PREVIEW_MAX_LINES): Preview {
   const lines = markdown.split('\n');
   return {
     title: lines[0].replace(/^#\s+/, ''),
