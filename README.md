@@ -44,6 +44,34 @@ Both show exactly what an agent would receive. No AI model is involved. The site
 
 **Exporting the guide:** `export_guide` is two buttons, "Step 1: Preview the guide" and "Step 2: Get the full draft". The preview shows the whole draft as formatted text; after Step 2 you can **Download .md**, **Download PDF** or copy the Markdown. The PDF is made in your browser (nothing is uploaded) and has a title band, summary, tables and page numbers.
 
+## Screenshots
+
+Taken from the live site, https://repo-atlas-ksp.vercel.app/, on the precomputed `lukeautry/tsoa` repo. Nothing is mocked.
+
+**The landing page.** Paste any public GitHub URL, or open the live demo or the tool explorer.
+
+![RepoAtlas landing page: "Open an unfamiliar repo. Know where to start." with buttons for the live demo and the tool explorer, and a box to paste a GitHub URL](docs/images/screenshot-landing.jpg)
+
+**Before and after** on the same repo: 97 open issues and a flat file tree, against a shortlist with evidence for what was dropped.
+
+![Before and after on lukeautry/tsoa: 97 open issues and a flat file tree, against 15 issues you can start, a guided tour, and 79 issues dropped as stale, 3 as blocked, 0 as claimed](docs/images/screenshot-before-after.jpg)
+
+**What an agent receives.** `key_files` returns the files to read first, each with its score and the reason.
+
+![key_files output for tsoa: packages/runtime/src/index.ts scores 5.55 because it is an entry point, imported by 27 files, changed 5 times, with tests](docs/images/screenshot-real-output.jpg)
+
+**The graph widget.** `tour_next` and `explain_file` return a small subgraph (at most 25 files) with the current stop highlighted. The widget only draws what the tool returns.
+
+![Graph widget for tour stage 4 of 8, Core modules: 15 files, with index.ts, exceptions.ts, cli.ts, metadataGenerator.ts and typeResolver.ts highlighted and arrows showing imports](docs/images/screenshot-graph-widget.jpg)
+
+**Localizing an issue** in the live demo: the likely files with each score component, the evidence, the last owner, and a confidence level.
+
+![localize_issue result in the live demo: ranked files with textMatch, historySimilarity, graphProximity and recency scores, the pull requests that touched them, and the last owner by commits](docs/images/screenshot-localize-issue.jpg)
+
+**Accuracy** is shown on the site with its caveats, next to two baselines.
+
+![Top-5 hit rate: RepoAtlas 69%, five most-imported files 24%, five random files 6%; per repo go-git 46%, tsoa 75%, pwndbg 81%; with a box of honest caveats](docs/images/screenshot-accuracy.jpg)
+
 ## What it does
 
 1. `build_graph` takes a repo (`owner/repo` or a GitHub URL) and returns a snapshot (commit, tier, as-of time): instantly for the four precomputed repos, and built on demand from GitHub's archive for any other public repo (a few seconds, up to about 40 for a huge one).
