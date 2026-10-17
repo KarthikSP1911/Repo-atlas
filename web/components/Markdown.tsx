@@ -127,6 +127,28 @@ function inline(text: string, keyBase: string): ReactNode[] {
   return nodes;
 }
 
+export interface Run {
+  text: string;
+  kind: 'plain' | 'code' | 'bold' | 'em' | 'link';
+}
+
+/** The inline syntax as styled pieces, for renderers other than React (the PDF). */
+export function inlineRuns(text: string): Run[] {
+  const runs: Run[] = [];
+  let last = 0;
+  for (const m of text.matchAll(INLINE)) {
+    const at = m.index ?? 0;
+    if (at > last) runs.push({ text: text.slice(last, at), kind: 'plain' });
+    if (m[2] !== undefined) runs.push({ text: m[2], kind: 'code' });
+    else if (m[3] !== undefined) runs.push({ text: m[3], kind: 'bold' });
+    else if (m[4] !== undefined) runs.push({ text: m[4], kind: 'em' });
+    else runs.push({ text: m[5], kind: 'link' });
+    last = at + m[0].length;
+  }
+  if (last < text.length) runs.push({ text: text.slice(last), kind: 'plain' });
+  return runs;
+}
+
 /** The same inline syntax with the markers removed, for places that cannot show formatting (the PDF). */
 export function plainInline(text: string): string {
   return text.replace(INLINE, (_m, _ticks, code, bold, italic, label) => code ?? bold ?? italic ?? label ?? '');
