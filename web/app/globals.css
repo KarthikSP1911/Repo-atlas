@@ -203,7 +203,7 @@ code {
 }
 
 .container {
-  max-width: 1680px;
+  max-width: 1480px;
   margin: 0 auto;
   padding: 0 clamp(20px, 4.5vw, 64px);
 }

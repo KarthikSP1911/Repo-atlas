@@ -851,7 +851,7 @@ input[type='number']::-webkit-inner-spin-button {
 
 /* ---------- tool explorer ---------- */
 .tx-page {
-  max-width: 1680px;
+  max-width: 1480px;
 }
 .tx {
   display: grid;
