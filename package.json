@@ -21,7 +21,8 @@
     "eval:handcheck": "tsx scripts/eval/handcheck.ts",
     "eval": "npm run eval:keyfiles && npm run eval:backtest && npm run eval:handcheck",
     "deploy:pack": "node scripts/pack-deploy.mjs",
-    "landing:data": "tsx scripts/make-landing-data.ts"
+    "landing:data": "tsx scripts/make-landing-data.ts",
+    "verify:server": "tsx scripts/verify-server.mts"
   },
   "dependencies": {
     "@modelcontextprotocol/ext-apps": "^1.0.0",

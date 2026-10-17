@@ -1,6 +1,6 @@
 # GitHub API budget
 
-All numbers are real, logged by `npm run precompute` (the script prints them per repo). Authenticated GraphQL has 5,000 points per hour; the server itself makes **zero** GitHub calls at runtime (snapshot mode, D11), so this budget only matters on the developer machine.
+All numbers are real, logged by `npm run precompute` (the script prints them per repo). Authenticated GraphQL has 5,000 points per hour; for the **precomputed** repos the server makes **zero** GitHub calls at runtime, so that budget only matters on the developer machine. Repos built on demand (D18) do make runtime calls; see the last section.
 
 ## What one repo build costs
 
@@ -34,4 +34,8 @@ Runs on the way there (development only, results not shipped): a first full run 
 ## Not used
 
 - REST `ETag` / conditional requests: not needed, there is no repeated polling.
-- Per-user OAuth (blueprint section 6): not needed because the server makes no runtime calls.
+- Per-user OAuth (blueprint section 6): not implemented. Precomputed repos make no runtime calls, and on-demand builds read only public data with the server's optional read-only token (or none). Per-user tokens would only matter for private repos, which are not supported.
+
+## On-demand builds (D18)
+
+Measured on 2026-10-17 with no token: about 4 REST calls per repo (repo metadata, 100 latest commits, an issue search, plus a fallback page) and one archive download from `codeload.github.com`, which is not part of the API and has no API quota (but is rate-limited per network address, HTTP 429). With a server token: GraphQL for PRs, labels and issues (5 to 7 calls, 12 at most), the changed files of the newest 40 commits (up to 40 calls) and the authenticated archive route (1 call), so about 50 REST requests and a few GraphQL points per repo; at the 40-repos-per-hour cap that is at most about 2,000 of the 5,000 REST requests an hour, plus a few hundred of the 5,000 GraphQL points. Unauthenticated REST allows 60 calls an hour per server address, so roughly 15 builds an hour without a token; the build still succeeds when it is rate limited and says which data is missing.
