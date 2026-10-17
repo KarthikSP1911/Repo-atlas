@@ -76,3 +76,4 @@ scripts/eval/.cache/
 web/.next/
 web/out/
 web/next-env.d.ts
+.nitrostudio/
