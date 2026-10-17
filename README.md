@@ -55,20 +55,20 @@ Both show exactly what an agent would receive. No AI model is involved. The site
 
 ## Tools
 
-| Tool | Part | What it returns |
-|---|---|---|
-| `build_graph` | Foundation | snapshot id, tier, source (precomputed or built on demand), truncated flag, commit window, as-of time, stats; a clear reason plus the available repos when a repo cannot be built |
-| `project_overview` | A | description, stack, run steps (marked when inferred), folder roles, entry points |
-| `find_entry_points` | A | entry files with reasons, the command, and the first import chain |
-| `key_files` | A | Must read / Read next / Skip tiers with every score component |
-| `trace_flow` | A | ordered import chain from a file, with caps stated |
-| `explain_file` | A | role, exports, imports, owners, tests, recent commits and PRs, docs, confidence (and a widget) |
-| `tour_next` | A | one tour stage, a check question, the next stage, a subgraph (and a widget) |
-| `profile_contributor` | B | languages, level, familiar areas, and what was read |
-| `find_candidate_issues` | B | filtered issues, why each passed, evidence behind "likely unclaimed" |
-| `localize_issue` | B | top 5 files with evidence, owner, reading order, confidence |
-| `score_first_change` | B | a task score with every factor shown, effort estimate, watch-outs |
-| `export_guide` | Action | step 1: the whole draft as a preview plus a confirm token; step 2 (with the token): the final draft (text only) |
+| Tool | What it returns |
+|---|---|
+| `build_graph` | snapshot id, tier, source (precomputed or built on demand), truncated flag, commit window, as-of time, stats; a clear reason plus the available repos when a repo cannot be built |
+| `project_overview` | description, stack, run steps (marked when inferred), folder roles, entry points |
+| `find_entry_points` | entry files with reasons, the command, and the first import chain |
+| `key_files` | Must read / Read next / Skip tiers with every score component |
+| `trace_flow` | ordered import chain from a file, with caps stated |
+| `explain_file` | role, exports, imports, owners, tests, recent commits and PRs, docs, confidence (and a widget) |
+| `tour_next` | one tour stage, a check question, the next stage, a subgraph (and a widget) |
+| `profile_contributor` | languages, level, familiar areas, and what was read |
+| `find_candidate_issues` | filtered issues, why each passed, evidence behind "likely unclaimed" |
+| `localize_issue` | top 5 files with evidence, owner, reading order, confidence |
+| `score_first_change` | a task score with every factor shown, effort estimate, watch-outs |
+| `export_guide` | step 1: the whole draft as a preview plus a confirm token; step 2 (with the token): the final draft (text only) |
 
 Also: resource `graph://{repo}@{sha}/summary` (for example `graph://lukeautry__tsoa@f0f9aa7/summary`), prompt `guide_me(repo, role, depth)`, widget `graph-view`, and `ping_repoatlas` for health.
 
