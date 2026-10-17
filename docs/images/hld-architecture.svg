@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 760" width="1240" height="760" role="img" aria-labelledby="t d" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title id="t">RepoAtlas high-level design</title>
+  <desc id="d">Clients call one MCP endpoint on NitroCloud. The RepoAtlas server applies policies, runs one of twelve tools, and reads either shipped snapshots or repos built on demand from GitHub's archive and API.</desc>
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#475569"/></marker>
+    <marker id="ahd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#94a3b8"/></marker>
+    <filter id="sh" x="-5%" y="-5%" width="110%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#0f172a" flood-opacity="0.12"/></filter>
+  </defs>
+
+  <rect width="1240" height="760" fill="#ffffff"/>
+
+  <!-- ===== layer 1: clients ===== -->
+  <text x="40" y="34" font-size="11" font-weight="700" letter-spacing="1.6" fill="#64748b">1  CLIENTS</text>
+  <g filter="url(#sh)">
+    <rect x="70" y="48" width="320" height="72" rx="10" fill="#eaf1ff" stroke="#3b6fd4"/>
+    <rect x="460" y="48" width="320" height="72" rx="10" fill="#eaf1ff" stroke="#3b6fd4"/>
+    <rect x="850" y="48" width="320" height="72" rx="10" fill="#eaf1ff" stroke="#3b6fd4"/>
+  </g>
+  <g text-anchor="middle" fill="#12203a">
+    <text x="230" y="78" font-size="15" font-weight="700">AI agents</text>
+    <text x="230" y="98" font-size="12.5" fill="#475569">Claude, ChatGPT, NitroChat (custom connector)</text>
+    <text x="620" y="78" font-size="15" font-weight="700">NitroStudio</text>
+    <text x="620" y="98" font-size="12.5" fill="#475569">manual testing of every tool</text>
+    <text x="1010" y="78" font-size="15" font-weight="700">RepoAtlas website</text>
+    <text x="1010" y="98" font-size="12.5" fill="#475569">static Next.js on Vercel, MCP client in the browser</text>
+  </g>
+  <!-- ===== layer 2: NitroCloud ===== -->
+  <text x="40" y="180" font-size="11" font-weight="700" letter-spacing="1.6" fill="#64748b">2  SERVER</text>
+  <rect x="40" y="190" width="1160" height="388" rx="14" fill="#faf8ff" stroke="#c8bdf0"/>
+
+  <g filter="url(#sh)">
+    <rect x="70" y="222" width="1100" height="40" rx="8" fill="#f1edff" stroke="#6b4fd0"/>
+  </g>
+  <text x="620" y="247" text-anchor="middle" font-size="14" font-weight="700" fill="#1d1540">MCP endpoint  /mcp<tspan font-weight="400" fill="#475569">   ·   streamable HTTP, legacy SSE at /sse</tspan></text>
+
+  <!-- clients to the endpoint (drawn after the server box so they stay visible) -->
+  <g stroke="#475569" stroke-width="1.6" fill="none" marker-end="url(#ah)">
+    <path d="M230 120 V222"/>
+    <path d="M620 120 V222"/>
+    <path d="M1010 120 V222"/>
+  </g>
+  <g font-size="11.5" fill="#475569">
+    <text x="242" y="150">MCP, JSON-RPC</text>
+    <text x="632" y="150">MCP, JSON-RPC</text>
+    <text x="1022" y="150">fetch and SSE</text>
+  </g>
+
+  <rect x="60" y="280" width="1120" height="276" rx="12" fill="#ffffff" stroke="#d9d2f5"/>
+  <text x="1160" y="302" text-anchor="end" font-size="11.5" font-weight="700" letter-spacing="1" fill="#6b5fa5">REPOATLAS SERVER  ·  NitroStack, TypeScript</text>
+
+  <g stroke="#475569" stroke-width="1.6" fill="none" marker-end="url(#ah)">
+    <path d="M220 262 V318"/>
+    <path d="M350 350 H420"/>
+    <path d="M610 382 V404 H325 V424"/>
+    <path d="M610 404 H900 V424"/>
+  </g>
+  <text x="912" y="417" font-size="11.5" fill="#475569">build_graph on a repo that is not precomputed</text>
+
+  <g text-anchor="end" font-size="11.5" fill="#6b5fa5">
+    <text x="1160" y="330" font-weight="700">Runs on NitroCloud free tier</text>
+    <text x="1160" y="348">Node 20, linux/arm64</text>
+    <text x="1160" y="364">500 MB memory, read-only app folder</text>
+    <text x="1160" y="380">outbound HTTPS only</text>
+  </g>
+
+  <g filter="url(#sh)">
+    <rect x="90" y="318" width="260" height="64" rx="9" fill="#f1edff" stroke="#6b4fd0"/>
+    <rect x="420" y="318" width="380" height="64" rx="9" fill="#f1edff" stroke="#6b4fd0"/>
+    <rect x="90" y="424" width="480" height="104" rx="9" fill="#f1edff" stroke="#6b4fd0"/>
+    <rect x="640" y="424" width="510" height="104" rx="9" fill="#f1edff" stroke="#6b4fd0"/>
+  </g>
+  <g text-anchor="middle" fill="#1d1540">
+    <text x="220" y="344" font-size="14" font-weight="700">Policies</text>
+    <text x="220" y="364" font-size="12" fill="#475569">rate limit, result cache, session budget</text>
+
+    <text x="610" y="342" font-size="14" font-weight="700">12 tools + ping_repoatlas</text>
+    <text x="610" y="360" font-size="12" fill="#475569">graph, tour, contribute, actions modules</text>
+    <text x="610" y="375" font-size="11" fill="#64748b">resource graph://  ·  prompt guide_me  ·  widget graph-view</text>
+
+    <text x="330" y="452" font-size="14" font-weight="700">Services (the logic)</text>
+    <text x="330" y="473" font-size="12" fill="#475569">store, graph query, rank, flow, tour,</text>
+    <text x="330" y="490" font-size="12" fill="#475569">localize, export with a stateless HMAC token</text>
+    <text x="330" y="512" font-size="11" fill="#64748b">every answer carries evidence and limits</text>
+
+    <text x="895" y="452" font-size="14" font-weight="700">On-demand build engine</text>
+    <text x="895" y="473" font-size="12" fill="#475569">repo-name check, archive download, streaming tar reader,</text>
+    <text x="895" y="490" font-size="12" fill="#475569">regex import parser, GitHub REST helpers</text>
+    <text x="895" y="512" font-size="11" fill="#64748b">2 builds at once, 40 an hour, 40 s budget, no git, no clone</text>
+  </g>
+
+  <!-- ===== layer 3: data and sources ===== -->
+  <text x="40" y="606" font-size="11" font-weight="700" letter-spacing="1.6" fill="#64748b">3  DATA AND SOURCES</text>
+
+  <g stroke="#475569" stroke-width="1.6" fill="none" marker-end="url(#ah)">
+    <path d="M300 528 V582 H400 V626"/>
+    <path d="M450 528 V596 H640 V626"/>
+    <path d="M760 528 V596 H700 V626"/>
+    <path d="M925 528 V626"/>
+    <path d="M1100 528 V626"/>
+  </g>
+  <path d="M250 676 H284" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="5 4" fill="none" marker-end="url(#ahd)"/>
+  <text x="915" y="596" text-anchor="end" font-size="11.5" fill="#475569">tarball stream</text>
+  <text x="1090" y="596" text-anchor="end" font-size="11.5" fill="#475569">issues, commits, PRs</text>
+
+  <g filter="url(#sh)">
+    <rect x="40" y="636" width="210" height="80" rx="10" fill="#eef0f3" stroke="#7b8494"/>
+    <path d="M290 646 a110 10 0 0 1 220 0 v62 a110 10 0 0 1 -220 0 z" fill="#fff4dc" stroke="#c98a12"/>
+    <path d="M290 646 a110 10 0 0 0 220 0" fill="none" stroke="#c98a12"/>
+    <path d="M560 646 a110 10 0 0 1 220 0 v62 a110 10 0 0 1 -220 0 z" fill="#fff4dc" stroke="#c98a12"/>
+    <path d="M560 646 a110 10 0 0 0 220 0" fill="none" stroke="#c98a12"/>
+    <rect x="840" y="636" width="170" height="80" rx="10" fill="#e6f6ec" stroke="#2f8f4e"/>
+    <rect x="1040" y="636" width="160" height="80" rx="10" fill="#e6f6ec" stroke="#2f8f4e"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="145" y="663" font-size="13.5" font-weight="700" fill="#1f2430">Offline precompute</text>
+    <text x="145" y="682" font-size="11.5" fill="#475569">git, ts-morph, GraphQL,</text>
+    <text x="145" y="698" font-size="11.5" fill="#475569">on a developer machine</text>
+
+    <text x="400" y="676" font-size="13.5" font-weight="700" fill="#3a2a05">Shipped snapshots</text>
+    <text x="400" y="694" font-size="11.5" fill="#6b5420">JSON in the zip, read-only</text>
+    <text x="400" y="709" font-size="11" fill="#6b5420">3 repos + 1 fixture</text>
+
+    <text x="670" y="676" font-size="13.5" font-weight="700" fill="#3a2a05">In-memory registry</text>
+    <text x="670" y="694" font-size="11.5" fill="#6b5420">repos built on demand,</text>
+    <text x="670" y="709" font-size="11" fill="#6b5420">kept a few hours</text>
+
+    <text x="925" y="663" font-size="13" font-weight="700" fill="#0f2b19">codeload.github.com</text>
+    <text x="925" y="682" font-size="11.5" fill="#2f5a3d">repo archive, public repos</text>
+    <text x="925" y="698" font-size="11.5" fill="#2f5a3d">no token needed</text>
+
+    <text x="1120" y="663" font-size="13" font-weight="700" fill="#0f2b19">api.github.com</text>
+    <text x="1120" y="682" font-size="11.5" fill="#2f5a3d">REST, optional GraphQL</text>
+    <text x="1120" y="698" font-size="11.5" fill="#2f5a3d">token optional, read-only</text>
+  </g>
+
+  <!-- legend -->
+  <g font-size="11.5" fill="#64748b">
+    <path d="M40 742 H72" stroke="#475569" stroke-width="1.6" marker-end="url(#ah)"/>
+    <text x="82" y="746">runtime request or read</text>
+    <path d="M250 742 H282" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#ahd)"/>
+    <text x="292" y="746">offline step, done once before deploying</text>
+    <text x="1200" y="746" text-anchor="end">No database, no server-side LLM, no paid service</text>
+  </g>
+</svg>

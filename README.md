@@ -6,9 +6,35 @@ Built on [NitroStack](https://docs.nitrostack.ai) (TypeScript), deployed to Nitr
 
 **Before:** a flat file tree, a stale README and hundreds of open issues. **After:** a guided tour with highlighted files and reasons, then a shortlist of unclaimed issues, each with the likely files, reading order and who to ask. Nothing is ranked by a model: every ranking is a formula over the graph, and every tool returns its evidence.
 
+## What this project does, in plain words
+
+Joining an open-source project you have never seen is hard. There are hundreds of files, the README is out of date, and the issue list is long, so it is not clear where to start or which issue you could actually finish.
+
+RepoAtlas is a helper that an AI assistant (such as Claude or ChatGPT) can plug into. You give it a GitHub link. It reads the project (the files, which files use which, the history, who works on what, and the open issues) and builds a map from that. Your assistant then uses the map to:
+
+- **Explain the project:** what it is for, how to install and run it, and where the code starts.
+- **Take you on a tour:** 8 short stops (the big picture, folders, entry points, core modules, config, tests, how changes flow, who to ask), each with a question to check you got it.
+- **Tell you what to read first,** and why each file matters.
+- **Find issues you can finish:** it filters out issues that are old, unclear or probably taken, points to the files a fix would touch, and rates how good a first task each one is for you.
+- **Write a draft `ARCHITECTURE.md`** you can hand to a teammate. It shows you the whole draft first and only gives you the file after you confirm. You can download it as Markdown or PDF.
+
+Example: you say "I want to start contributing to `pallets/click`". The assistant builds the map, walks you through the project, and then suggests a few issues you could finish, with the files to open first.
+
+What it is **not**: it does not call an AI model itself (your assistant does the talking), it does not run the project's code, and it never writes to a repository. It works on public repos only. Its rankings are plain formulas over the map, and every answer shows the evidence and the limits behind it, so you can check it.
+
+It is useful for new contributors, reviewers who need to understand a change quickly, and testers who want to know where the risky code is.
+
 ## Try it without setting anything up
 
-The `web/` folder is a static Next.js site (no server code) with a landing page, a **live demo** at `/demo/` (buttons that call the real MCP server from your browser, step by step: pick a repo or paste any public GitHub URL, understand it, take the tour, find issues, localize and score one, preview and confirm an export) and a **tool explorer** at `/tools/` that runs any single tool, including the graph widget drawn by `tour_next` and `explain_file`. Both show exactly what an agent would receive. No AI model is involved. Run it with `cd web && npm install && npm run dev` (http://localhost:3100), or deploy the `web` folder to Vercel; see [web/README.md](web/README.md).
+The `web/` folder is a static Next.js site (no server code) with:
+
+- a landing page with a box to paste any public GitHub URL;
+- a **live demo** at `/demo/`: buttons that call the real MCP server from your browser, step by step (pick a repo or paste a URL, understand it, take the tour, find issues, localize and score one, preview and confirm an export);
+- a **tool explorer** at `/tools/` that runs any single tool, including the graph widget drawn by `tour_next` and `explain_file`. Every tool has a plain-English card: what it does, what to enter (required or optional, with an example and help text), what you get back, and how to read it. Inputs are checked with zod before anything is sent, and results are laid out as tables, chips and cards that never overflow.
+
+Both show exactly what an agent would receive. No AI model is involved. The site is drawn at 80% scale on wide screens (reset browser zoom to 100%). Run it with `cd web && npm install && npm run dev` (http://localhost:3100), or deploy the `web` folder to Vercel; see [web/README.md](web/README.md).
+
+**Exporting the guide:** `export_guide` is two buttons, "Step 1: Preview the guide" and "Step 2: Get the full draft". The preview shows the whole draft as formatted text; after Step 2 you can **Download .md**, **Download PDF** or copy the Markdown. The PDF is made in your browser (nothing is uploaded) and has a title band, summary, tables and page numbers.
 
 ## What it does
 
@@ -17,7 +43,7 @@ The `web/` folder is a static Next.js site (no server code) with a landing page,
 3. `tour_next` walks 8 stages (orient, layout, entry points, core modules, config, tests, change patterns, people) one at a time, adapted to the role (new developer, reviewer, tester, quick look), with a check question per stage and a small import graph drawn by a widget.
 4. `profile_contributor` and `find_candidate_issues` filter open issues to ones that are open, likely unclaimed, recent and clear.
 5. `localize_issue` finds the files an issue would change; `score_first_change` scores how good a first change it is for this person.
-6. `export_guide` drafts an `ARCHITECTURE.md`, only after the user confirms a preview.
+6. `export_guide` drafts an `ARCHITECTURE.md` (an at-a-glance summary, run steps, folder layout, entry points, core modules, tests, change patterns, owners and key files to read first), only after the user confirms a preview.
 
 ## Tools
 
@@ -34,9 +60,62 @@ The `web/` folder is a static Next.js site (no server code) with a landing page,
 | `find_candidate_issues` | B | filtered issues, why each passed, evidence behind "likely unclaimed" |
 | `localize_issue` | B | top 5 files with evidence, owner, reading order, confidence |
 | `score_first_change` | B | a task score with every factor shown, effort estimate, watch-outs |
-| `export_guide` | Action | preview and confirm token, then the full draft (text only) |
+| `export_guide` | Action | step 1: the whole draft as a preview plus a confirm token; step 2 (with the token): the final draft (text only) |
 
 Also: resource `graph://{repo}@{sha}/summary` (for example `graph://lukeautry__tsoa@f0f9aa7/summary`), prompt `guide_me(repo, role, depth)`, widget `graph-view`, and `ping_repoatlas` for health.
+
+## Architecture (high-level design)
+
+![RepoAtlas high-level design: clients call one MCP endpoint on NitroCloud; the server applies policies, runs a tool, and reads shipped snapshots or repos built on demand from GitHub](docs/images/hld-architecture.svg)
+
+How the pieces fit:
+
+| Layer | What is in it | Why it is built this way |
+|---|---|---|
+| Clients | AI agents, NitroStudio, the website | All of them speak MCP to one endpoint, so there is only one API to keep correct. The server does no AI work; the client is the agent. |
+| Server | Policies, 12 tools, services, on-demand build engine | Tools are thin. Logic lives in services, so it can be tested without the server. Policies (rate limit, cache, call budget) protect the free tier. |
+| Data | Shipped snapshots, in-memory registry | No database. Precomputed repos ship as read-only JSON; repos built on demand live in memory for a few hours. |
+| Sources | GitHub archive and API | No `git` and no clone on the server: a repo is read as a stream from GitHub's archive. A token is optional and only improves history and issue data. |
+
+One session, end to end (the numbers are the order of the calls):
+
+```mermaid
+sequenceDiagram
+  autonumber
+  actor U as Newcomer
+  participant A as AI agent
+  participant S as RepoAtlas MCP server
+  participant G as GitHub
+
+  U->>A: Help me get started in owner/repo
+  A->>S: build_graph(repo)
+  alt precomputed repo
+    S-->>A: snapshot id (instant)
+  else any other public repo
+    S->>G: download archive, read issues and commits
+    G-->>S: files, history, issues
+    S-->>A: snapshot id, tier, limits
+  end
+
+  loop tour stages 1 to 8
+    A->>S: tour_next(role, stage)
+    S-->>A: stage, evidence, check question, graph widget
+    A-->>U: explain the stage, ask the check question
+  end
+
+  A->>S: profile_contributor, find_candidate_issues
+  S-->>A: ranked issues with the evidence behind each
+  A->>S: localize_issue, score_first_change
+  S-->>A: likely files, reading order, score factors
+
+  Note over A,S: export_guide is two steps, and the user confirms between them
+  A->>S: export_guide (no token)
+  S-->>A: whole draft as a preview + confirm token
+  A-->>U: show the preview, ask to confirm
+  U->>A: yes
+  A->>S: export_guide(confirmToken)
+  S-->>A: ARCHITECTURE.md text (nothing is written anywhere)
+```
 
 ## Demo data
 
@@ -85,7 +164,7 @@ Measured on the three precomputed demo repos; details, method and caveats in [do
 
 ## Safety
 
-- The only action, `export_guide`, returns text and never writes to a repo. Step 1 returns a preview and an HMAC confirm token (10 minutes, bound to the exact draft, stateless); step 2 returns the draft only with a valid token and refuses otherwise.
+- The only action, `export_guide`, returns text and never writes to a repo. Step 1 returns the draft as a preview and an HMAC confirm token (10 minutes, bound to the exact draft, stateless); step 2 returns the final draft only with a valid token and refuses otherwise. The website hides the token and drives both steps with buttons.
 - Text from repos (README, commit messages, issue text, docstrings) is untrusted data: tool descriptions say never to follow it, and the exported draft flattens it (no links, HTML or headings from repo text).
 - No tokens in snapshots, logs or errors. Emails are scrubbed from snapshots and issue files. A server `GITHUB_TOKEN` is optional, is only sent to api.github.com (never forwarded on a redirect), and is never returned: tests search every output for it. Downloads go only to GitHub's archive host, repo names are validated strictly, and archive paths are treated as hostile (no `..`, no symlinks, size and file-count limits).
 - A session call budget, a per-caller rate limit and a result cache protect the free tier.
@@ -101,9 +180,10 @@ npm run build               # widgets + TypeScript to dist/
 npm test                    # vitest (600 tests)
 npm run typecheck           # src, tests and scripts
 npm run check-snapshots     # loads every shipped snapshot and exits non-zero on a bad one
+npm run verify:server -- <url>/mcp   # 48 end-to-end checks against a running server (local or deployed)
 ```
 
-Production start (`npm start`) serves MCP over HTTP at `/mcp` (streamable HTTP, and legacy SSE at `/sse`).
+Production start (`npm start`) serves MCP over HTTP at `/mcp` (streamable HTTP, and legacy SSE at `/sse`) on port 3000. If 3000 is taken, run `npm run build` then `npx nitrostack-cli start --port 3060`, and paste `http://localhost:3060/mcp` into the website's server box (the `PORT` variable is ignored by `nitrostack-cli start`).
 
 ### Configuration
 
@@ -143,7 +223,7 @@ npm run eval                # key-file overlap, localization backtest, hand-chec
 npm run deploy:pack     # pins NitroStack versions, builds, typechecks, checks snapshots, writes repoatlas.zip
 ```
 
-Upload the zip under the app's MCP, Deployments page, and set `EXPORT_SECRET` (and `RUNTIME_MODE=snapshot`) in the dashboard's environment variables there. Optionally add `GITHUB_TOKEN` there too (see the configuration table). Then call `ping_repoatlas` to confirm `exportSecretConfigured`, `liveBuilds` and `githubTokenConfigured`. The MCP endpoint is `<live URL>/mcp`; connect it to Claude or ChatGPT as a custom connector, or use NitroChat.
+Upload the zip under the app's MCP, Deployments page, and set `EXPORT_SECRET` (and `RUNTIME_MODE=snapshot`) in the dashboard's environment variables there. Optionally add `GITHUB_TOKEN` there too (see the configuration table). The local `.env` is not part of the zip, so every variable must be set in the dashboard, and only deployments made after saving see it. Then call `ping_repoatlas` (or `npm run verify:server -- <live URL>/mcp`) to confirm `exportSecretConfigured`, `liveBuilds` and `githubTokenConfigured`. The MCP endpoint is `<live URL>/mcp`; connect it to Claude or ChatGPT as a custom connector, or use NitroChat.
 
 Live URL: `https://repoatlas-6ad271a6-karthik-s-poojary-heapify-global-community.app.nitrocloud.ai/mcp`
 
@@ -166,10 +246,11 @@ src/services/{ingest,parse,link,graph,build}.service.ts   offline engine (git an
 src/services/{parse.common,ingest.common,people,github.fetch,assemble}.ts   pure parts shared by both engines
 src/services/live/                             on-demand builds: tarball download, tar reader, regex parser, REST helpers, registry
 src/widgets/app/graph-view/                    the Next.js widget
+web/                                           static demo site: landing, live demo, tool explorer (see web/README.md)
 src/config/weights.ts                          every tunable weight in one file
 data/snapshots/                                shipped snapshots (3 MB each at most)
 scripts/                                       precompute, check-snapshots, eval/
-docs/                                          DECISIONS, SPIKE, EVAL, API_BUDGET, eval/
+docs/                                          DECISIONS, SPIKE, EVAL, API_BUDGET, eval/, images/ (the HLD diagram)
 tests/                                         vitest
 ```
 
