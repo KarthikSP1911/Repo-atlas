@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useTheme, useWidgetSDK, useWidgetState } from '@nitrostack/widgets';
 import { layoutSubgraph, subgraphOf } from './graph-layout';
 
@@ -43,12 +44,32 @@ export default function GraphView() {
   const [state, setState] = useWidgetState<{ selected: string | null }>(() => ({ selected: null }));
   const c = palette(theme === 'dark');
 
+  // Safety net: if the host's result arrives without any event reaching the hooks, look again every
+  // 300 ms for up to 15 s, then say so instead of waiting forever.
+  const [, setTick] = useState(0);
+  const [gaveUp, setGaveUp] = useState(false);
   const output = getToolOutput<ToolOutput>() ?? (toolOutput ? (subgraphOf(toolOutput) ? (toolOutput as ToolOutput) : null) : null);
+  const have = output !== null;
+  useEffect(() => {
+    if (have) return;
+    const poll = setInterval(() => setTick((t) => t + 1), 300);
+    const stop = setTimeout(() => setGaveUp(true), 15_000);
+    return () => {
+      clearInterval(poll);
+      clearTimeout(stop);
+    };
+  }, [have]);
   const sg = output ? subgraphOf(output) : null;
 
   const frame = { fontFamily: 'system-ui, sans-serif', fontSize: 13, color: c.text, background: c.bg, padding: 12, borderRadius: 10, border: `1px solid ${c.border}`, maxWidth: 900 } as const;
 
-  if (!output) return <div style={{ ...frame, color: c.muted }}>Waiting for the tool result...</div>;
+  if (!output) {
+    return (
+      <div style={{ ...frame, color: c.muted }}>
+        {gaveUp ? 'No result reached this widget from the host. Run the tool again, or ask the agent for the result in text.' : 'Waiting for the tool result...'}
+      </div>
+    );
+  }
   if (!sg || sg.nodes.length === 0) {
     return <div style={{ ...frame, color: c.muted }}>No graph to draw for this result. The snapshot may have no import data (Tier 1).</div>;
   }

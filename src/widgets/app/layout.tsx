@@ -1,7 +1,9 @@
 'use client';
 
 import { WidgetLayout } from '@nitrostack/widgets';
-
+// Registers a window message listener as soon as the bundle runs, so a host that injects the tool
+// result before React has hydrated (NitroStudio does) is not missed by WidgetLayout.
+import '@nitrostack/widgets/runtime/widget-polyfill';
 
 export default function RootLayout({
   children,
