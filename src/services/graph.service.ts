@@ -1,8 +1,7 @@
 import Graph from 'graphology';
 import pagerank from 'graphology-metrics/centrality/pagerank.js';
-import type { HistoryCommit } from './link.service.js';
-import { isBot, personSlug } from './link.service.js';
-import { dirOf, join, probeFile, type ParsedFile } from './parse.service.js';
+import { isBot, personSlug, type HistoryCommit } from './people.js';
+import { dirOf, join, probeFile, type ParsedFile } from './parse.common.js';
 
 /**
  * OFFLINE ONLY. Turns parsed files, history and a few text files into the metrics the snapshot
