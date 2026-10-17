@@ -1,4 +1,4 @@
-import { parseSse } from '../web/lib/mcp.ts';
+import { parseSse } from '../web/lib/mcp.js';
 
 /**
  * Smoke test of a running RepoAtlas server over /mcp against the guidebook and blueprint
