@@ -60,6 +60,12 @@ export function shortArgs(args: Record<string, unknown>, max = 70): string {
   return clip(parts.join(', '), max);
 }
 
+/** export_guide's answer when the server has no signing secret. */
+export const looksLikeMissingSecret = (message: string): boolean => /EXPORT_SECRET must be set/i.test(message);
+
+export const MISSING_SECRET_HINT =
+  'The server you are connected to (the MCP server box above) has no EXPORT_SECRET. A .env file only applies to a server running on your own machine and is never uploaded. For the NitroCloud URL, add EXPORT_SECRET (16 or more characters) in the environment variables of the MCP in the NitroCloud dashboard, then redeploy. Check with ping_repoatlas: exportSecretConfigured must be true.';
+
 /** What the old (snapshot-only) server build says when asked for a repo it does not have. */
 export const looksLikeOldBuild = (message: string): boolean => /snapshot mode|cannot clone or build repos on demand|only serves repos precomputed/i.test(message);
 

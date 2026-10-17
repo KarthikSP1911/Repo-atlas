@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, type ReactNode } from 'react';
-import { TIER_MEANING, asRec, fmtDate, num, prettyJson, safeGithubUrl, str, strList } from './demo-util';
+import { MISSING_SECRET_HINT, TIER_MEANING, asRec, fmtDate, looksLikeMissingSecret, num, prettyJson, safeGithubUrl, str, strList } from './demo-util';
 import type { RunState } from './useToolRun';
 
 /** Numbered card of the guided flow. Children are shown only when the card is unlocked. */
@@ -38,6 +38,11 @@ export function RunStatus({ state, label, onRetry }: { state: RunState; label: s
               Retry
             </button>
           )}
+        </p>
+      )}
+      {state.status === 'error' && looksLikeMissingSecret(state.error ?? '') && (
+        <p className="dm-notice">
+          <strong>Why:</strong> {MISSING_SECRET_HINT}
         </p>
       )}
     </div>
