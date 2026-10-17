@@ -60,6 +60,12 @@ export function shortArgs(args: Record<string, unknown>, max = 70): string {
   return clip(parts.join(', '), max);
 }
 
+/** Value of the repo picker's "another repo" option; the text box holds the URL. */
+export const CUSTOM_REPO = '__custom';
+
+/** What to pass to build_graph for the picker's state. */
+export const repoArgOf = (value: string, custom: string): string => (value === CUSTOM_REPO ? custom.trim() : value);
+
 export const REPOS = [
   { value: 'tsoa', label: 'tsoa (TypeScript, tier 2)' },
   { value: 'pwndbg', label: 'pwndbg (Python, tier 2)' },

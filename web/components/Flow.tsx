@@ -14,7 +14,7 @@ import type { CallFn } from './useToolRun';
  * The six cards. The page remounts this component when the endpoint changes, and the cards after
  * the first are keyed by snapshot id, so nothing is cached across endpoints or repos.
  */
-export function Flow({ call }: { call: CallFn }) {
+export function Flow({ call, initialRepo }: { call: CallFn; initialRepo?: string }) {
   const [built, setBuilt] = useState<Built | null>(null);
   const [found, setFound] = useState<Found | null>(null);
 
@@ -25,7 +25,7 @@ export function Flow({ call }: { call: CallFn }) {
 
   return (
     <>
-      <RepoStep call={call} onBuilt={onBuilt} />
+      <RepoStep call={call} onBuilt={onBuilt} initialRepo={initialRepo} />
       {built ? (
         <div key={built.snapshotId}>
           <UnderstandStep call={call} snapshotId={built.snapshotId} />

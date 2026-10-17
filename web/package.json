@@ -9,6 +9,7 @@
     "start": "npx --yes serve out"
   },
   "dependencies": {
+    "geist": "^1.8.1",
     "next": "14.2.35",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

@@ -26,7 +26,7 @@ function renderGraphSvg(output: unknown, title: string): string {
   const selected = sg.nodes.find((n) => n.highlight) ?? sg.nodes[0];
   const W = L.width + 24;
   const H = L.height + 64;
-  const c = { bg: '#0f172a', panel: '#1e293b', text: '#e2e8f0', muted: '#94a3b8', border: '#334155', node: '#273449', focus: '#f59e0b', focusFill: '#3b2f12', edge: '#64748b', hot: '#fbbf24' };
+  const c = { bg: '#000000', panel: '#0a0a0a', text: '#ededed', muted: '#a1a1a1', border: '#2e2e2e', node: '#141414', focus: '#3291ff', focusFill: '#0a1f3a', edge: '#6b6b6b', hot: '#3291ff' };
   const parts: string[] = [];
   parts.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(title)}" font-family="system-ui, Segoe UI, sans-serif">`);
   parts.push(`<defs><marker id="a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="${c.edge}"/></marker><marker id="h" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="${c.hot}"/></marker></defs>`);
