@@ -122,8 +122,10 @@ export function buildSubgraph(idx: GraphIndex, highlight: string[], max = MAX_SU
     }
   }
   const ranked = [...neighbours.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  // Several highlighted files already make a dense picture: add only a few neighbours.
+  const cap = focus.length > 1 ? Math.min(max, focus.length + 10) : max;
   for (const [p] of ranked) {
-    if (chosen.size >= max) break;
+    if (chosen.size >= cap) break;
     chosen.add(p);
   }
   const hl = new Set(focus);

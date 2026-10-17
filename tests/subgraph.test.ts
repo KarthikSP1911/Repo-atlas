@@ -19,6 +19,14 @@ describe('widget subgraph is readable on a real repo (tsoa)', async () => {
     expect(tests).toEqual([]);
   });
 
+  it('keeps the picture small when several files are highlighted (focus + at most 10 neighbours)', () => {
+    const sg = buildSubgraph(idx, highlight);
+    expect(sg.nodes.length).toBeLessThanOrEqual(highlight.length + 10);
+    expect(sg.nodes.length).toBeGreaterThan(highlight.length);
+    const single = buildSubgraph(idx, [highlight[0]]);
+    expect(single.nodes.length).toBeGreaterThan(highlight.length + 10 - 1); // one file still gets the full 25 when it has that many neighbours
+  });
+
   it('still shows tests when the file being explained is itself a test', () => {
     const testFile = [...idx.files.values()].find((f) => f.meta.isTest && idx.imports(f.path).length > 0)!;
     const sg = buildSubgraph(idx, [testFile.path]);
@@ -28,9 +36,9 @@ describe('widget subgraph is readable on a real repo (tsoa)', async () => {
 
   it('draws a bounded number of edges, keeping those that touch the highlighted files', () => {
     const sg = buildSubgraph(idx, highlight);
-    expect(sg.edges.length).toBeGreaterThan(MAX_EDGES); // the raw subgraph is dense...
+    expect(sg.edges.length).toBeLessThanOrEqual(60); // the raw subgraph is much smaller than before the neighbour cap
     const layout = layoutSubgraph(sg);
-    expect(layout.edges.length).toBeLessThanOrEqual(MAX_EDGES); // ...but the picture is not
+    expect(layout.edges.length).toBeLessThanOrEqual(MAX_EDGES); // and the drawn picture is always bounded
     const hl = new Set(highlight);
     const touching = sg.edges.filter((e) => hl.has(e.from) || hl.has(e.to)).length;
     expect(layout.edges.filter((e) => e.emphasis).length).toBe(Math.min(touching, MAX_EDGES));

@@ -97,9 +97,11 @@ export default function GraphView() {
               <path d="M0,0 L8,4 L0,8 z" fill={c.edgeFocus} />
             </marker>
           </defs>
-          {layout.edges.map((e) => (
-            <path key={`${e.from}>${e.to}`} d={e.d} fill="none" stroke={e.emphasis ? c.edgeFocus : c.edge} strokeWidth={e.emphasis ? 1.6 : 1} opacity={e.emphasis ? 0.95 : 0.6} markerEnd={`url(#${e.emphasis ? 'arrow-focus' : 'arrow'})`} />
-          ))}
+          {layout.edges.map((e) => {
+            // Bright only for the selected file's own lines; everything else stays quiet so the picture is readable.
+            const hot = selected ? e.from === selected.id || e.to === selected.id : e.emphasis;
+            return <path key={`${e.from}>${e.to}`} d={e.d} fill="none" stroke={hot ? c.edgeFocus : c.edge} strokeWidth={hot ? 1.8 : 0.9} opacity={hot ? 0.95 : 0.35} markerEnd={`url(#${hot ? 'arrow-focus' : 'arrow'})`} />;
+          })}
           {layout.nodes.map((p) => {
             const isSel = selected?.id === p.node.id;
             return (
@@ -118,7 +120,7 @@ export default function GraphView() {
       <div style={{ marginTop: 8, display: 'flex', gap: 14, flexWrap: 'wrap', color: c.muted, fontSize: 12 }}>
         <span><span style={{ display: 'inline-block', width: 10, height: 10, background: c.focusFill, border: `2px solid ${c.focus}`, borderRadius: 3, marginRight: 5 }} />current stop</span>
         <span><span style={{ display: 'inline-block', width: 10, height: 10, background: c.node, border: `1px solid ${c.border}`, borderRadius: 3, marginRight: 5 }} />neighbour</span>
-        <span>arrow: imports (importer to imported file)</span>
+        <span>arrow: imports (importer to imported file). Click a box to light up its lines.</span>
       </div>
 
       {selected && (
