@@ -36,16 +36,19 @@ const palette = (dark: boolean) => ({
 
 export default function GraphView() {
   const theme = useTheme();
-  const { isReady, getToolOutput, sendFollowUpMessage } = useWidgetSDK();
+  // `toolOutput` is read only so this component re-renders when the host delivers the result.
+  // Do not gate on `isReady`: some hosts (NitroStudio) provide the data without the ready event
+  // the flag waits for, which left the widget stuck on "Waiting for the tool result...".
+  const { toolOutput, getToolOutput, sendFollowUpMessage } = useWidgetSDK();
   const [state, setState] = useWidgetState<{ selected: string | null }>(() => ({ selected: null }));
   const c = palette(theme === 'dark');
 
-  const output = isReady ? getToolOutput<ToolOutput>() : null;
+  const output = getToolOutput<ToolOutput>() ?? (toolOutput ? (subgraphOf(toolOutput) ? (toolOutput as ToolOutput) : null) : null);
   const sg = output ? subgraphOf(output) : null;
 
   const frame = { fontFamily: 'system-ui, sans-serif', fontSize: 13, color: c.text, background: c.bg, padding: 12, borderRadius: 10, border: `1px solid ${c.border}`, maxWidth: 900 } as const;
 
-  if (!isReady || !output) return <div style={{ ...frame, color: c.muted }}>Waiting for the tool result...</div>;
+  if (!output) return <div style={{ ...frame, color: c.muted }}>Waiting for the tool result...</div>;
   if (!sg || sg.nodes.length === 0) {
     return <div style={{ ...frame, color: c.muted }}>No graph to draw for this result. The snapshot may have no import data (Tier 1).</div>;
   }
