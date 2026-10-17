@@ -72,6 +72,22 @@ Taken from the live site, https://repo-atlas-ksp.vercel.app/, on the precomputed
 
 ![Top-5 hit rate: RepoAtlas 69%, five most-imported files 24%, five random files 6%; per repo go-git 46%, tsoa 75%, pwndbg 81%; with a box of honest caveats](docs/images/screenshot-accuracy.jpg)
 
+### In an AI assistant
+
+The same server added as a connector. No sign-in is needed.
+
+**Claude** (claude.ai, custom connector). One prompt made Claude call `build_graph`, `project_overview`, `key_files`, `find_entry_points`, `find_candidate_issues` and `score_first_change` on `lukeautry/tsoa`.
+
+![Claude using the RepoAtlas connector: the chat shows Build graph, Project overview, Key files, Find entry points, Find candidate issues, each run on the snapshot lukeautry__tsoa@f0f9aa7](docs/images/screenshot-claude-connector.jpg)
+
+**NitroChat** (the hosted chat on NitroCloud). The prompt asks for a walkthrough of `lukeautry/tsoa` and the files to read first.
+
+![NitroChat prompt: "Walk me through github.com/lukeautry/tsoa and tell me which files to read first", and the reply starting with "tsoa at a glance"](docs/images/screenshot-nitrochat-prompt.jpg)
+
+NitroChat's answer lists the entry points and the "Must read" files in order, each with the reason from `key_files` (for example `packages/runtime/src/index.ts`: most-imported file, 27 importers).
+
+![NitroChat answer: entry points for tsoa, then "Which files to read first" with a numbered Must read list and the reason for each file](docs/images/screenshot-nitrochat-key-files.jpg)
+
 ## What it does
 
 1. `build_graph` takes a repo (`owner/repo` or a GitHub URL) and returns a snapshot (commit, tier, as-of time): instantly for the four precomputed repos, and built on demand from GitHub's archive for any other public repo (a few seconds, up to about 40 for a huge one).
