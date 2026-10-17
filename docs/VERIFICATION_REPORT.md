@@ -1,6 +1,6 @@
 # Verification report: RepoAtlas against the Buildathon Guidebook and the Blueprint
 
-Checked on 2026-10-17 at commit `391d46e` plus the navbar and font change. Method: read the guidebook PDF (17 pages) and the blueprint in full, then checked each requirement with a command, a test or a live call. Status key: PASS = verified here; PARTIAL = works but something is missing; OPEN = not done, needs the owner; DEVIATION = intentional, recorded.
+Checked on 2026-10-17. Code checks were made at commit `391d46e` plus later site changes; the deployment section was re-verified after the owner redeployed the latest build (see "Deployment"). Method: read the guidebook PDF (17 pages) and the blueprint in full, then checked each requirement with a command, a test or a live call. Status key: PASS = verified here; PARTIAL = works but something is missing; OPEN = not done, needs the owner; DEVIATION = intentional, recorded.
 
 ## Verdict
 
@@ -12,13 +12,13 @@ Checked on 2026-10-17 at commit `391d46e` plus the navbar and font change. Metho
 | MCP centrality, clarity, execution (guidebook 7) | PASS (demo video still to record) |
 | Blueprint product behaviour (tools, ranking, safety) | PASS, 48 of 48 live checks |
 | Blueprint validation numbers (section 13) | PARTIAL: localization measured, three hand-checks not done |
-| Deployment (guidebook 6) | PARTIAL: live, but behind and `export_guide` fails live |
+| Deployment (guidebook 6) | PASS for the server (47 of 47 on the live URL); NitroChat, connector and other-network tests still open |
 | Submission package (guidebook 8) | OPEN: 5 of 7 items |
 
 ## Evidence collected
 
 - **525 unit tests pass**; `npm run typecheck` (source, tests, scripts) and `tsc` exit 0; `npm run build` and `npm run deploy:pack` succeed; the static site builds.
-- **48 of 48 live checks** (`npm run verify:server`, run against a freshly started local server over `/mcp`, no GitHub token): registration, schemas, evidence and limits on each tool, ranking formulas, the tour for all four roles, safety, rate limiting. The same script run against the **live NitroCloud server** passed 45 of 47; the two failures are the export steps (see Deployment). Re-run it after every redeploy.
+- **48 of 48 live checks** (`npm run verify:server`, run against a freshly started local server over `/mcp`, no GitHub token): registration, schemas, evidence and limits on each tool, ranking formulas, the tour for all four roles, safety, rate limiting. The same script run against the **live NitroCloud server** passed 45 of 47 before the redeploy (the two failures were the export steps) and **47 of 47 after it**. Re-run it after every redeploy.
 - **Live NitroCloud server probed** (read-only calls): see "Deployment".
 - **Secret scan of every commit**: no real token. The only match is a fake string in a sanitiser test.
 - **Real repos**: precomputed tsoa, pwndbg, go-git; built on demand: flask, express, click, cobra, React, Next.js.
@@ -41,7 +41,7 @@ Checked on 2026-10-17 at commit `391d46e` plus the navbar and font change. Metho
 | `npm run build` and `tsc` clean before deploy | PASS | both succeed |
 | Zip under 100 MB, no `node_modules` | PASS | `repoatlas.zip` is 968 KB; the pack script checks contents |
 | Deploy early; test live from another network | PARTIAL | deployed and answering; tested from this machine only |
-| Live server matches the code | OPEN | see "Deployment" |
+| Live server matches the code | PASS | after the redeploy: `liveBuilds`, `githubTokenConfigured` and `exportSecretConfigured` all true; 47 of 47 checks |
 | NitroChat check; connect to Claude or ChatGPT | OPEN | not done |
 | Template is not the submission | PASS | original workflow |
 
@@ -90,10 +90,16 @@ Checked on 2026-10-17 at commit `391d46e` plus the navbar and font change. Metho
 
 ## Deployment (guidebook 6)
 
-Live URL probed on 2026-10-17:
-- **Answers**, serves the 12 tools, and loads the shipped snapshots (`npm run verify:server` against it: 45 of 47 checks pass). `build_graph`, `key_files` and `tour_next` work (the tour returns a 25-node graph).
-- **`export_guide` fails live**: "EXPORT_SECRET must be set to a secret of at least 16 characters". `ping_repoatlas` shows `exportSecretConfigured: false` and an empty `runtimeMode`, so the dashboard variables are not reaching the server (missing, empty, or saved after the last deploy).
-- **It is an older build**: no on-demand repo builds, and asking for an unknown repo returns the old "snapshot mode" message.
+**Before the redeploy** (first probe): older build, no on-demand repos, `export_guide` failed ("EXPORT_SECRET must be set"), 45 of 47 checks.
+
+**After the redeploy** (re-probed the same day):
+- `ping_repoatlas` reports `liveBuilds: true`, `githubTokenConfigured: true`, `exportSecretConfigured: true`.
+- `npm run verify:server` against the live URL: **47 of 47** checks (rate-limit test skipped on purpose).
+- **Any repo works live.** `KarthikSP1911/math-trainer` (not precomputed) built in about 6 s: 433 files, 1,730 import edges, tier 2, labelled "built on demand". All 12 tools then ran on it, including both `export_guide` steps (5,011-character draft) and all three tour stages with a graph. Invalid, missing and non-GitHub inputs return clear "unavailable" messages.
+- Precomputed repos still answer from the shipped snapshots (tsoa returned `source: precomputed`).
+- Latency from this machine varied from about 0.3 s to 6 s per call, with some repeat calls slower than expected (up to 4.6 s for a reused repo); every call succeeded.
+
+Still open: NitroChat, a Claude or ChatGPT connector, and a test from another network.
 
 ## Submission package (guidebook 8.2)
 
@@ -104,7 +110,7 @@ Live URL probed on 2026-10-17:
 | Short explanation of the reimagined workflow | PASS: README and blueprint section 17 |
 | GitHub repository, public, with a brief README | PARTIAL: public (API returns 200) and the README has what it does, setup, tools, accuracy and limits, **but the remote is 32 commits behind** (`origin/main` is `2952590`, local is `391d46e`) |
 | Demo video | OPEN |
-| Live demo URL | PARTIAL: see Deployment |
+| Live demo URL | PASS: live, current and verified; still to test from another network |
 | LinkedIn post tagging the official MCP to the Moon handle (and any partner community) | OPEN: not drafted; `docs/LINKEDIN_POST.md` does not exist. The exact handles must come from you or the event |
 | Phase 9 documents (`DEMO_SCRIPT.md`, `LINKEDIN_POST.md`, `SUBMISSION.md`) | OPEN: not written |
 
@@ -128,9 +134,9 @@ Live URL probed on 2026-10-17:
 
 ## What is left, in order
 
-1. **Redeploy** `repoatlas.zip` and **set `EXPORT_SECRET`** (16+ characters) in the NitroCloud MCP environment variables; confirm with `ping_repoatlas` (`exportSecretConfigured: true`, `liveBuilds: true`). Optional: `GITHUB_TOKEN` (read-only, no scopes).
+1. ~~Redeploy and set `EXPORT_SECRET`~~ **Done and verified** (47 of 47 on the live URL).
 2. **Push** to GitHub so the public repo matches.
-3. **Test the live URL** from another network, in NitroChat, and as a connector in Claude or ChatGPT.
+3. **Test the live URL** from another network, in NitroChat, and as a connector in Claude or ChatGPT (the server itself is verified).
 4. **Run each tool once in NitroStudio**, including `key_files`, `explain_file` and the widget.
 5. **Record the demo video** (script to be drafted) and **post on LinkedIn** with the official MCP to the Moon handle.
 6. **Fill the three hand-check sheets**, or state in the submission that they were not measured.
