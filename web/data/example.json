@@ -1,0 +1,208 @@
+{
+  "generatedAt": "2026-10-17T03:59:27.929Z",
+  "snapshot": {
+    "id": "lukeautry__tsoa@f0f9aa7",
+    "repo": "lukeautry/tsoa",
+    "asOf": "2026-10-16T19:50:59.394Z",
+    "tier": 2,
+    "files": 167,
+    "importEdges": 325,
+    "mergedPrs": 100,
+    "commitWindow": 1000
+  },
+  "keyFiles": [
+    {
+      "path": "packages/runtime/src/index.ts",
+      "score": 5.55,
+      "reason": "entry point; imported by 27 files; changed 5 times; has tests"
+    },
+    {
+      "path": "packages/cli/src/cli.ts",
+      "score": 4.48,
+      "reason": "entry point; imported by 9 files; changed 32 times; has tests"
+    },
+    {
+      "path": "packages/cli/src/index.ts",
+      "score": 3.71,
+      "reason": "entry point; imported by 2 files; changed 6 times; has tests"
+    },
+    {
+      "path": "packages/tsoa/src/index.ts",
+      "score": 3.5,
+      "reason": "entry point; has tests"
+    },
+    {
+      "path": "packages/tsoa/src/cli.ts",
+      "score": 3.02,
+      "reason": "entry point; changed 2 times"
+    }
+  ],
+  "tour": {
+    "stage": 4,
+    "name": "Core modules",
+    "progress": "4 of 8",
+    "question": "Which module do most others depend on?",
+    "coreModules": [
+      {
+        "path": "packages/runtime/src/index.ts",
+        "fanIn": 27
+      },
+      {
+        "path": "packages/cli/src/metadataGeneration/exceptions.ts",
+        "fanIn": 10
+      },
+      {
+        "path": "packages/cli/src/cli.ts",
+        "fanIn": 9
+      }
+    ]
+  },
+  "candidates": [
+    {
+      "number": 1860,
+      "title": "Duplicate model detection fails for path-equivalent and canonical model declarations",
+      "url": "https://github.com/lukeautry/tsoa/issues/1860",
+      "labels": [],
+      "evidence": "no assignee, no linked open PR, no recent \"can I take this\" style comment in the last 5 comments",
+      "rankScore": 0.592,
+      "firstChangeScore": 0.36,
+      "filesToChange": 3
+    },
+    {
+      "number": 1864,
+      "title": "`validateCompilerOptions` ignores project `tsconfig.json`, causing cross-package `z.infer<>` types to resolve as empty objects",
+      "url": "https://github.com/lukeautry/tsoa/issues/1864",
+      "labels": [],
+      "evidence": "no assignee, no linked open PR, no recent \"can I take this\" style comment in the last 5 comments",
+      "rankScore": 0.439,
+      "firstChangeScore": 0.239,
+      "filesToChange": 1
+    },
+    {
+      "number": 1824,
+      "title": "`Record<sting, string | null>` is being misinterpreted",
+      "url": "https://github.com/lukeautry/tsoa/issues/1824",
+      "labels": [],
+      "evidence": "no assignee, no linked open PR, no recent \"can I take this\" style comment in the last 5 comments",
+      "rankScore": 0.466,
+      "firstChangeScore": 0.07,
+      "filesToChange": 4
+    }
+  ],
+  "candidateFilters": {
+    "considered": 97,
+    "excluded": {
+      "claimed": 0,
+      "maybeFixed": 0,
+      "stale": 79,
+      "blocked": 3,
+      "unclear": 0
+    },
+    "passed": 15,
+    "scoredForProfile": 10
+  },
+  "profile": {
+    "languages": [
+      "ts"
+    ],
+    "level": "beginner",
+    "familiarAreas": []
+  },
+  "localize": {
+    "issue": 1860,
+    "issueTitle": "Duplicate model detection fails for path-equivalent and canonical model declarations",
+    "issueUrl": "https://github.com/lukeautry/tsoa/issues/1860",
+    "confidence": "high",
+    "files": [
+      {
+        "path": "packages/cli/src/cli.ts",
+        "score": 0.836,
+        "evidence": "matches terms: path, name, package, spec, swagger, json (in symbols, path)"
+      },
+      {
+        "path": "packages/cli/src/swagger/specGenerator3.ts",
+        "score": 0.584,
+        "evidence": "matches terms: package, spec, swagger, json, interface, example (in path, symbols, doc)"
+      },
+      {
+        "path": "packages/cli/src/metadataGeneration/typeResolver.ts",
+        "score": 0.443,
+        "evidence": "matches terms: declaration, metadata, generation, package (in symbols, path)"
+      }
+    ]
+  },
+  "firstChange": {
+    "issue": 1860,
+    "score": 0.36,
+    "whyItFits": "It likely needs 3 files (packages/cli/src/cli.ts, packages/cli/src/swagger/specGenerator3.ts, ...), which is on the large side for a beginner contributor. 100% of the files are in languages you know and 4 of 5 have tests. The issue text is fairly clear (clarity 1.00) and overall fit is 0.36 out of 1.",
+    "factors": [
+      {
+        "name": "languageFit",
+        "floored": 1
+      },
+      {
+        "name": "centrality",
+        "floored": 0.84
+      },
+      {
+        "name": "testPresence",
+        "floored": 0.8
+      },
+      {
+        "name": "freshness",
+        "floored": 0.77
+      },
+      {
+        "name": "clarity",
+        "floored": 1
+      },
+      {
+        "name": "sizeFit",
+        "floored": 0.7
+      }
+    ],
+    "effort": "Estimate only (a rough guess from file count and size, not a promise): about a week or more, for 3 files and about 2430 lines of existing code to read.",
+    "watchOuts": [
+      "touches packages/cli/src/metadataGeneration/typeResolver.ts which has no tests",
+      "packages/cli/src/metadataGeneration/typeResolver.ts is large (1292 lines)"
+    ]
+  },
+  "accuracy": {
+    "prs": 49,
+    "hit5": 0.6938775510204082,
+    "recall5": 0.49363459669582116,
+    "random": 0.06400341304842427,
+    "fanIn": 0.24489795918367346,
+    "byRepo": [
+      {
+        "repo": "go-git/go-git",
+        "hit5": 0.46153846153846156,
+        "n": 13
+      },
+      {
+        "repo": "lukeautry/tsoa",
+        "hit5": 0.75,
+        "n": 20
+      },
+      {
+        "repo": "pwndbg/pwndbg",
+        "hit5": 0.8125,
+        "n": 16
+      }
+    ]
+  },
+  "tools": [
+    "build_graph",
+    "project_overview",
+    "find_entry_points",
+    "key_files",
+    "trace_flow",
+    "explain_file",
+    "tour_next",
+    "profile_contributor",
+    "find_candidate_issues",
+    "localize_issue",
+    "score_first_change",
+    "export_guide"
+  ]
+}

@@ -71,3 +71,8 @@ docs/Buildathon Guidebook (1).pdf
 
 # Evaluation scratch data (fetched issue bodies, cached PR details)
 scripts/eval/.cache/
+
+# Landing page build output
+web/.next/
+web/out/
+web/next-env.d.ts
