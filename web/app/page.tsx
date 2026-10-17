@@ -1,8 +1,6 @@
 import data from '../data/example.json';
 
-const GITHUB = 'https://github.com/KarthikSP1911/Repo-atlas';
-const MCP_URL = 'https://repoatlas-6ad271a6-karthik-s-poojary-heapify-global-community.app.nitrocloud.ai/mcp';
-const GUIDE = 'https://til.simonwillison.net/llms/mcp-in-claude-and-chatgpt';
+import { GITHUB, GUIDE, MCP_URL } from '../lib/config';
 
 const pct = (x: number): string => `${Math.round(x * 100)}%`;
 const day = (iso: string): string => iso.slice(0, 10);
@@ -25,7 +23,10 @@ export default function Home() {
           issues you can actually finish, with the files to touch.
         </p>
         <div className="buttons">
-          <a className="btn primary" href="#connect">
+          <a className="btn primary" href="/demo/">
+            Try it live
+          </a>
+          <a className="btn" href="#connect">
             Connect it to your agent
           </a>
           <a className="btn" href={GITHUB}>
@@ -243,7 +244,10 @@ export default function Home() {
 
       <section id="connect" aria-labelledby="conn">
         <h2 id="conn">Connect it</h2>
-        <p>It is a standard remote MCP server. Add this URL as a custom MCP connector in Claude or ChatGPT, or open the app in NitroChat on NitroCloud.</p>
+        <p>
+          Want to see it without setting anything up? <a href="/demo/">Run the whole tool chain live in your browser</a>: it calls the real server and shows exactly what an agent receives. RepoAtlas is a standard remote
+          MCP server, so you can also add this URL as a custom MCP connector in Claude or ChatGPT, or open the app in NitroChat on NitroCloud.
+        </p>
         <code className="endpoint" aria-label="MCP endpoint URL">
           {MCP_URL}
         </code>

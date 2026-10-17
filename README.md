@@ -6,6 +6,10 @@ Built on [NitroStack](https://docs.nitrostack.ai) (TypeScript), deployed to Nitr
 
 **Before:** a flat file tree, a stale README and hundreds of open issues. **After:** a guided tour with highlighted files and reasons, then a shortlist of unclaimed issues, each with the likely files, reading order and who to ask. Nothing is ranked by a model: every ranking is a formula over the graph, and every tool returns its evidence.
 
+## Try it without setting anything up
+
+The `web/` folder is a static Next.js site (no server code) with a landing page and a **live demo** at `/demo/`: buttons that call the real MCP server from your browser, step by step (pick a repo, understand it, take the tour, find issues, localize and score one, preview and confirm an export) and show exactly what an agent would receive. No AI model is involved. Run it with `cd web && npm install && npm run dev` (http://localhost:3100), or deploy the `web` folder to Vercel; see [web/README.md](web/README.md).
+
 ## What it does
 
 1. `build_graph` resolves a repo to a precomputed snapshot (commit, tier, as-of time).

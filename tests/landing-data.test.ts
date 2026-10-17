@@ -63,4 +63,11 @@ describe('landing page data', () => {
     expect(svg).toContain('aria-label="4 of 8: Core modules"');
     expect(svg).not.toMatch(/<script|onload=|javascript:/i);
   });
+
+  it('uses a verbatim copy of the widget layout in the web demo (run npm run landing:data to refresh)', () => {
+    const original = fs.readFileSync('src/widgets/app/graph-view/graph-layout.ts', 'utf8');
+    const copy = fs.readFileSync('web/lib/graph-layout.ts', 'utf8');
+    expect(copy.endsWith(original)).toBe(true);
+    expect(copy.split('\n')[0]).toMatch(/GENERATED/);
+  });
 });
