@@ -9,7 +9,7 @@ import type { ReactNode } from 'react';
  * raw HTML), and links are only made for http(s) addresses.
  */
 
-type Block =
+export type Block =
   | { t: 'h'; level: number; text: string }
   | { t: 'p'; text: string }
   | { t: 'quote'; lines: string[] }
@@ -29,7 +29,7 @@ const cells = (line: string): string[] =>
 const isSeparator = (line: string): boolean => /^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/.test(line) && line.includes('-');
 const isTableRow = (line: string): boolean => line.trim().startsWith('|');
 
-function parse(src: string): Block[] {
+export function parse(src: string): Block[] {
   const lines = src.replace(/\r\n?/g, '\n').split('\n');
   const out: Block[] = [];
   let i = 0;
@@ -125,6 +125,11 @@ function inline(text: string, keyBase: string): ReactNode[] {
   }
   if (last < text.length) nodes.push(text.slice(last));
   return nodes;
+}
+
+/** The same inline syntax with the markers removed, for places that cannot show formatting (the PDF). */
+export function plainInline(text: string): string {
+  return text.replace(INLINE, (_m, _ticks, code, bold, italic, label) => code ?? bold ?? italic ?? label ?? '');
 }
 
 /** True when text is long enough and shaped like Markdown (headings, lists, tables or quotes on their own lines). */

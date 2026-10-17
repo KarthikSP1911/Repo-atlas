@@ -5,6 +5,7 @@ import { buildGraphResponse, candidatesResponse, entryPointsResponse, exportPrev
 import { GROUPS, GROUP_INFO, TOOL_SPECS, type Field, type ToolSpec } from '../lib/tool-specs';
 import { GenericValue } from './GenericValue';
 import { GraphPanel } from './GraphPanel';
+import { GuideDownloads } from './GuideDownloads';
 import { RepoPicker } from './RepoPicker';
 import { Select } from './Select';
 import { CUSTOM_REPO, MISSING_SECRET_HINT, OLD_BUILD_HINT, REPOS, asRec, looksLikeMissingSecret, looksLikeOldBuild, recList, repoArgOf, str } from './demo-util';
@@ -392,7 +393,10 @@ function ToolPanel({
           {previewToken && (
             <div className="dm-notice">
               <p>
-                This is only a preview{shownLines > 0 && totalLines > shownLines ? `: the first ${shownLines} of ${totalLines} lines, so it stops part-way on purpose` : ''}. Nothing is written anywhere. Press the button to get the whole document.
+                {shownLines > 0 && totalLines > shownLines
+                  ? `This server shows only the first ${shownLines} of ${totalLines} lines here, so the preview stops part-way on purpose. `
+                  : 'This is the whole draft, shown for you to review. '}
+                Nothing is written anywhere. Press the button for the final text, with Download .md, Download PDF and Copy.
               </p>
               <button
                 type="button"
@@ -406,6 +410,7 @@ function ToolPanel({
               </button>
             </div>
           )}
+          {spec.name === 'export_guide' && str(d.step) === 'draft' && str(d.markdown) && <GuideDownloads markdown={str(d.markdown)} filename={str(d.filename) || 'ARCHITECTURE.md'} />}
           <GenericValue value={body} onExplain={onExplain} busy={loading} />
           {issueCards.length > 0 && (
             <>

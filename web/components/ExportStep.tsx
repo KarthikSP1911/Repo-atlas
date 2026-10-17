@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { asRec, fmtDate, num, str, strList } from './demo-util';
+import { GuideDownloads } from './GuideDownloads';
 import { Markdown } from './Markdown';
 import { Card, LimitsBox, RawJson, RunStatus } from './ui';
 import { useToolRun, type CallFn } from './useToolRun';
@@ -11,7 +12,6 @@ export function ExportStep({ call, snapshotId }: { call: CallFn; snapshotId: str
   const preview = useToolRun(call);
   const draft = useToolRun(call);
   const refusal = useToolRun(call);
-  const [copied, setCopied] = useState<string>('');
   const [view, setView] = useState<'formatted' | 'source'>('formatted');
 
   const p = asRec(preview.state.data);
@@ -23,28 +23,7 @@ export function ExportStep({ call, snapshotId }: { call: CallFn; snapshotId: str
   const getPreview = (): void => {
     draft.reset();
     refusal.reset();
-    setCopied('');
     void preview.run('export_guide', { snapshotId });
-  };
-
-  const copy = async (): Promise<void> => {
-    try {
-      await navigator.clipboard.writeText(markdown);
-      setCopied('Copied to the clipboard.');
-    } catch {
-      setCopied('Copy was blocked by the browser. Select the text and copy it by hand.');
-    }
-  };
-
-  const download = (): void => {
-    const url = URL.createObjectURL(new Blob([markdown], { type: 'text/markdown;charset=utf-8' }));
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'ARCHITECTURE.md';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
   };
 
   return (
@@ -68,11 +47,13 @@ export function ExportStep({ call, snapshotId }: { call: CallFn; snapshotId: str
               <li key={i}>{s}</li>
             ))}
           </ol>
-          <h4>Excerpt</h4>
+          <h4>Draft preview</h4>
           <Markdown text={str(pv.excerpt)} />
-          <p className="muted">
-            This excerpt is only the first {str(pv.excerpt).split('\n').length} of {num(pv.lines) ?? '?'} lines, so it stops part-way on purpose. Step 2 gives you the whole document.
-          </p>
+          {str(pv.excerpt).split('\n').length < (num(pv.lines) ?? 0) && (
+            <p className="muted">
+              This server shows only the first {str(pv.excerpt).split('\n').length} of {num(pv.lines)} lines here, so it stops part-way on purpose. Step 2 gives you the whole document.
+            </p>
+          )}
           <div className="dm-actions">
             <button type="button" className="dm-btn primary" disabled={!token || draft.state.status === 'loading'} onClick={() => void draft.run('export_guide', { snapshotId, confirmToken: token })}>
               Step 2: Get the full draft
@@ -100,17 +81,7 @@ export function ExportStep({ call, snapshotId }: { call: CallFn; snapshotId: str
             {str(d.filename) || 'ARCHITECTURE.md'} <span className="muted">({num(d.characters) ?? markdown.length} characters)</span>
           </h3>
           {str(d.note) && <p className="dm-notice">{str(d.note)}</p>}
-          <div className="dm-actions">
-            <button type="button" className="dm-btn" onClick={() => void copy()}>
-              Copy
-            </button>
-            <button type="button" className="dm-btn" onClick={download}>
-              Download ARCHITECTURE.md
-            </button>
-          </div>
-          <p className="muted" aria-live="polite">
-            {copied}
-          </p>
+          <GuideDownloads markdown={markdown} filename={str(d.filename) || 'ARCHITECTURE.md'} />
           <div className="dm-actions" role="group" aria-label="View">
             <button type="button" className={`dm-btn${view === 'formatted' ? ' primary' : ''}`} aria-pressed={view === 'formatted'} onClick={() => setView('formatted')}>
               Formatted
