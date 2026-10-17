@@ -60,6 +60,11 @@ tokens.json
 docs/RepoAtlas Project Blueprint.md
 docs/Buildathon Guidebook (1).pdf
 
+# Post-submission pack (demo script, LinkedIn draft, submission fields): local only
+docs/DEMO_SCRIPT.md
+docs/LINKEDIN_POST.md
+docs/SUBMISSION.md
+
 # NitroStack pack output
 *.zip
 

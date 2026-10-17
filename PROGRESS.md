@@ -1,8 +1,9 @@
 # RepoAtlas progress
 
-**Current phase:** 7 (Evaluation and docs) complete. Phases 0 to 7 are done; the user asked for them to run without stopping. Waiting on the human steps below before Phases 8 and 9.
+**Current phase:** 8 (deploy and verification) mostly done; 9 (submission pack) documents written, hand-in steps open.
 **Decision:** precomputed snapshots plus on-demand builds of any public GitHub repo (D18, which lifts the snapshot-only rule of D11 for `build_graph`)
-**Next:** Phase 8 (production deploy and verification): redeploy the zip, set env vars, run the live smoke test, cross-network and connector tests. Then Phase 9 (submission pack).
+**Status (2026-10-17):** NitroCloud server redeployed and verified (47 of 47 checks, `docs/VERIFICATION_REPORT.md`); website live at https://repo-atlas-ksp.vercel.app/ (checked: `/`, `/demo/`, `/tools/` load, the full demo chain ran with no errors); GitHub `main` in sync with local; 603 tests, `tsc` and build pass.
+**Next (owner actions):** record the demo video (`docs/DEMO_SCRIPT.md`), post on LinkedIn (`docs/LINKEDIN_POST.md`, needs the official handles), test from another network, in NitroChat and as a Claude or ChatGPT connector, run each tool once in NitroStudio, then submit once using `docs/SUBMISSION.md` (final gate list).
 
 ## Done
 
@@ -56,7 +57,11 @@
 - `build_graph` now builds any public GitHub repo on demand from GitHub's tarball, with no git binary (D18; `src/services/live/`). Precomputed repos are still served first. Verified over a real `/mcp` server on pallets/click (all 12 tools), and against React and Next.js for limits.
 - 535+ tests pass; `tests/server-imports.test.ts` guards the deployed server's imports.
 - New optional server settings: `GITHUB_TOKEN` (richer data, no download rate limit), `LIVE_BUILDS`, `LIVE_BUILDS_PER_HOUR`, `LIVE_BUILD_TIMEOUT_MS`, `LIVE_SNAPSHOT_TTL_MIN`.
-- NitroCloud still runs the old spike build until `npm run deploy:pack` and an upload.
+- Deployed since: the redeploy happened and was verified (see Status above). The note that NitroCloud still runs the spike build is out of date.
+
+### Phase 9: Submission pack (documents done, hand-in open)
+- `docs/DEMO_SCRIPT.md` (3-minute script, scene table, numbers, honest-claims list), `docs/LINKEDIN_POST.md` (draft, handle placeholders to fill from Discord), `docs/SUBMISSION.md` (portal fields, tested table, known gaps, final gate).
+- Open: demo video, LinkedIn post, other-network and connector tests, full NitroStudio pass, three hand-check sheets, the small site copy fixes listed in `docs/SUBMISSION.md`.
 
 ## Open questions
 
@@ -65,10 +70,10 @@
 - A GitHub token was pasted into `.env.example` (D12). Move it to `.env`; consider rotating it.
 - Should the blueprint and guidebook stay git-ignored (D3)?
 
-## Human steps still pending (collected at the end of Phase 7)
+## Human steps still pending (updated 2026-10-17)
 
-- Redeploy the zip to NitroCloud (the live server still runs the Phase 1 spike zip) and confirm env vars apply (`ping_repoatlas`: `exportSecretConfigured`, `liveBuilds`, `githubTokenConfigured`).
-- Optional: add `GITHUB_TOKEN` (read-only, no scopes) in the NitroCloud dashboard's environment variables so on-demand builds get PRs, issue comments and per-commit history. Without it, builds still work with fewer signals.
-- Test the 12 tools and the `graph-view` widget in NitroStudio.
-- Fill in the three hand-check sheets in `docs/eval/`.
-- Phase 8 and 9 items (cross-network test, Claude or ChatGPT connector, demo video, LinkedIn post, portal).
+- Done: redeploy, env vars (`exportSecretConfigured`, `liveBuilds`, `githubTokenConfigured` all true), website on Vercel.
+- Test the live URL from another network, in NitroChat, and as a Claude or ChatGPT connector.
+- Test each of the 12 tools and the `graph-view` widget in NitroStudio.
+- Fill in the three hand-check sheets in `docs/eval/`, or state in the submission that they were not measured.
+- Record the demo video, post on LinkedIn with the official handles, then submit once (`docs/SUBMISSION.md`).
