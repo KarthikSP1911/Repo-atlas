@@ -65,6 +65,9 @@ docs/DEMO_SCRIPT.md
 docs/LINKEDIN_POST.md
 docs/SUBMISSION.md
 
+# Demo recording (200 MB, over GitHub's 100 MB limit): hosted on Loom, see README
+docs/*.mp4
+
 # NitroStack pack output
 *.zip
 
